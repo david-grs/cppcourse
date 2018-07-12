@@ -1,7 +1,7 @@
 Session 0
 =========
-[slides](http://david-grs.github.io/00.html)
-[compiler explorer](http://www.godbolt.org)
+- [Slides](http://david-grs.github.io/00.html)
+- [Compiler Explorer](http://www.godbolt.org)
 
 ```
 git clone <url>

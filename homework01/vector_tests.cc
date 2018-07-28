@@ -24,4 +24,14 @@ int main()
 	v1.Add(v3);
 	assert(v1.GetX() == 6);
 	assert(v1.GetY() == 8);
+
+	v3 = v2 + Vector(1, 1);
+	assert(v3.GetX() == 6);
+	assert(v3.GetY() == 7);
+
+	v3 += v3;
+	assert(v3.GetX() == 12);
+	assert(v3.GetY() == 14);
+
+	std::cout << v1 << " + " << v2 << " = " << v3 << std::endl;
 }

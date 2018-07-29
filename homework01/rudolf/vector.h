@@ -1,7 +1,4 @@
-#ifndef __VECTOR_H_INCLUDED__   // if x.h hasn't been included yet...
-#define __VECTOR_H_INCLUDED__   //   #define this so the compiler knows it has been included
-
-#include <iostream>
+#pragma once
 
 class Vector
 {
@@ -10,22 +7,15 @@ public:
 
 	Vector(double x, double y);
 
-	double dotProduct(const Vector& vec) const;
-
-	double GetX() const;
-	double GetY() const;
+	double GetX() const{return mX;};
+	double GetY() const{return mY;};
 
       	void Add(const Vector& v);
 
-      	// Overload = operator.
-      	void operator=(const Vector& v);
-	// Overload == operator.
-      	bool operator==(const Vector& v);
+      	bool operator==(const Vector& v)const{return mX == v.mX && mY == v.mY;};
 
 private:
 	double mX;
 	double mY;
 };
-
-#endif  
 

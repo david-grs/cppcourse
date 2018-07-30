@@ -1,19 +1,19 @@
 class Vector
 {
-    public:
+public:
 	Vector();
 	Vector(int x, int y);
 	
 	bool operator==(const Vector& rhs) const
-    {
-        return mX == rhs.mX && mY == rhs.mY;
-    }
+	{
+		return mX == rhs.mX && mY == rhs.mY;
+	}
 	
-	int GetX();
-	int GetY();
-	void Add(Vector&);
+	const int GetX();
+	const int GetY();
+	void Add(const Vector&);
 	
-	private:
+private:
 	int mX;
 	int mY;
 };

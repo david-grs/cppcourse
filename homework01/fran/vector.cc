@@ -1,29 +1,24 @@
 #include "vector.h"
 
-Vector::Vector()
+Vector::Vector(): Vector(0, 0){}
+
+Vector::Vector(int x, int y):
+	mX(x),
+	mY(y)
+{}
+
+const int Vector::GetX()
 {
-    mX = 0;
-    mY = 0;
+	return mX;
 }
 
-Vector::Vector(int x, int y)
+const int Vector::GetY()
 {
-    mX = x;
-    mY = y;
+	return mY;
 }
 
-int Vector::GetX()
+void Vector::Add(const Vector& vector)
 {
-    return mX;
-}
-    
-int Vector::GetY()
-{
-    return mY;
-}
-
-void Vector::Add(Vector& vector)
-{
-    mX += vector.mX;
-    mY += vector.mY;
+	mX += vector.mX;
+	mY += vector.mY;
 }

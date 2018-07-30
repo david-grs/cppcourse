@@ -1,28 +1,27 @@
-class Vector {
-public:
+#include <iostream>
 
+class Vector
+{
+public:
     Vector(int x, int y)
         : mX(x)
         , mY(y)
     {}
+    Vector(){}
 
-    int GetX() const {
-        return mX;
-    }
+    int GetX() const {return mX;}
 
-    int GetY() const {
-        return mY;
-    }
+    int GetY() const {return mY;}
 
-    void Add(const Vector& newVector) {
-        mX += newVector.mX;
-        mY += newVector.mY;
-    }
+    void Add (const Vector&);
 
-    bool operator==(Vector newVector) {
-        return (mX == newVector.mX)
-               && (mY == newVector.mY);
-    }
+    bool operator == (const Vector&);
+
+    Vector operator + (const Vector&);
+
+    Vector operator += (const Vector&);
+
+    friend std::ostream& operator << (std::ostream&, const Vector&);
 
 private:
     int mX{0};

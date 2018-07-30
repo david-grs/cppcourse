@@ -38,7 +38,7 @@ const Vector Vector::operator+(const Vector& other)
 
 Vector& Vector::operator+=(const Vector& other)
 {
-  this->Add(other);
+  Add(other);
   return *this;
 }
 

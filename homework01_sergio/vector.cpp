@@ -2,8 +2,8 @@
 
 void Vector::Add(const Vector& v)
 {
-    mX=mX + v.mX;
-    mY=mY + v.mY;
+    mX += v.mX;
+    mY += v.mY;
 }
 
 bool Vector::operator == (const Vector& v)
@@ -12,12 +12,12 @@ bool Vector::operator == (const Vector& v)
         && (mY == v.mY);
 }
 
-Vector Vector::operator + (const Vector& v)
+Vector Vector::operator+ (const Vector& v)
 {
-    return Vector(mX+v.mX, mY+v.mY);
+    return Vector(mX + v.mX, mY + v.mY);
 }
 
-Vector Vector::operator += (const Vector& v)
+Vector Vector::operator+= (Vector& v)
 {
     this->Add(v);
     return *this;
@@ -25,6 +25,6 @@ Vector Vector::operator += (const Vector& v)
 
 std::ostream& operator<<(std::ostream& os, const Vector& v)
 {
-    os<<"Vector("<<v.mX<<","<<v.mY<<")";
+    os << "Vector(" << v.mX << "," << v.mY << ")";
     return os;
 }

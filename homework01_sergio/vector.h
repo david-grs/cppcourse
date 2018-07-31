@@ -3,10 +3,7 @@
 class Vector
 {
 public:
-    Vector(int x, int y)
-        : mX(x)
-        , mY(y)
-    {}
+    Vector(int x, int y): mX(x), mY(y){}
     Vector(){}
 
     int GetX() const {return mX;}
@@ -15,11 +12,11 @@ public:
 
     void Add (const Vector&);
 
-    bool operator == (const Vector&);
+    bool operator== (const Vector&);
 
-    Vector operator + (const Vector&);
+    Vector operator+ (const Vector&);
 
-    Vector operator += (const Vector&);
+    Vector operator+= (Vector&);
 
     friend std::ostream& operator << (std::ostream&, const Vector&);
 

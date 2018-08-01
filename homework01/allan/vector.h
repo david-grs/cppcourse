@@ -17,8 +17,7 @@ public:
 
 	bool operator==(const Vector& rhs) const
 	{
-		return m_x == rhs.m_x &&
-			   m_y == rhs.m_y;
+		return m_x == rhs.m_x && m_y == rhs.m_y;
 	}
 	
 	friend Vector operator+(Vector first, Vector second);
@@ -39,12 +38,7 @@ public:
 		return m_y;
 	}
 
-	Vector& Add(const Vector& rhs)
-	{
-		m_x += rhs.m_x;
-		m_y += rhs.m_y;
-		return *this;
-	}
+	Vector& Add(const Vector& rhs);
 
 	friend std::ostream& operator<<(std::ostream& ostr, Vector& vector);
 
@@ -53,14 +47,3 @@ private:
 	int m_y;
 };
 
-
-Vector operator+(const Vector first, const Vector second)
-{
-	return Vector(first.m_x + second.m_x, first.m_y + second.m_y);
-}
-
-std::ostream& operator<<(std::ostream& ostr, Vector& vector)
-{
-	ostr << "Vector(" << vector.m_x << "," << vector.m_y << ")";
-	return ostr;
-}

@@ -1,39 +1,46 @@
+#include <iostream>
+
 class Vector
 {
 public:
-    Vector()
-    {
-        x = 0;
-        y = 0;
-    }
+    Vector() : Vector(0, 0)
+    {}
 
-    Vector(int xx, int yy)
-    {
-        x = xx;
-        y = yy;
-    }
+    Vector(int x, int y) :
+        mX(x),
+        mY(y)
+    {}
 
     int GetX() const
     {
-        return x;
+        return mX;
     }
 
     int GetY() const
     {
-        return y;
+        return mY;
     }
 
     bool operator==(const Vector& other) const
     {
-        return other.x == x && other.y == y;
+        return other.GetX() == mX && other.GetY() == mY;
     }
 
-    Vector Add(const Vector& other)
+    Vector operator+(const Vector& other) const
     {
-        return Vector(other.GetX() + x, other.GetY() + y);
+        return Vector(other.GetX() + mX, other.GetY() + mY);
     }
+
+    Vector operator+=(const Vector& other) const
+    {
+        return Vector(other.GetX() + mX, other.GetY() + mY);
+    }
+
+    void Add(const Vector&);
 
 private:
-    int x;
-    int y;
+    int mX;
+    int mY;
 };
+
+std::ostream& operator<<(std::ostream&, const Vector&);

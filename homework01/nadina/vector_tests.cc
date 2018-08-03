@@ -24,7 +24,7 @@ int main()
 	v1.Add(v3);
 	assert(v1.GetX() == 6);
 	assert(v1.GetY() == 8);
-
+	
 	v3 = v2 + Vector(1, 1);
 	assert(v3.GetX() == 6);
 	assert(v3.GetY() == 7);

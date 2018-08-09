@@ -3,14 +3,14 @@ Snake
 This first project consists of developing a simple 2D snake game with [libcinder](http://libcinder.org/)!
 
 There is no particular requirement, the idea is to have fun while practicing your C++ on a real project. The only important 
-guideline is to keep things as simple as possible &mdash; elegance comes with simplicity, and performance also, most of the time. 
+guideline is to keep things as simple as possible &mdash; elegance comes with simplicity, and performance too, most of the time. 
 Snake is a simple game, so should be your code. 
 
 
 Building libcinder
 ------------------
 
-1. Install the dependencies needed for libcinder &mdash; from [Ubuntu Notes on libcinder.org](https://www.libcinder.org/docs/guides/linux-notes/ubuntu.html):
+  1. Install the dependencies needed for libcinder &mdash; from [Ubuntu Notes on libcinder.org](https://www.libcinder.org/docs/guides/linux-notes/ubuntu.html):
 
 ```
 sudo apt-get install libxcursor-dev \
@@ -41,7 +41,7 @@ NOTE: If you are using CentOS instead of Ubuntu, use `yum install` instead of `a
 NOTE2: I found [this link](https://github.com/cinder/Cinder/wiki/Cinder-for-Linux-%7C-Fedora-23-24-on-x86_64) about Fedora 23. The article is only one year old so it could work for CentOS.
 
 
-2. Build `libcinder` (here, Debug build)
+  2. Build `libcinder` (here, Debug build)
 
 ```
 git clone --recursive https://github.com/cinder/Cinder.git
@@ -52,7 +52,7 @@ make -j8
 ```
 
 
-3. Build your project (= from the skeleton in this directory) by configuring cmake with: 
+  3. Build your project (= from the skeleton in this directory) by configuring cmake with: 
 
 ```
 cmake  -DCMAKE_BUILD_TYPE=Debug -DCINDER_PATH=~/Cinder ..

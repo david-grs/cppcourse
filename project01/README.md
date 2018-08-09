@@ -6,6 +6,8 @@ There is no particular requirement, the idea is to have fun while practicing you
 guideline is to keep things as simple as possible &mdash; elegance comes with simplicity, and performance too, most of the time. 
 Snake is a simple game, so should be your code. 
 
+You should not need anything else than what we discussed so far: classes, references, std::vector, small and isolated compilation units.
+
 As earlier, I am waiting for your pull requests. Don't edit directly the files, create a directory with your name to avoid conflicts.
 
 Deadline: Tuesday, 21st August

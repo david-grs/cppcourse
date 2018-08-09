@@ -8,7 +8,7 @@ Snake is a simple game, so should be your code.
 
 As earlier, I am waiting for your pull requests. Don't edit directly the files, create a directory with your name to avoid conflicts.
 
-Deadline: Tuesday, 22nd August
+Deadline: Tuesday, 21st August
 
 
 

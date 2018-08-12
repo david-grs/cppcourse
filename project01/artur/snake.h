@@ -5,7 +5,7 @@ class Snake
 {
  public:
  Snake()
-   : mBody({Point(7,8), Point(8,8)})
+   : mBody({Point(7,8), Point(7,8), Point(7,8), Point(7,8), Point(8,8)})
     {};
   
   void ChangeDirection(Point);

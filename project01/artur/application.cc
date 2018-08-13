@@ -14,25 +14,9 @@ void Application::prepareSettings(Settings* settings)
   settings->setFullScreen(false);
 }
 
-void Application::keyDown(ci::app::KeyEvent event)
+void Application::keyDown(ci::app::KeyEvent)
 {
-  switch(event.getCode())
-    {
-    case ci::app::KeyEvent::KEY_DOWN:
-      snake.ChangeDirection(Point(Direction::down));
-      break;
-    case ci::app::KeyEvent::KEY_UP:
-      snake.ChangeDirection(Point(Direction::up));
-      break;
-    case ci::app::KeyEvent::KEY_LEFT:
-      snake.ChangeDirection(Point(Direction::left));
-      break;
-    case ci::app::KeyEvent::KEY_RIGHT:
-      snake.ChangeDirection(Point(Direction::right));
-      break;
-    default:
-      break;
-    }
+  snake.ChangeDirection(Point(Direction::down));
 }
 
 void Application::setup()

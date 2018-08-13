@@ -20,16 +20,22 @@ void Game::Update()
         mState = GameState::lost;
         return;
     }
-    if (mSnake.DistanceHeadToVector(mBait.GetPosition()) < (mBait.GetRadius() + mSnake.GetSize())/2)
+    std::vector<int> distances = mSnake.DistanceAllBodyPartsToVector(mBait.GetPosition());
+    if (std::any_of(distances.begin(), distances.end(), [&](int d){ return d < (mBait.GetRadius() + mSnake.GetSize()); }))
     {
         mScore += REWARD_FOR_BAIT;
         std::cout << "Snake ate bait. New score: " << mScore << std::endl;
         mSnake.Grow();
 
-        if(mScore % 20 == 0)
+        if(mScore % (REWARD_FOR_BAIT * 2) == 0)
         {
             mSnake.IncreaseSpeed();
             std::cout << "Increasing Speed" << std::endl;
+        }
+        if(mScore % (REWARD_FOR_BAIT * 4) == 0)
+        {
+            mBait.IncreaseSize();
+            std::cout << "Increasing Bait Size" << std::endl;
         }
 
         do {

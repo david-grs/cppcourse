@@ -10,6 +10,8 @@ public:
     Bait(const cinder::ivec2&);
 
     void PositionRandomly() { mPosition = {mUniformDistX(mRndEngine), mUniformDistY(mRndEngine)}; }
+    void IncreaseSize() { mRadius += 2; }
+
     cinder::ivec2 GetPosition() const { return mPosition; }
     int GetRadius() const { return mRadius; }
 private:

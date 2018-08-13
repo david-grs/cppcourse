@@ -26,6 +26,7 @@ public:
     bool HeadOutsideField() const;
     bool ObjectClashedWithBody(const cinder::ivec2&) const;
     int DistanceHeadToVector(const cinder::ivec2&) const;
+    std::vector<int> DistanceAllBodyPartsToVector(const cinder::ivec2&) const;
 
 private:
     cinder::ivec2 mFieldSize;

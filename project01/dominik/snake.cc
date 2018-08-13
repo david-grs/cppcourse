@@ -61,12 +61,22 @@ bool Snake::ObjectClashedWithBody(const cinder::ivec2& object) const
 
 bool Snake::HeadOutsideField() const
 {
-    return mSnakeBody.at(0).x == 0 || mSnakeBody.at(0).y == 0 || mSnakeBody.at(0).x == mFieldSize.x || mSnakeBody.at(0).y == mFieldSize.y;
+    return mSnakeBody.at(0).x <= 0 || mSnakeBody.at(0).y <= 0 || mSnakeBody.at(0).x >= mFieldSize.x || mSnakeBody.at(0).y >= mFieldSize.y;
 }
 
 int Snake::DistanceHeadToVector(const cinder::ivec2& point) const
 {
     return glm::distance2(cinder::vec2(mSnakeBody.at(0)), cinder::vec2(point.x, point.y));
+}
+
+std::vector<int> Snake::DistanceAllBodyPartsToVector(const cinder::ivec2& point) const
+{
+    std::vector<int> distanceArray = {};
+    for(size_t i = 0; i < mSnakeBody.size(); ++i)
+    {
+        distanceArray.push_back(glm::distance2(cinder::vec2(mSnakeBody.at(i)), cinder::vec2(point.x, point.y)));
+    }
+    return distanceArray;
 }
 
 void Snake::ChangeMovingDirection(const SnakeMovingDirection& direction)

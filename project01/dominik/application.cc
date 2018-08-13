@@ -1,9 +1,9 @@
 #include "application.h"
 
 static const cinder::ivec2 WindowSize{640, 480};
-static const int BodyPartSize = 15;
+static const int BodyPartSize = 10;
 
-Application::Application() : mGame(WindowSize, BodyPartSize), mView(WindowSize, BodyPartSize)
+Application::Application() : mGame(WindowSize, BodyPartSize), mView(WindowSize)
 {}
 
 void Application::prepareSettings(Settings* settings)
@@ -36,7 +36,7 @@ void Application::update()
     mGame.Update();
     if (mGame.GetState() == GameState::lost)
     {
-        std::cout << "Game lost! Good bye!" << std::endl;
+        std::cout << "Game lost! Final score: " << mGame.GetScore() << ". Good bye!" << std::endl;
         quit();
     }
 }

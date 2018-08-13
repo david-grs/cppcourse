@@ -8,12 +8,10 @@
 class GameView
 {
 public:
-    GameView(const cinder::ivec2&, const int);
+    GameView(const cinder::ivec2& windowSize) : mWindowSize(windowSize) {}
     void Draw(const Snake&, const Bait&) const;
 private:
     cinder::ivec2 mWindowSize;
-    const int mSnakeBodyPartSize;
-    const ci::Rectf mBodyPartRect;
 };
 
 #endif // VIEW_H

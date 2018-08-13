@@ -16,6 +16,7 @@ public:
     void Move();
     void Grow();
     void ChangeMovingDirection(const SnakeMovingDirection& direction);
+    void IncreaseSpeed() { ++mMovingSpeed; }
 
     cinder::ivec2 GetHead() const { return mSnakeBody[0]; }
     int GetSize() const { return mSnakeBodyPartSize; }
@@ -31,6 +32,7 @@ private:
     cinder::ivec2 mMovingDirection;
     std::vector<cinder::ivec2> mSnakeBody;
     int mSnakeBodyPartSize;
+    int mMovingSpeed;
 };
 
 #endif // SNAKE_H

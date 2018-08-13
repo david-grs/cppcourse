@@ -1,10 +1,13 @@
 #include "game.h"
 
+static const int REWARD_FOR_BAIT = 10;
+
 Game::Game(const cinder::ivec2& screenSize, const int snakeBodyPartSize)
     : mFieldSize(screenSize),
       mSnake(mFieldSize, snakeBodyPartSize),
       mBait(mFieldSize),
-      mState(GameState::running)
+      mState(GameState::running),
+      mScore(0)
 {}
 
 void Game::Update()
@@ -19,8 +22,16 @@ void Game::Update()
     }
     if (mSnake.DistanceHeadToVector(mBait.GetPosition()) < (mBait.GetRadius() + mSnake.GetSize())/2)
     {
-        std::cout << "Snake ate bait. Growing, and finding new bait position." << std::endl;
+        mScore += REWARD_FOR_BAIT;
+        std::cout << "Snake ate bait. New score: " << mScore << std::endl;
         mSnake.Grow();
+
+        if(mScore % 20 == 0)
+        {
+            mSnake.IncreaseSpeed();
+            std::cout << "Increasing Speed" << std::endl;
+        }
+
         do {
             mBait.PositionRandomly();
         } while(mSnake.ObjectClashedWithBody(mBait.GetPosition()));

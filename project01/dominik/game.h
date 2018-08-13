@@ -22,11 +22,13 @@ public:
     Snake GetSnake() const { return mSnake; }
     Bait GetBait() const { return mBait; }
     GameState GetState() const { return mState;}
+    int GetScore() const { return mScore; }
 private:
     cinder::ivec2 mFieldSize;
     Snake mSnake;
     Bait mBait;
     GameState mState;
+    int mScore;
 };
 
 #endif // GAME_H

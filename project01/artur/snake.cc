@@ -5,7 +5,7 @@
 
 void Snake::ChangeDirection(Point dir)
 {
-  if(!(-dir == Dir()))
+  if(!((dir == Dir()) || (-dir == Dir())))
     {
       Snake::Move(dir);
     }
@@ -35,11 +35,6 @@ void Snake::Move(Point dir)
 {
   mBody.push_back(mBody.back() + Point(dir));
   mBody.erase(mBody.begin());
-}
-
-void Snake::Grow()
-{
-  mBody.insert(mBody.begin(),mBody.front());
 }
 
 bool Snake::CheckWallsCollision()

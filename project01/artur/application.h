@@ -19,5 +19,4 @@ class Application : public ci::app::App
  private:
   int counter;
   Snake snake;
-  Point fruit;
 };

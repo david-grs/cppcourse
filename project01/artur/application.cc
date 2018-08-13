@@ -76,7 +76,7 @@ void Application::update()
     {
       return;
     }
-  if(!snake.IsAlive())
+  if(!snake.IsAlive(corner))
     {
       running = false;
 

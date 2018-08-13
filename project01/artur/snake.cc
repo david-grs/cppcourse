@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void Snake::ChangeDirection(Point dir)
+void Snake::ChangeDirection(const Point& dir)
 {
   if(!(-dir == Dir()))
     {
@@ -11,9 +11,9 @@ void Snake::ChangeDirection(Point dir)
     }
 }
 
-bool Snake::IsAlive()
+bool Snake::IsAlive(const Point& corner)
 {
-  return !(CheckWallsCollision() || CheckSelfCollision());
+  return !(CheckWallsCollision(corner) || CheckSelfCollision());
 }
 
 Point Snake::Dir()
@@ -31,7 +31,7 @@ std::vector<Point> Snake::Body()
   return mBody;
 }
 
-void Snake::Move(Point dir)
+void Snake::Move(const Point& dir)
 {
   mBody.push_back(mBody.back() + Point(dir));
   mBody.erase(mBody.begin());
@@ -42,11 +42,11 @@ void Snake::Grow()
   mBody.insert(mBody.begin(),mBody.front());
 }
 
-bool Snake::CheckWallsCollision()
+bool Snake::CheckWallsCollision(const Point& corner)
 {
   int x = mBody.back().GetX();
   int y = mBody.back().GetY();
-  if(x<=0 || x>15 || y<=0 || y>15)
+  if(x<=0 || x>=corner.GetX() || y<=0 || y>=corner.GetY())
     {
       return true;
     }

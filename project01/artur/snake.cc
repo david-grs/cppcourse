@@ -46,7 +46,7 @@ bool Snake::CheckWallsCollision()
 {
   int x = mBody.back().GetX();
   int y = mBody.back().GetY();
-  if(x<0 || x>15 || y<0 || y>15)
+  if(x<=0 || x>15 || y<=0 || y>15)
     {
       return true;
     }

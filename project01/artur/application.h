@@ -17,7 +17,9 @@ class Application : public ci::app::App
   static void prepareSettings(Settings*);
   
  private:
+  bool running;
   int counter;
   Snake snake;
   Point fruit;
+  Point corner;
 };

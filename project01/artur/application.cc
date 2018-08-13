@@ -42,32 +42,46 @@ void Application::keyDown(ci::app::KeyEvent event)
 
 void Application::setup()
 {
+  running = true;
   counter = 0;
   snake = Snake();
   fruit = Point(10,10);
+  corner = Point(16,16);
 }
 
 void Application::draw()
 {
   ci::gl::clear();
+  ci::gl::color( ci::Color( 1, 1, 1 ) );
+  ci::gl::drawSolidRect( ci::Rectf(0, 0, 10*corner.GetX(), 5 ));
+  ci::gl::drawSolidRect( ci::Rectf(0, 10*corner.GetY()-5, 10*corner.GetX(), 10*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(0, 0, 5, 10*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(10*corner.GetX()-5, 0, 10*corner.GetX(), 10*corner.GetY() ));
 
-  for(int i = 0; i < snake.Length(); ++i)
+  for(int i = 0; i < snake.Length()-1; ++i)
     {
       Point p = snake.Body().at(i);
       ci::gl::drawSolidCircle( ci::vec2(10*p.GetX(), 10*p.GetY()), 5);
     }
+  ci::gl::color( ci::Color( 1, 0, 0 ) );
+  ci::gl::drawSolidCircle( ci::vec2(10*snake.Body().back().GetX(), 10*snake.Body().back().GetY()), 5);
+  ci::gl::color( ci::Color( 0, 1, 0 ) );
   ci::gl::drawSolidCircle( ci::vec2(10*fruit.GetX(), 10*fruit.GetY()), 5);
+
 }
 
 void Application::update()
 {
+  if(!running)
+    {
+      return;
+    }
   if(!snake.IsAlive())
     {
-      /*
+      running = false;
+
       std::cout<<"You died!"<<std::endl;
-      std::cout<<"Score"<<std::endl;
-      std::cout<<snake.Length()<<std::endl;
-      */
+      std::cout<<"Score: "<<snake.Length()-5<<std::endl;
     }
   else
     {

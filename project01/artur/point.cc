@@ -23,6 +23,10 @@ Point::Point(Direction dir)
   }
 }
 
+Point::Point()
+{
+}
+
 Point::Point(int x, int y)
   : mX(x)
   , mY(y)

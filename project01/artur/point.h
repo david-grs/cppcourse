@@ -3,6 +3,7 @@
 class Point
 {
  public:
+  Point();
   Point(Direction);
   Point(int, int);
   Point(const Point&);

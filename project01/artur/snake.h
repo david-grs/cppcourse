@@ -14,6 +14,7 @@ class Snake
   std::vector<Point> Body();
   bool IsAlive();
   void Move(Point);
+  void Grow();
   bool CheckWallsCollision();
   bool CheckSelfCollision();
   

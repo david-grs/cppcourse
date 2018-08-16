@@ -1,5 +1,6 @@
 #include "snake.h"
 #include <cinder/app/App.h>
+#include <algorithm>
 
 static const int INITIAL_SNAKE_LENGTH = 20;
 static const int SNAKE_GROW_INCREMENTS = 10;
@@ -64,19 +65,14 @@ bool Snake::HeadOutsideField() const
     return mSnakeBody.at(0).x <= 0 || mSnakeBody.at(0).y <= 0 || mSnakeBody.at(0).x >= mFieldSize.x || mSnakeBody.at(0).y >= mFieldSize.y;
 }
 
-int Snake::DistanceHeadToVector(const cinder::ivec2& point) const
+float Snake::MinDistanceHeadToVectorNowAndBefore(const cinder::ivec2& point) const
 {
-    return glm::distance2(cinder::vec2(mSnakeBody.at(0)), cinder::vec2(point.x, point.y));
-}
-
-std::vector<int> Snake::DistanceAllBodyPartsToVector(const cinder::ivec2& point) const
-{
-    std::vector<int> distanceArray = {};
-    for(size_t i = 0; i < mSnakeBody.size(); ++i)
+    std::vector<float> distances;
+    for(int step=0; step <= mMovingSpeed; ++step)
     {
-        distanceArray.push_back(glm::distance2(cinder::vec2(mSnakeBody.at(i)), cinder::vec2(point.x, point.y)));
+        distances.push_back(glm::distance(cinder::vec2(mSnakeBody.at(0) - step*mMovingDirection), cinder::vec2(point.x, point.y)));
     }
-    return distanceArray;
+    return *std::min_element(distances.begin(), distances.end());
 }
 
 void Snake::ChangeMovingDirection(const SnakeMovingDirection& direction)

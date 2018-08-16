@@ -20,8 +20,7 @@ void Game::Update()
         mState = GameState::lost;
         return;
     }
-    std::vector<int> distances = mSnake.DistanceAllBodyPartsToVector(mBait.GetPosition());
-    if (std::any_of(distances.begin(), distances.end(), [&](int d){ return d < (mBait.GetRadius() + mSnake.GetSize()); }))
+    if (mSnake.MinDistanceHeadToVectorNowAndBefore(mBait.GetPosition()) < static_cast<float>(mBait.GetRadius() + mSnake.GetSize()))
     {
         mScore += REWARD_FOR_BAIT;
         std::cout << "Snake ate bait. New score: " << mScore << std::endl;

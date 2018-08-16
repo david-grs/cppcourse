@@ -11,7 +11,9 @@ void GameView::Draw(const Snake& snake, const Bait& bait) const
         ci::gl::drawSolidCircle(bait.GetPosition(), bait.GetRadius());
 
         ci::gl::color(ci::Color(0.8f, 0.8f, 0.8f));
-        for (cinder::ivec2 bodyPart : snake.GetBody())
+        std::vector<cinder::ivec2> body;
+        snake.GetBody(body);
+        for (cinder::ivec2 bodyPart : body)
         {
             ci::gl::drawSolidCircle(bodyPart, snake.GetSize());
         }

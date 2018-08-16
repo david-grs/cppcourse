@@ -18,15 +18,14 @@ public:
     void ChangeMovingDirection(const SnakeMovingDirection& direction);
     void IncreaseSpeed() { ++mMovingSpeed; }
 
-    cinder::ivec2 GetHead() const { return mSnakeBody[0]; }
+    void GetHead(cinder::ivec2& head) const { head = mSnakeBody[0]; }
     int GetSize() const { return mSnakeBodyPartSize; }
-    std::vector<cinder::ivec2> GetBody() const { return mSnakeBody; }
+    void GetBody(std::vector<cinder::ivec2>& body) const { body = mSnakeBody; }
 
     bool HeadClashedWithBody() const;
     bool HeadOutsideField() const;
     bool ObjectClashedWithBody(const cinder::ivec2&) const;
-    int DistanceHeadToVector(const cinder::ivec2&) const;
-    std::vector<int> DistanceAllBodyPartsToVector(const cinder::ivec2&) const;
+    float MinDistanceHeadToVectorNowAndBefore(const cinder::ivec2&) const;
 
 private:
     cinder::ivec2 mFieldSize;

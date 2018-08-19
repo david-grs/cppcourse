@@ -48,7 +48,19 @@ std::experimental::optional<ci::ivec2> Snake::Move()
 		newHead.x = (newHead.x + (*mBounds).x) % (*mBounds).x;
 		newHead.y = (newHead.y + (*mBounds).y) % (*mBounds).y;
 	}
-	mBodyParts.front() = newHead;
 
-	return newHead;
+	auto tail = mBodyParts.back();
+	mBodyParts.pop_back();
+
+	for (const auto& part : mBodyParts)
+	{
+		if (part == newHead)
+		{
+			mBodyParts.push_back(tail);
+			return std::experimental::nullopt;
+		}
+	}
+
+	mBodyParts.push_front(newHead);
+	return tail;
 }

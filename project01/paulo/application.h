@@ -17,5 +17,6 @@ public:
 	static void prepareSettings(Settings*);
 
 private:
+	ci::ivec2 mPoint;
 	Canvas mCanvas;
 };

@@ -39,13 +39,24 @@ void Application::setup()
 void Application::draw()
 {
 	ci::gl::clear();
+	ci::gl::color(ci::Color::white());
 	ci::gl::drawSolidRect(mCanvas);
+
+	ci::gl::color(ci::Color::black());
+	const auto& origin = mCanvas.getUpperLeft();
+	const ci::ivec2 upperLeft = SquareLength * mPoint + ci::ivec2{origin.x, origin.y};
+	const ci::ivec2 bottomRight = upperLeft + ci::ivec2{SquareLength, SquareLength};
+	ci::gl::drawSolidRect({upperLeft, bottomRight});
 
 	ci::gl::drawString("Score: --", Score.Baseline, Score.Color, Score.Font);
 }
 
 void Application::update()
-{}
+{
+	const int width = (WindowSize.x - 2*Score.Font.getSize()) / SquareLength;
+	mPoint.x += 1;
+	mPoint.x %= width;
+}
 
 CINDER_APP(Application, ci::app::RendererGl(ci::app::RendererGl::Options().msaa(16)), &Application::prepareSettings)
 

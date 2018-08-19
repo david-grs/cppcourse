@@ -25,9 +25,25 @@ void Application::prepareSettings(Settings* settings)
 
 void Application::keyDown(ci::app::KeyEvent event)
 {
+	using ci::app::KeyEvent;
 	switch (event.getCode())
 	{
-		case ci::app::KeyEvent::KEY_ESCAPE: quit();
+		case KeyEvent::KEY_UP:
+			mSnake.SetDirection(Direction::Up);
+			break;
+		case KeyEvent::KEY_DOWN:
+			mSnake.SetDirection(Direction::Down);
+			break;
+		case KeyEvent::KEY_RIGHT:
+			mSnake.SetDirection(Direction::Right);
+			break;
+		case KeyEvent::KEY_LEFT:
+			mSnake.SetDirection(Direction::Left);
+			break;
+
+		case KeyEvent::KEY_ESCAPE:
+			quit();
+		case KeyEvent::KEY_SPACE: break;
 	}
 }
 
@@ -35,10 +51,12 @@ void Application::setup()
 {
 	const int width = (WindowSize.x - 2*Score.Font.getSize()) / SquareLength;
 	const int height = (WindowSize.y - 2*Score.Font.getSize()) / SquareLength;
+	const ci::ivec2 scaledBounds{width, height};
 
 	const ci::ivec2 upperLeft{Score.Font.getSize(), Score.Font.getSize()};
-	const ci::ivec2 bottomRight = upperLeft + SquareLength * ci::ivec2{width, height};
+	const ci::ivec2 bottomRight = upperLeft + SquareLength * scaledBounds;
 	mCanvas = Canvas{upperLeft, bottomRight};
+	mSnake = Snake{scaledBounds};
 }
 
 void Application::draw()
@@ -47,20 +65,28 @@ void Application::draw()
 	ci::gl::color(ci::Color::white());
 	ci::gl::drawSolidRect(mCanvas);
 
-	ci::gl::color(ci::Color::black());
-	const auto& origin = mCanvas.getUpperLeft();
-	const ci::ivec2 upperLeft = SquareLength * mPoint + ci::ivec2{origin.x, origin.y};
-	const ci::ivec2 bottomRight = upperLeft + ci::ivec2{SquareLength, SquareLength};
-	ci::gl::drawSolidRect({upperLeft, bottomRight});
+	ci::gl::color(ci::Color::hex(0x0B7B10));
+	mSnake.Draw([origin=mCanvas.getUpperLeft()](const ci::ivec2& point)
+	{
+		const ci::ivec2 upperLeft = SquareLength * point + ci::ivec2{origin.x, origin.y};
+		const ci::ivec2 bottomRight = upperLeft + ci::ivec2{SquareLength, SquareLength};
+		ci::gl::drawSolidRect({upperLeft, bottomRight});
+	});
 
 	ci::gl::drawString("Score: --", Score.Baseline, Score.Color, Score.Font);
 }
 
 void Application::update()
 {
-	const int width = (WindowSize.x - 2*Score.Font.getSize()) / SquareLength;
-	mPoint.x += 1;
-	mPoint.x %= width;
+	auto dropped = mSnake.Move();
+	if (dropped)
+	{
+		// ...
+	}
+	else
+	{
+		mGameOver = true;
+	}
 }
 
 CINDER_APP(Application, ci::app::RendererGl(ci::app::RendererGl::Options().msaa(16)), &Application::prepareSettings)

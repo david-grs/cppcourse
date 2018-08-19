@@ -17,6 +17,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${cxx_compile_options}")
 set(SOURCES
 	application.h
 	application.cc
+	snake.h
+	snake.cc
 )
 
 ci_make_app(

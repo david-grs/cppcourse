@@ -1,5 +1,7 @@
 #pragma once
 
+#include "snake.h"
+
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 
@@ -17,6 +19,7 @@ public:
 	static void prepareSettings(Settings*);
 
 private:
-	ci::ivec2 mPoint;
+	bool mGameOver{false};
+	Snake mSnake;
 	Canvas mCanvas;
 };

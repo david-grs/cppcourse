@@ -23,8 +23,13 @@ void Application::prepareSettings(Settings* settings)
 	settings->setFullScreen(false);
 }
 
-void Application::keyDown(ci::app::KeyEvent)
-{}
+void Application::keyDown(ci::app::KeyEvent event)
+{
+	switch (event.getCode())
+	{
+		case ci::app::KeyEvent::KEY_ESCAPE: quit();
+	}
+}
 
 void Application::setup()
 {

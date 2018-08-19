@@ -18,7 +18,7 @@ Application::Application()
 void Application::prepareSettings(Settings* settings)
 {
 	settings->setWindowSize(WindowSize);
-	settings->setFrameRate(35.0f);
+	settings->setFrameRate(10.0f);
 	settings->setResizable(false);
 	settings->setFullScreen(false);
 }

@@ -3,6 +3,8 @@
 #include <random>
 
 static const cinder::ivec2 WindowSize{640, 480};
+static const double SIZE = 20;
+static const double HALF_SIZE = SIZE/2;
 
 Application::Application()
 {}
@@ -17,6 +19,10 @@ void Application::prepareSettings(Settings* settings)
 
 void Application::keyDown(ci::app::KeyEvent event)
 {
+  if(!running)
+    {
+      return;
+    }
   switch(event.getCode())
     {
     case ci::app::KeyEvent::KEY_DOWN:
@@ -53,21 +59,21 @@ void Application::draw()
 {
   ci::gl::clear();
   ci::gl::color( ci::Color( 1, 1, 1 ) );
-  ci::gl::drawSolidRect( ci::Rectf(0, 0, 10*corner.GetX(), 5 ));
-  ci::gl::drawSolidRect( ci::Rectf(0, 10*corner.GetY()-5, 10*corner.GetX(), 10*corner.GetY() ));
-  ci::gl::drawSolidRect( ci::Rectf(0, 0, 5, 10*corner.GetY() ));
-  ci::gl::drawSolidRect( ci::Rectf(10*corner.GetX()-5, 0, 10*corner.GetX(), 10*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(0, 0, SIZE*corner.GetX(), HALF_SIZE ));
+  ci::gl::drawSolidRect( ci::Rectf(0, SIZE*corner.GetY()-HALF_SIZE, SIZE*corner.GetX(), SIZE*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(0, 0, HALF_SIZE, SIZE*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(SIZE*corner.GetX()-HALF_SIZE, 0, SIZE*corner.GetX(), SIZE*corner.GetY() ));
 
   for(int i = 0; i < snake.Length()-1; ++i)
     {
       Point p = snake.Body().at(i);
-      ci::gl::drawSolidCircle( ci::vec2(10*p.GetX(), 10*p.GetY()), 5);
+      ci::gl::drawSolidCircle( ci::vec2(SIZE*p.GetX(), SIZE*p.GetY()), HALF_SIZE);
     }
   ci::gl::color( ci::Color( 1, 0, 0 ) );
-  ci::gl::drawSolidCircle( ci::vec2(10*snake.Body().back().GetX(), 10*snake.Body().back().GetY()), 5);
+  ci::gl::drawSolidCircle( ci::vec2(SIZE*snake.Body().back().GetX(),
+				    SIZE*snake.Body().back().GetY()), HALF_SIZE);
   ci::gl::color( ci::Color( 0, 1, 0 ) );
-  ci::gl::drawSolidCircle( ci::vec2(10*fruit.GetX(), 10*fruit.GetY()), 5);
-
+  ci::gl::drawSolidCircle( ci::vec2(SIZE*fruit.GetX(), SIZE*fruit.GetY()), HALF_SIZE);
 }
 
 void Application::update()
@@ -88,12 +94,25 @@ void Application::update()
       if(snake.Body().back() == fruit)
 	{
 	  snake.Grow();
-	  fruit = Point(std::rand()%16,std::rand()%16);
+	  fruit = Point(std::rand()%(corner.GetX()-1)+1,
+			std::rand()%(corner.GetY()-1)+1);
+	  for(int rand_i = 0; rand_i < 10; ++rand_i)
+	    {
+	      // Didn't manage to make it work with std::find
+	      for(int i = 0; i < snake.Length(); ++i)
+		{
+		  if(snake.Body()[i] == fruit)
+		    {
+		      fruit = Point(std::rand()%(corner.GetX()-1)+1,
+				    std::rand()%(corner.GetY()-1)+1);
+		      i=0;
+		    }
+		}
+	    }
 	}
       counter++;
       if(counter%35==0)
 	{
-	  draw();
 	  counter=0;
 	  snake.Move(snake.Dir());
 	}

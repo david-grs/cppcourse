@@ -73,3 +73,8 @@ bool Point::operator==(const Point& other) const
 {
   return mX == other.GetX() && mY == other.GetY();
 }
+
+bool Point::operator!=(const Point& other) const
+{
+  return !operator==(other);
+}

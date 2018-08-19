@@ -20,6 +20,7 @@ public:
 
 private:
 	bool mGameOver{false};
+	ci::ivec2 mFruit;
 	Snake mSnake;
 	Canvas mCanvas;
 };

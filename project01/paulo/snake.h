@@ -36,6 +36,8 @@ public:
 	void Draw(std::function<void(const ci::ivec2&)>);
 	void SetDirection(Direction);
 	std::experimental::optional<ci::ivec2> Move();
+	ci::ivec2 Head() const;
+	void Grow(const ci::ivec2& tail);
 
 private:
 	std::experimental::optional<ci::ivec2> mBounds;

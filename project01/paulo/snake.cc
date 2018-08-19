@@ -29,6 +29,16 @@ void Snake::SetDirection(Direction dir)
 	mDirection = dir;
 }
 
+ci::ivec2 Snake::Head() const
+{
+	return mBodyParts.front();
+}
+
+void Snake::Grow(const ci::ivec2& tail)
+{
+	mBodyParts.push_back(tail);
+}
+
 std::experimental::optional<ci::ivec2> Snake::Move()
 {
 	if (mDirection == Direction::None)

@@ -81,7 +81,10 @@ void Application::update()
 	auto dropped = mSnake.Move();
 	if (dropped)
 	{
-		// ...
+		if (mSnake.Head() == mFruit)
+		{
+			mSnake.Grow(*dropped);
+		}
 	}
 	else
 	{

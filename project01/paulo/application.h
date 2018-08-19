@@ -6,6 +6,7 @@
 class Application : public ci::app::App
 {
 public:
+	using Canvas = ci::Rectf;
 	Application();
 
 	void keyDown(ci::app::KeyEvent) override;
@@ -14,4 +15,7 @@ public:
 	void update() override;
 
 	static void prepareSettings(Settings*);
+
+private:
+	Canvas mCanvas;
 };

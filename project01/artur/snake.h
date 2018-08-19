@@ -1,5 +1,6 @@
 #include <vector>
 #include "point.h"
+#include "walls.h"
 
 class Snake
 {
@@ -9,14 +10,15 @@ class Snake
     {};
   
   void ChangeDirection(const Point&);
-  int Length();
-  Point Dir();
-  std::vector<Point> Body();
-  bool IsAlive(const Point&);
+  int Length() const;
+  Point Dir() const;
+  std::vector<Point> Body() const;
+  bool IsAlive(const Point&, const Walls&) const;
   void Move(const Point&);
   void Grow();
-  bool CheckWallsCollision(const Point&);
-  bool CheckSelfCollision();
+  bool CheckOutsideWallsCollision(const Point&) const;
+  bool CheckWallsCollision(const Walls&) const;
+  bool CheckSelfCollision() const;
   
  private:
   std::vector<Point> mBody;

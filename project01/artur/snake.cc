@@ -1,8 +1,6 @@
 #include "snake.h"
 #include <algorithm>
 
-#include <iostream>
-
 void Snake::ChangeDirection(const Point& dir)
 {
   if(!(-dir == Dir()))
@@ -11,22 +9,24 @@ void Snake::ChangeDirection(const Point& dir)
     }
 }
 
-bool Snake::IsAlive(const Point& corner)
+bool Snake::IsAlive(const Point& corner, const Walls& walls) const
 {
-  return !(CheckWallsCollision(corner) || CheckSelfCollision());
+  return !(CheckSelfCollision() ||
+	   CheckOutsideWallsCollision(corner) ||
+	   CheckWallsCollision(walls));
 }
 
-Point Snake::Dir()
+Point Snake::Dir() const
 {
   return mBody.end()[-1] - mBody.end()[-2];
 }
 
-int Snake::Length()
+int Snake::Length() const
 {
   return mBody.size();
 }
 
-std::vector<Point> Snake::Body()
+std::vector<Point> Snake::Body() const
 {
   return mBody;
 }
@@ -42,7 +42,7 @@ void Snake::Grow()
   mBody.insert(mBody.begin(),mBody.front());
 }
 
-bool Snake::CheckWallsCollision(const Point& corner)
+bool Snake::CheckOutsideWallsCollision(const Point& corner) const
 {
   int x = mBody.back().GetX();
   int y = mBody.back().GetY();
@@ -53,7 +53,19 @@ bool Snake::CheckWallsCollision(const Point& corner)
   return false;
 }
 
-bool Snake::CheckSelfCollision()
+bool Snake::CheckSelfCollision() const
 {
   return std::find(mBody.begin(), mBody.end()-1, mBody.back()) != mBody.end()-1;
+}
+
+bool Snake::CheckWallsCollision(const Walls& walls) const
+{
+  for(size_t i = 0; i < walls.Body().size(); ++i)
+    {
+      if(std::find(mBody.begin(), mBody.end(), walls.Body().at(i)) != mBody.end())
+	{
+	  return true;
+	}
+    }
+  return false;
 }

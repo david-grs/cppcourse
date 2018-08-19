@@ -52,7 +52,9 @@ void Application::setup()
   counter = 0;
   snake = Snake();
   fruit = Point(10,10);
-  corner = Point(16,16);
+  corner = Point(17,17);
+  walls = Walls({Point(2,2),Point(3,3),Point(14,14),Point(15,15),
+	Point(2,15),Point(3,14),Point(15,2),Point(14,3)});
 }
 
 void Application::draw()
@@ -60,14 +62,23 @@ void Application::draw()
   ci::gl::clear();
   ci::gl::color( ci::Color( 1, 1, 1 ) );
   ci::gl::drawSolidRect( ci::Rectf(0, 0, SIZE*corner.GetX(), HALF_SIZE ));
-  ci::gl::drawSolidRect( ci::Rectf(0, SIZE*corner.GetY()-HALF_SIZE, SIZE*corner.GetX(), SIZE*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(0, SIZE*corner.GetY()-HALF_SIZE,
+				   SIZE*corner.GetX(), SIZE*corner.GetY() ));
   ci::gl::drawSolidRect( ci::Rectf(0, 0, HALF_SIZE, SIZE*corner.GetY() ));
-  ci::gl::drawSolidRect( ci::Rectf(SIZE*corner.GetX()-HALF_SIZE, 0, SIZE*corner.GetX(), SIZE*corner.GetY() ));
+  ci::gl::drawSolidRect( ci::Rectf(SIZE*corner.GetX()-HALF_SIZE, 0,
+				   SIZE*corner.GetX(), SIZE*corner.GetY() ));
 
   for(int i = 0; i < snake.Length()-1; ++i)
     {
       Point p = snake.Body().at(i);
       ci::gl::drawSolidCircle( ci::vec2(SIZE*p.GetX(), SIZE*p.GetY()), HALF_SIZE);
+    }
+  for(size_t i = 0; i < walls.Body().size(); ++i)
+    {
+      Point p = walls.Body().at(i);
+      ci::gl::drawSolidRect( ci::Rectf(SIZE*p.GetX() - HALF_SIZE, SIZE*p.GetY() - HALF_SIZE,
+				       SIZE*p.GetX() + HALF_SIZE, SIZE*p.GetY() + HALF_SIZE)
+			     );
     }
   ci::gl::color( ci::Color( 1, 0, 0 ) );
   ci::gl::drawSolidCircle( ci::vec2(SIZE*snake.Body().back().GetX(),
@@ -82,7 +93,7 @@ void Application::update()
     {
       return;
     }
-  if(!snake.IsAlive(corner))
+  if(!snake.IsAlive(corner,walls))
     {
       running = false;
 
@@ -94,19 +105,36 @@ void Application::update()
       if(snake.Body().back() == fruit)
 	{
 	  snake.Grow();
-	  fruit = Point(std::rand()%(corner.GetX()-1)+1,
-			std::rand()%(corner.GetY()-1)+1);
-	  for(int rand_i = 0; rand_i < 10; ++rand_i)
+	  	  
+	  // Didn't manage to make it work with std::find
+	  for(int i = 0; i < 10; ++ i)
 	    {
-	      // Didn't manage to make it work with std::find
-	      for(int i = 0; i < snake.Length(); ++i)
+	      bool collision = false;
+	      
+	      fruit = Point(std::rand()%(corner.GetX()-1)+1,
+			    std::rand()%(corner.GetY()-1)+1);
+
+	      for(size_t j = 0; j < walls.Body().size(); ++j)
 		{
-		  if(snake.Body()[i] == fruit)
+		  if(walls.Body().at(j) == fruit)
 		    {
 		      fruit = Point(std::rand()%(corner.GetX()-1)+1,
 				    std::rand()%(corner.GetY()-1)+1);
-		      i=0;
+		      j = -1;
 		    }
+		}
+	      
+	      for(int j = 0; j < snake.Length(); ++j)
+		{
+		  if(snake.Body().at(j) == fruit)
+		    {
+		      collision = true;
+		      break;
+		    }
+		}
+	      if(!collision)
+		{
+		  break;
 		}
 	    }
 	}

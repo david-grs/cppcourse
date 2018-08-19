@@ -4,7 +4,12 @@
 class Walls
 {
  public:
-  std::vector<Point> Body() {return mBody;}
+  Walls()
+    {};
+ Walls(std::vector<Point> vec)
+   : mBody(vec)
+  {};
+  std::vector<Point> Body() const {return mBody;}
  private:
-  std::vector<Point> mBody();
-}
+  std::vector<Point> mBody;
+};

@@ -20,6 +20,7 @@ class Application : public ci::app::App
   bool running;
   int counter;
   Snake snake;
+  Walls walls;
   Point fruit;
   Point corner;
 };

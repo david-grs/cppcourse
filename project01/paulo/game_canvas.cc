@@ -25,13 +25,13 @@ void GameCanvas::Add(const ci::ivec2& point, const ci::Color& color)
 	ci::gl::drawSolidRect({upperLeft, bottomRight});
 }
 
-ci::ivec2 GameCanvas::GetRandomFreePoint()
+ci::ivec2 GameCanvas::GetRandomUnusedPoint()
 {
 	return ci::ivec2{0, 0};
 }
 
-void GameCanvas::SetUsed(const ci::ivec2&)
+void GameCanvas::Use(const ci::ivec2&)
 {}
 
-void GameCanvas::SetFree(const ci::ivec2&)
+void GameCanvas::Release(const ci::ivec2&)
 {}

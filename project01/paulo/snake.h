@@ -13,6 +13,7 @@ class Snake
 {
 public:
 	explicit Snake(GameCanvas&);
+	~Snake();
 
 	void Draw();
 	void SetDirection(Direction);

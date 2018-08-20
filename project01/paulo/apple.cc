@@ -7,13 +7,13 @@ static const ci::Color AppleColor{ci::Color::hex(0xDA1205)};
 Apple::Apple(GameCanvas& canvas) :
   mCanvas(canvas)
 {
-  mLocation = mCanvas.GetRandomFreePoint();
-  mCanvas.SetUsed(mLocation);
+  mLocation = mCanvas.GetRandomUnusedPoint();
+  mCanvas.Use(mLocation);
 }
 
 Apple::~Apple()
 {
-  mCanvas.SetFree(mLocation);
+  mCanvas.Release(mLocation);
 }
 
 void Apple::Draw()

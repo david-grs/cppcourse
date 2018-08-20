@@ -7,7 +7,13 @@ static const ci::Color SnakeColor{ci::Color::hex(0x0B7B10)};
 Snake::Snake(GameCanvas& canvas) :
 	mCanvas(canvas)
 {
-	GrowTail(mCanvas.GetRandomFreePoint());
+	GrowTail(mCanvas.GetRandomUnusedPoint());
+}
+
+Snake::~Snake()
+{
+	for (const auto& part : mBodyParts)
+		mCanvas.Release(part);
 }
 
 void Snake::Draw()
@@ -32,7 +38,7 @@ const ci::ivec2& Snake::Head() const
 
 void Snake::GrowTail(const ci::ivec2& tail)
 {
-	mCanvas.SetUsed(tail);
+	mCanvas.Use(tail);
 	mBodyParts.push_back(tail);
 }
 
@@ -59,9 +65,9 @@ std::experimental::optional<ci::ivec2> Snake::Move()
 		}
 	}
 
-	mCanvas.SetFree(tail);
+	mCanvas.Release(tail);
 
-	mCanvas.SetUsed(newHead);
+	mCanvas.Use(newHead);
 	mBodyParts.push_front(newHead);
 	return tail;
 }

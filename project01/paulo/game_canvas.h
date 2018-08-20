@@ -13,9 +13,9 @@ public:
   int GetWidth() const { return mWidth; }
   int GetHeight() const { return mHeight; }
 
-  ci::ivec2 GetRandomFreePoint();
-  void SetUsed(const ci::ivec2&);
-  void SetFree(const ci::ivec2&);
+  ci::ivec2 GetRandomUnusedPoint();
+  void Use(const ci::ivec2&);
+  void Release(const ci::ivec2&);
 
 private:
   const ci::ivec2 mCanvasDelta;

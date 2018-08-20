@@ -21,6 +21,8 @@ set(SOURCES
 	direction.cc
 	game_canvas.h
 	game_canvas.cc
+	game_status.h
+	game_status.cc
 	snake.h
 	snake.cc
 	apple.h

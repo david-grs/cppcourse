@@ -1,5 +1,10 @@
 #include "game_canvas.h"
 
+#include <random>
+
+static std::random_device RandomDevice;
+static std::mt19937 RandomEngine(RandomDevice());
+
 GameCanvas::GameCanvas(ci::ivec2 canvasDelta, int width, int height, int pointSize) :
 	mCanvasDelta(canvasDelta),
 	mWidth(width),
@@ -9,6 +14,9 @@ GameCanvas::GameCanvas(ci::ivec2 canvasDelta, int width, int height, int pointSi
 	const ci::ivec2 canvasSize{width, height};
 	const ci::ivec2 bottomRight = mCanvasDelta + mPointSize * canvasSize;
 	mCanvas = ci::Rectf{mCanvasDelta, bottomRight};
+
+	mUsedCount = std::vector<int>(width * height, 0);
+	mTotalUsed = 0;
 }
 
 void GameCanvas::Clear()
@@ -25,13 +33,31 @@ void GameCanvas::Add(const ci::ivec2& point, const ci::Color& color)
 	ci::gl::drawSolidRect({upperLeft, bottomRight});
 }
 
-ci::ivec2 GameCanvas::GetRandomUnusedPoint()
+ci::ivec2 GameCanvas::GetRandomUnusedPoint() const
 {
-	return ci::ivec2{0, 0};
+	std::uniform_int_distribution<> getUniforIndices(1, mUsedCount.size() - mTotalUsed);
+	int freeIdx = getUniforIndices(RandomEngine);
+	int actualIdx = 0;
+
+	while (mUsedCount[actualIdx] || freeIdx)
+	{
+		freeIdx -= mUsedCount[actualIdx] == 0;
+		++actualIdx;
+	}
+
+	return IndexToPoint(actualIdx);
 }
 
-void GameCanvas::Use(const ci::ivec2&)
-{}
+void GameCanvas::Use(const ci::ivec2& pt)
+{
+	const int id = PointToIndex(pt);
+	if (!mUsedCount[id]) ++mTotalUsed;
+	mUsedCount[id]++;
+}
 
-void GameCanvas::Release(const ci::ivec2&)
-{}
+void GameCanvas::Release(const ci::ivec2& pt)
+{
+	const int id = PointToIndex(pt);
+	mUsedCount[id]--;
+	if (!mUsedCount[id]) --mTotalUsed;
+}

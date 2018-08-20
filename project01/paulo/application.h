@@ -1,10 +1,11 @@
 #pragma once
 
-#include "game_canvas.h"
-#include "snake.h"
-
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
+
+class GameCanvas;
+class Snake;
+class Apple;
 
 class Application : public ci::app::App
 {
@@ -20,7 +21,7 @@ public:
 
 private:
 	bool mGameOver{false};
-	ci::ivec2 mFruit;
 	std::unique_ptr<GameCanvas> mCanvas;
 	std::unique_ptr<Snake> mSnake;
+	std::unique_ptr<Apple> mApple;
 };

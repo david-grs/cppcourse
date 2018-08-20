@@ -1,5 +1,9 @@
 #include "application.h"
 
+#include "apple.h"
+#include "snake.h"
+#include "game_canvas.h"
+
 #include <cinder/gl/gl.h>
 
 static const cinder::ivec2 WindowSize{640, 480};
@@ -55,6 +59,7 @@ void Application::setup()
 
 	mCanvas = std::make_unique<GameCanvas>(upperLeft, width, height, SquareLength);
 	mSnake = std::make_unique<Snake>(*mCanvas);
+	mApple = std::make_unique<Apple>(*mCanvas);
 }
 
 void Application::draw()
@@ -62,18 +67,20 @@ void Application::draw()
 	ci::gl::clear();
 	mCanvas->Clear();
 	mSnake->Draw();
+	mApple->Draw();
 
 	ci::gl::drawString("Score: --", Score.Baseline, Score.Color, Score.Font);
 }
 
 void Application::update()
 {
-	auto dropped = mSnake->Move();
-	if (dropped)
+	auto oldTail = mSnake->Move();
+	if (oldTail)
 	{
-		if (mSnake->Head() == mFruit)
+		if (mSnake->Head() == mApple->Location())
 		{
-			mSnake->GrowTail(*dropped);
+			mSnake->GrowTail(*oldTail);
+			mApple = std::make_unique<Apple>(*mCanvas);
 		}
 	}
 	else

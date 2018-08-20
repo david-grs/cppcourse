@@ -23,6 +23,8 @@ set(SOURCES
 	game_canvas.cc
 	snake.h
 	snake.cc
+	apple.h
+	apple.cc
 )
 
 ci_make_app(

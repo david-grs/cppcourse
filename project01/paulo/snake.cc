@@ -1,24 +1,20 @@
 #include "snake.h"
 
-Snake::Snake() : Snake(std::experimental::nullopt) {}
-Snake::Snake(std::experimental::optional<ci::ivec2> bounds) :
-	mBounds(bounds)
+#include "game_canvas.h"
+
+static const ci::Color SnakeColor{ci::Color::hex(0x0B7B10)};
+
+Snake::Snake(GameCanvas& canvas) :
+	mCanvas(canvas)
 {
-	if (mBounds)
-	{
-		mBodyParts.emplace_back((*mBounds).x/2, (*mBounds).y/2);
-	}
-	else
-	{
-		mBodyParts.emplace_back(0, 0);
-	}
+	GrowTail(mCanvas.GetRandomFreePoint());
 }
 
-void Snake::Draw(std::function<void(const ci::ivec2&)> drawPoint)
+void Snake::Draw()
 {
 	for (const auto& part : mBodyParts)
 	{
-		drawPoint(part);
+		mCanvas.Add(part, SnakeColor);
 	}
 }
 
@@ -29,35 +25,27 @@ void Snake::SetDirection(Direction dir)
 	mDirection = dir;
 }
 
-ci::ivec2 Snake::Head() const
+const ci::ivec2& Snake::Head() const
 {
 	return mBodyParts.front();
 }
 
-void Snake::Grow(const ci::ivec2& tail)
+void Snake::GrowTail(const ci::ivec2& tail)
 {
+	mCanvas.SetUsed(tail);
 	mBodyParts.push_back(tail);
 }
 
 std::experimental::optional<ci::ivec2> Snake::Move()
 {
 	if (mDirection == Direction::None)
+	{
 		return std::experimental::nullopt;
+	}
 
-	ci::ivec2 newHead = mBodyParts.front();
-	switch(mDirection)
-	{
-		case Direction::Up: newHead += ci::ivec2{0, -1}; break;
-		case Direction::Down: newHead += ci::ivec2{0, 1}; break;
-		case Direction::Left: newHead += ci::ivec2{-1, 0}; break;
-		case Direction::Right: newHead += ci::ivec2{1, 0}; break;
-		default: throw std::runtime_error("unexpected direction on Move");
-	}
-	if (mBounds)
-	{
-		newHead.x = (newHead.x + (*mBounds).x) % (*mBounds).x;
-		newHead.y = (newHead.y + (*mBounds).y) % (*mBounds).y;
-	}
+	ci::ivec2 newHead = mBodyParts.front() + ToVector(mDirection);
+	newHead.x = (newHead.x + mCanvas.GetWidth()) % mCanvas.GetWidth();
+	newHead.y = (newHead.y + mCanvas.GetHeight()) % mCanvas.GetHeight();
 
 	auto tail = mBodyParts.back();
 	mBodyParts.pop_back();
@@ -71,6 +59,9 @@ std::experimental::optional<ci::ivec2> Snake::Move()
 		}
 	}
 
+	mCanvas.SetFree(tail);
+
+	mCanvas.SetUsed(newHead);
 	mBodyParts.push_front(newHead);
 	return tail;
 }

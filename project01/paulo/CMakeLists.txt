@@ -17,6 +17,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${cxx_compile_options}")
 set(SOURCES
 	application.h
 	application.cc
+	direction.h
+	direction.cc
+	game_canvas.h
+	game_canvas.cc
 	snake.h
 	snake.cc
 )

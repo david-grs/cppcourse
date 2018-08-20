@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game_canvas.h"
 #include "snake.h"
 
 #include <cinder/app/App.h>
@@ -8,7 +9,6 @@
 class Application : public ci::app::App
 {
 public:
-	using Canvas = ci::Rectf;
 	Application();
 
 	void keyDown(ci::app::KeyEvent) override;
@@ -21,6 +21,6 @@ public:
 private:
 	bool mGameOver{false};
 	ci::ivec2 mFruit;
-	Snake mSnake;
-	Canvas mCanvas;
+	std::unique_ptr<GameCanvas> mCanvas;
+	std::unique_ptr<Snake> mSnake;
 };

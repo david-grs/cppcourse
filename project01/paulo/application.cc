@@ -29,16 +29,16 @@ void Application::keyDown(ci::app::KeyEvent event)
 	switch (event.getCode())
 	{
 		case KeyEvent::KEY_UP:
-			mSnake.SetDirection(Direction::Up);
+			mSnake->SetDirection(Direction::Up);
 			break;
 		case KeyEvent::KEY_DOWN:
-			mSnake.SetDirection(Direction::Down);
+			mSnake->SetDirection(Direction::Down);
 			break;
 		case KeyEvent::KEY_RIGHT:
-			mSnake.SetDirection(Direction::Right);
+			mSnake->SetDirection(Direction::Right);
 			break;
 		case KeyEvent::KEY_LEFT:
-			mSnake.SetDirection(Direction::Left);
+			mSnake->SetDirection(Direction::Left);
 			break;
 
 		case KeyEvent::KEY_ESCAPE:
@@ -51,39 +51,29 @@ void Application::setup()
 {
 	const int width = (WindowSize.x - 2*Score.Font.getSize()) / SquareLength;
 	const int height = (WindowSize.y - 2*Score.Font.getSize()) / SquareLength;
-	const ci::ivec2 scaledBounds{width, height};
-
 	const ci::ivec2 upperLeft{Score.Font.getSize(), Score.Font.getSize()};
-	const ci::ivec2 bottomRight = upperLeft + SquareLength * scaledBounds;
-	mCanvas = Canvas{upperLeft, bottomRight};
-	mSnake = Snake{scaledBounds};
+
+	mCanvas = std::make_unique<GameCanvas>(upperLeft, width, height, SquareLength);
+	mSnake = std::make_unique<Snake>(*mCanvas);
 }
 
 void Application::draw()
 {
 	ci::gl::clear();
-	ci::gl::color(ci::Color::white());
-	ci::gl::drawSolidRect(mCanvas);
-
-	ci::gl::color(ci::Color::hex(0x0B7B10));
-	mSnake.Draw([origin=mCanvas.getUpperLeft()](const ci::ivec2& point)
-	{
-		const ci::ivec2 upperLeft = SquareLength * point + ci::ivec2{origin.x, origin.y};
-		const ci::ivec2 bottomRight = upperLeft + ci::ivec2{SquareLength, SquareLength};
-		ci::gl::drawSolidRect({upperLeft, bottomRight});
-	});
+	mCanvas->Clear();
+	mSnake->Draw();
 
 	ci::gl::drawString("Score: --", Score.Baseline, Score.Color, Score.Font);
 }
 
 void Application::update()
 {
-	auto dropped = mSnake.Move();
+	auto dropped = mSnake->Move();
 	if (dropped)
 	{
-		if (mSnake.Head() == mFruit)
+		if (mSnake->Head() == mFruit)
 		{
-			mSnake.Grow(*dropped);
+			mSnake->GrowTail(*dropped);
 		}
 	}
 	else

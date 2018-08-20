@@ -11,6 +11,7 @@ public:
 
   void Clear();
   void Add(const ci::ivec2&, const ci::Color&);
+  void ShowMessage(const std::string& /*message*/, const ci::Color&) const;
 
   int GetWidth() const { return mWidth; }
   int GetHeight() const { return mHeight; }

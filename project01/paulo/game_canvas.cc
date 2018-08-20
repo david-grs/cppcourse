@@ -25,6 +25,14 @@ void GameCanvas::Clear()
 	ci::gl::drawSolidRect(mCanvas);
 }
 
+void GameCanvas::ShowMessage(const std::string& message, const ci::Color& color) const
+{
+	ci::gl::color(color);
+	ci::gl::drawSolidRect(mCanvas);
+	ci::ivec2 messageBaseline = mCanvasDelta + mPointSize * ci::ivec2{mWidth/2, mHeight/2};
+	ci::gl::drawStringCentered(message, messageBaseline, ci::Color::black(), ci::Font{"Courier", static_cast<float>(1.4 * mPointSize)});
+}
+
 void GameCanvas::Add(const ci::ivec2& point, const ci::Color& color)
 {
 	const ci::ivec2 upperLeft = mCanvasDelta + mPointSize * point;

@@ -27,7 +27,7 @@ String::String(const char* other):
 		mCapacity((mLength * 2) + 1),
 		mData(std::make_unique<char[]>(mCapacity))
 {
-	for(int i = 0; i < mLength; ++i)
+	for(uint i = 0; i < mLength; ++i)
 	{
 		mData[i] = other[i];
 	}

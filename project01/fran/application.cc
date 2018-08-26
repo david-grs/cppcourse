@@ -1,6 +1,6 @@
 #include "application.h"
 
-static const cinder::ivec2 WindowSize{640, 480};
+static const cinder::ivec2 WindowSize{800, 600};
 
 Application::Application()
 {}
@@ -8,7 +8,7 @@ Application::Application()
 void Application::prepareSettings(Settings* settings)
 {
 	settings->setWindowSize(WindowSize);
-	settings->setFrameRate(35.0f);
+	settings->setFrameRate(15.0f);
 	settings->setResizable(false);
 	settings->setFullScreen(false);
 }
@@ -71,6 +71,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
 void Application::setup()
 {
     mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
+    mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
 }
 
 void Application::draw()
@@ -79,7 +80,9 @@ void Application::draw()
 
     cinder::gl::setMatricesWindow( cinder::app::getWindowSize() );
     cinder::gl::enableAlphaBlending();
-    cinder::gl::clear( cinder::Color( 0, 0, 0 ) );
+    auto bounds = getWindowBounds();
+
+    mSnake.Draw();
 
     cinder::gl::color( cinder::ColorA( 1, 0.9f, 0.25f, 1.0f ) );
 
@@ -89,22 +92,28 @@ void Application::draw()
 }
 
 void Application::update()
-{}
+{
+    mSnake.Update(mDirectionOffset);
+}
 
 void Application::ChangeDirectionUp()
 {
+    mDirectionOffset = UP_OFFSET;
     mDisplayString = "UP";
 }
 void Application::ChangeDirectionDown()
 {
+    mDirectionOffset = DOWN_OFFSET;
     mDisplayString = "DOWN";
 }
 void Application::ChangeDirectionLeft()
 {
+    mDirectionOffset = LEFT_OFFSET;
     mDisplayString = "LEFT";
 }
 void Application::ChangeDirectionRight()
 {
+    mDirectionOffset = RIGHT_OFFSET;
     mDisplayString = "RIGHT";
 }
 

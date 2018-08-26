@@ -11,16 +11,15 @@ class Snake
 public:
     Snake();
 
-    void Update(const cinder::vec2& offset);
+    void Update();
     void Draw();
-    void SetDirection();
+    void SetDirection(const cinder::vec2& directionOffset);
     void SetInitialPosition(float width, float height);
 
 private:
-    int mLength = 1;
-    float mRadius = 2.0f;
+    int mLength = 5;
+    float mRadius = 10.0f;
+    cinder::vec2 mCurrentDirection;
     std::vector<Segment> mSegments;
-
-    std::mt19937 mEng;
 };
 

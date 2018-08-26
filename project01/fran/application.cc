@@ -93,28 +93,48 @@ void Application::draw()
 
 void Application::update()
 {
-    mSnake.Update(mDirectionOffset);
+    mSnake.Update();
 }
 
 void Application::ChangeDirectionUp()
 {
-    mDirectionOffset = UP_OFFSET;
-    mDisplayString = "UP";
+    if (mDirectionOffset != DOWN_OFFSET)
+    {
+        mDirectionOffset = UP_OFFSET;
+        mDisplayString = "UP";
+    }
+
+    mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionDown()
 {
-    mDirectionOffset = DOWN_OFFSET;
-    mDisplayString = "DOWN";
+    if (mDirectionOffset != UP_OFFSET)
+    {
+        mDirectionOffset = DOWN_OFFSET;
+        mDisplayString = "DOWN";
+    }
+
+    mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionLeft()
 {
-    mDirectionOffset = LEFT_OFFSET;
-    mDisplayString = "LEFT";
+    if (mDirectionOffset != RIGHT_OFFSET)
+    {
+        mDirectionOffset = LEFT_OFFSET;
+        mDisplayString = "LEFT";
+    }
+
+    mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionRight()
 {
-    mDirectionOffset = RIGHT_OFFSET;
-    mDisplayString = "RIGHT";
+    if (mDirectionOffset != LEFT_OFFSET)
+    {
+        mDirectionOffset = RIGHT_OFFSET;
+        mDisplayString = "RIGHT";
+    }
+
+    mSnake.SetDirection(mDirectionOffset);
 }
 
 CINDER_APP(Application, ci::app::RendererGl(ci::app::RendererGl::Options().msaa(16)), &Application::prepareSettings)

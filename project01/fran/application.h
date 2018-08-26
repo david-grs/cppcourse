@@ -9,10 +9,10 @@ class Application : public ci::app::App
 {
 public:
     const std::string FULL_SCREEN_MESSAGE = "Full screen mode, Esc to exit full screen, or use F11 to toggle on/off.";
-    const cinder::vec2 UP_OFFSET = cinder::vec2(0.0f, -4.0f);
-    const cinder::vec2 DOWN_OFFSET = cinder::vec2(0.0f, 4.0f);
-    const cinder::vec2 LEFT_OFFSET = cinder::vec2(-4.0f, 0.0f);
-    const cinder::vec2 RIGHT_OFFSET = cinder::vec2(4.0f, 0.0f);
+    const cinder::vec2 UP_OFFSET = cinder::vec2(0.0f, -1.0f);
+    const cinder::vec2 DOWN_OFFSET = cinder::vec2(0.0f, 1.0f);
+    const cinder::vec2 LEFT_OFFSET = cinder::vec2(-1.0f, 0.0f);
+    const cinder::vec2 RIGHT_OFFSET = cinder::vec2(1.0f, 0.0f);
 	Application();
 
 	void keyDown(ci::app::KeyEvent) override;

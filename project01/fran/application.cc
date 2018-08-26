@@ -2,7 +2,8 @@
 
 static const cinder::ivec2 WindowSize{800, 600};
 
-Application::Application()
+Application::Application():
+		mSnake(STARTING_LENGTH)
 {}
 
 void Application::prepareSettings(Settings* settings)
@@ -44,6 +45,12 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
                 mDisplayString = FULL_SCREEN_MESSAGE;
                 cinder::app::setFullScreen(true);
             }
+            if (mGameOver)
+			{
+                mSnake = Snake(STARTING_LENGTH);
+                mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+                mGameOver = false;
+			}
             break;
         }
         case keyEvent.KEY_ESCAPE:
@@ -54,7 +61,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
                 mDisplayString = "SNAKE";
             }
             else
-                {
+            {
                 quit();
             }
             break;
@@ -71,7 +78,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
 void Application::setup()
 {
     mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
-    mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
 }
 
 void Application::draw()
@@ -80,11 +87,10 @@ void Application::draw()
 
     cinder::gl::setMatricesWindow( cinder::app::getWindowSize() );
     cinder::gl::enableAlphaBlending();
-    auto bounds = getWindowBounds();
 
     mSnake.Draw();
 
-    cinder::gl::color( cinder::ColorA( 1, 0.9f, 0.25f, 1.0f ) );
+    cinder::gl::color( cinder::ColorA( 1, 0.8f, 0.25f, 1.0f ) );
 
     cinder::vec2 offset = cinder::vec2( 0 );
     auto renderSize = mTextureFontRef->measureString(mDisplayString);
@@ -93,7 +99,15 @@ void Application::draw()
 
 void Application::update()
 {
-    mSnake.Update();
+    if (mGameOver)
+    {
+        mDisplayString = "GAME OVER (hit enter to begin again)";
+    }
+    else
+    {
+        mSnake.Update();
+		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight());
+    }
 }
 
 void Application::ChangeDirectionUp()

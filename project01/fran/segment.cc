@@ -19,3 +19,13 @@ const cinder::vec2& Segment::GetPosition()
 {
     return mPosition;
 }
+
+bool Segment::IsCollidingWithWindow(float width, float height)
+{
+    if( mPosition.x < ( 0.0f + mRadius ) || mPosition.x > ( width - mRadius ) )
+        return true;
+    if( mPosition.y > ( height - mRadius ) )
+        return true;
+
+    return false;
+}

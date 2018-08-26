@@ -9,15 +9,16 @@
 class Snake
 {
 public:
-    Snake();
+    Snake(int length);
 
     void Update();
     void Draw();
     void SetDirection(const cinder::vec2& directionOffset);
     void SetInitialPosition(float width, float height);
+    bool IsCollidingWithWindow(float width, float height);
 
 private:
-    int mLength = 5;
+    int mLength;
     float mRadius = 10.0f;
     cinder::vec2 mCurrentDirection;
     std::vector<Segment> mSegments;

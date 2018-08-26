@@ -10,6 +10,7 @@ public:
     void Draw();
 
     const cinder::vec2& GetPosition();
+    bool IsCollidingWithWindow(float width, float height);
 
 private:
     cinder::vec2 mPosition;

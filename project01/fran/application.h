@@ -13,6 +13,8 @@ public:
     const cinder::vec2 DOWN_OFFSET = cinder::vec2(0.0f, 1.0f);
     const cinder::vec2 LEFT_OFFSET = cinder::vec2(-1.0f, 0.0f);
     const cinder::vec2 RIGHT_OFFSET = cinder::vec2(1.0f, 0.0f);
+    const int STARTING_LENGTH = 5;
+
 	Application();
 
 	void keyDown(ci::app::KeyEvent) override;
@@ -24,10 +26,11 @@ public:
 
 private:
     cinder::gl::TextureFontRef mTextureFontRef;
-    std::string mDisplayString = "SNAKE";
+    std::string mDisplayString = "SNAKE (hit enter to begin)";
     Snake mSnake;
-    int mSnakeLength = 1;
+    int mSnakeLength = STARTING_LENGTH;
     cinder::vec2 mDirectionOffset = UP_OFFSET;
+    bool mGameOver = false;
 
     void ChangeDirectionUp();
     void ChangeDirectionDown();

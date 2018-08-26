@@ -1,7 +1,8 @@
 #include "snake.h"
 #include "cinder/Rand.h"
 
-Snake::Snake()
+Snake::Snake(int length):
+		mLength(length)
 {}
 
 void Snake::Update()
@@ -42,4 +43,9 @@ void Snake::SetInitialPosition(float width, float height)
         currentSegment = mSegments.back();
     }
 
+}
+
+bool Snake::IsCollidingWithWindow(float width, float height)
+{
+    return mSegments[0].IsCollidingWithWindow(width, height);
 }

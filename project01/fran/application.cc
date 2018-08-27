@@ -3,7 +3,8 @@
 static const cinder::ivec2 WindowSize{800, 600};
 
 Application::Application():
-		mSnake(STARTING_LENGTH)
+		mSnake(STARTING_LENGTH, ELEMENT_RADIUS),
+		mFood(ELEMENT_RADIUS)
 {}
 
 void Application::prepareSettings(Settings* settings)
@@ -47,8 +48,10 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
             }
             if (mGameOver)
 			{
-                mSnake = Snake(STARTING_LENGTH);
+                mSnake = Snake(STARTING_LENGTH, ELEMENT_RADIUS);
                 mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+                mFood.Respawn(getWindowWidth(), getWindowHeight());
+                mDisplayString = GAME_TITLE;
                 mGameOver = false;
 			}
             break;
@@ -58,7 +61,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
             if (isFullScreen())
             {
                 setFullScreen(false);
-                mDisplayString = "SNAKE";
+                mDisplayString = GAME_TITLE;
             }
             else
             {
@@ -79,6 +82,7 @@ void Application::setup()
 {
     mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
 	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+	mFood.Respawn(getWindowWidth(), getWindowHeight());
 }
 
 void Application::draw()
@@ -88,13 +92,15 @@ void Application::draw()
     cinder::gl::setMatricesWindow( cinder::app::getWindowSize() );
     cinder::gl::enableAlphaBlending();
 
+    mFood.Draw();
+
     mSnake.Draw();
 
-    cinder::gl::color( cinder::ColorA( 1, 0.8f, 0.25f, 1.0f ) );
+    //cinder::gl::color( cinder::ColorA( 1, 0.8f, 0.25f, 1.0f ) );
 
-    cinder::vec2 offset = cinder::vec2( 0 );
+	cinder::gl::color(cinder::Color(0.9f, 1.0f, 1.0f));
     auto renderSize = mTextureFontRef->measureString(mDisplayString);
-    mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent() ) + offset);
+    mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent()));
 }
 
 void Application::update()
@@ -105,8 +111,19 @@ void Application::update()
     }
     else
     {
+    	mFood.Update(getElapsedSeconds());
         mSnake.Update();
+        if (mSnake.IsCollidingWith(mFood.GetPosition()))
+		{
+        	mSnakeLength++;
+        	mSnake = Snake(mSnakeLength, ELEMENT_RADIUS);
+        	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+			mSnake.SetDirection(mDirectionOffset);
+			mFood.Respawn(getWindowWidth(), getWindowHeight());
+			return;
+		}
 		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight());
+        mSnakeLength = STARTING_LENGTH;
     }
 }
 

@@ -1,31 +1,44 @@
-#include "segment.h"
+#include "food.h"
+#include "cinder/Rand.h"
 
-Segment::Segment(const cinder::vec2& startingPosition, float radius):
-        mPosition(startingPosition),
+Food::Food(float radius):
         mRadius(radius)
 {}
 
-void Segment::Update(const cinder::vec2& newPosition)
+void Food::Update(double elapsedSeconds)
 {
-    mPosition = newPosition;
+    mAnimateOffset = cinder::vec2(cos(elapsedSeconds) * mRadius, sin(elapsedSeconds) * mRadius);
 }
 
-void Segment::Draw()
+void Food::Draw()
 {
-    cinder::gl::drawSolidCircle(mPosition, mRadius);
+	// A Tasty Flower for a very hungry catepillar
+	cinder::gl::color(cinder::Color(0.0f, 1.0f, 0.0f));
+	cinder::gl::drawLine(mPosition + mAnimateOffset, mPosition + cinder::vec2(0, 20));
+
+	cinder::gl::color(cinder::Color(0.0f, 0.0f, 1.0f));
+	cinder::gl::drawSolidCircle(mPosition + mAnimateOffset + cinder::vec2(10 - mRadius / 2, 0.0f - mRadius / 2), mRadius / 1.5);
+	cinder::gl::drawSolidCircle(mPosition + mAnimateOffset + cinder::vec2(0  - mRadius / 2, 10 - (mRadius / 2)), mRadius / 1.5);
+	cinder::gl::drawSolidCircle(mPosition + mAnimateOffset + cinder::vec2(10 - mRadius / 2, 10 - (mRadius / 2)), mRadius / 1.5);
+	cinder::gl::drawSolidCircle(mPosition + mAnimateOffset + cinder::vec2(0 - mRadius / 2, 0 - (mRadius / 2)), mRadius / 1.5);
+
+	cinder::gl::color(cinder::Color(0.9f, 1.0f, 1.0f));
+	cinder::gl::drawStrokedCircle(mPosition + mAnimateOffset + cinder::vec2(10 - mRadius / 2, 0.0f - mRadius / 2), mRadius / 1.5);
+	cinder::gl::drawStrokedCircle(mPosition + mAnimateOffset + cinder::vec2(0  - mRadius / 2, 10 - (mRadius / 2)), mRadius / 1.5);
+	cinder::gl::drawStrokedCircle(mPosition + mAnimateOffset + cinder::vec2(10 - mRadius / 2, 10 - (mRadius / 2)), mRadius / 1.5);
+	cinder::gl::drawStrokedCircle(mPosition + mAnimateOffset + cinder::vec2(0 - mRadius / 2, 0 - (mRadius / 2)), mRadius / 1.5);
+	cinder::gl::drawSolidCircle(mPosition + mAnimateOffset, mRadius / 2);
+
+
 }
 
-const cinder::vec2& Segment::GetPosition()
+const cinder::vec2& Food::GetPosition()
 {
     return mPosition;
 }
 
-bool Segment::IsCollidingWithWindow(float width, float height)
+void Food::Respawn(float width, float height)
 {
-    if( mPosition.x < ( 0.0f + mRadius ) || mPosition.x > ( width - mRadius ) )
-        return true;
-    if( mPosition.y > ( height - mRadius ) )
-        return true;
-
-    return false;
+	mPosition = cinder::vec2(cinder::Rand::randFloat( mRadius, width - mRadius * 2 ),
+			cinder::Rand::randFloat( mRadius, height - mRadius * 2 ));
 }

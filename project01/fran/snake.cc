@@ -1,8 +1,9 @@
 #include "snake.h"
 #include "cinder/Rand.h"
 
-Snake::Snake(int length):
-		mLength(length)
+Snake::Snake(int length, float radius):
+		mLength(length),
+		mRadius(radius)
 {}
 
 void Snake::Update()
@@ -30,8 +31,8 @@ void Snake::SetDirection(const cinder::vec2& directionOffset)
 
 void Snake::SetInitialPosition(float width, float height)
 {
-    Segment head = Segment(cinder::vec2(cinder::Rand::randFloat( mRadius, height ),
-            cinder::Rand::randFloat( mRadius, width )),
+    Segment head = Segment(cinder::vec2(cinder::Rand::randFloat( mRadius, width - mRadius * 2),
+            cinder::Rand::randFloat( mRadius, height - mRadius * 2)),
                     mRadius);
     mSegments.push_back(head);
 
@@ -43,6 +44,12 @@ void Snake::SetInitialPosition(float width, float height)
         currentSegment = mSegments.back();
     }
 
+}
+
+bool Snake::IsCollidingWith(const cinder::vec2& position)
+{
+	cinder::vec2 distanceBetweenCenters = mSegments[0].GetPosition() - position;
+	return distanceBetweenCenters.x <= mRadius && distanceBetweenCenters.y <= mRadius;
 }
 
 bool Snake::IsCollidingWithWindow(float width, float height)

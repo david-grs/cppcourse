@@ -32,7 +32,6 @@ private:
     std::string mDisplayString = GAME_TITLE + " (hit enter to begin)";
     Snake mSnake;
     Food mFood;
-    int mSnakeLength = STARTING_LENGTH;
     cinder::vec2 mDirectionOffset = UP_OFFSET;
     bool mGameOver = false;
 
@@ -40,4 +39,6 @@ private:
     void ChangeDirectionDown();
     void ChangeDirectionLeft();
     void ChangeDirectionRight();
+	const cinder::vec2& GetSafeStartingDirection(const cinder::vec2& startingPosition);
+    void StartNewGame();
 };

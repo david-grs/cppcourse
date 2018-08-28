@@ -48,11 +48,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
             }
             if (mGameOver)
 			{
-                mSnake = Snake(STARTING_LENGTH, ELEMENT_RADIUS);
-                mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
-                mFood.Respawn(getWindowWidth(), getWindowHeight());
-                mDisplayString = GAME_TITLE;
-                mGameOver = false;
+                StartNewGame();
 			}
             break;
         }
@@ -101,6 +97,9 @@ void Application::draw()
 	cinder::gl::color(cinder::Color(0.9f, 1.0f, 1.0f));
     auto renderSize = mTextureFontRef->measureString(mDisplayString);
     mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent()));
+
+	//cinder::gl::color(cinder::Color(1.0f, 0.0f, 0.0f));
+	//cinder::gl::drawStrokedCircle(mFood.GetOffsetPosition(), ELEMENT_RADIUS); // debug collision detection
 }
 
 void Application::update()
@@ -113,17 +112,14 @@ void Application::update()
     {
     	mFood.Update(getElapsedSeconds());
         mSnake.Update();
-        if (mSnake.IsCollidingWith(mFood.GetPosition()))
+        if (mSnake.HeadIsCollidingWith(mFood.GetPosition()))
 		{
-        	mSnakeLength++;
-        	mSnake = Snake(mSnakeLength, ELEMENT_RADIUS);
-        	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
-			mSnake.SetDirection(mDirectionOffset);
-			mFood.Respawn(getWindowWidth(), getWindowHeight());
-			return;
+        	++mSnake;
+        	mFood.Respawn(getWindowWidth(), getWindowHeight());
 		}
-		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight());
-        mSnakeLength = STARTING_LENGTH;
+
+		mDisplayString = "LEVEL " + std::to_string(mSnake.GetLength() - STARTING_LENGTH + 1);
+		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight()) || mSnake.HeadIsCollidingWithSelf();
     }
 }
 
@@ -132,7 +128,6 @@ void Application::ChangeDirectionUp()
     if (mDirectionOffset != DOWN_OFFSET)
     {
         mDirectionOffset = UP_OFFSET;
-        mDisplayString = "UP";
     }
 
     mSnake.SetDirection(mDirectionOffset);
@@ -142,7 +137,6 @@ void Application::ChangeDirectionDown()
     if (mDirectionOffset != UP_OFFSET)
     {
         mDirectionOffset = DOWN_OFFSET;
-        mDisplayString = "DOWN";
     }
 
     mSnake.SetDirection(mDirectionOffset);
@@ -152,7 +146,6 @@ void Application::ChangeDirectionLeft()
     if (mDirectionOffset != RIGHT_OFFSET)
     {
         mDirectionOffset = LEFT_OFFSET;
-        mDisplayString = "LEFT";
     }
 
     mSnake.SetDirection(mDirectionOffset);
@@ -162,10 +155,41 @@ void Application::ChangeDirectionRight()
     if (mDirectionOffset != LEFT_OFFSET)
     {
         mDirectionOffset = RIGHT_OFFSET;
-        mDisplayString = "RIGHT";
     }
 
     mSnake.SetDirection(mDirectionOffset);
+}
+
+const cinder::vec2& Application::GetSafeStartingDirection(const cinder::vec2& startingPosition)
+{
+	float verticalMidpoint = getWindowWidth() / 2;
+	float horizontalMidpoint = getWindowHeight() / 2;
+
+	if (startingPosition.x > verticalMidpoint && startingPosition.y > horizontalMidpoint)
+	{
+		return startingPosition.x < startingPosition.y ? LEFT_OFFSET : UP_OFFSET;
+	}
+
+	if (startingPosition.x <= verticalMidpoint && startingPosition.y > horizontalMidpoint)
+	{
+		return startingPosition.x < startingPosition.y ? RIGHT_OFFSET : UP_OFFSET;
+	}
+
+	if (startingPosition.x > verticalMidpoint && startingPosition.y <= horizontalMidpoint)
+	{
+		return startingPosition.x < startingPosition.y ? LEFT_OFFSET : DOWN_OFFSET;
+	}
+
+	return startingPosition.x < startingPosition.y ? RIGHT_OFFSET : DOWN_OFFSET;
+}
+
+void Application::StartNewGame()
+{
+	mSnake = Snake(STARTING_LENGTH, ELEMENT_RADIUS);
+	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
+	mSnake.SetDirection(GetSafeStartingDirection(mSnake.GetHeadPosition()));
+	mFood.Respawn(getWindowWidth(), getWindowHeight());
+	mGameOver = false;
 }
 
 CINDER_APP(Application, ci::app::RendererGl(ci::app::RendererGl::Options().msaa(16)), &Application::prepareSettings)

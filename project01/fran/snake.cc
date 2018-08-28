@@ -24,6 +24,16 @@ void Snake::Draw()
     }
 }
 
+int Snake::GetLength()
+{
+    return mLength;
+}
+
+const cinder::vec2& Snake::GetHeadPosition()
+{
+    return mSegments[0].GetPosition();
+}
+
 void Snake::SetDirection(const cinder::vec2& directionOffset)
 {
     mCurrentDirection = cinder::vec2(directionOffset.x * mRadius * 2, directionOffset.y * mRadius * 2);
@@ -46,10 +56,24 @@ void Snake::SetInitialPosition(float width, float height)
 
 }
 
-bool Snake::IsCollidingWith(const cinder::vec2& position)
+bool Snake::HeadIsCollidingWith(const cinder::vec2 &position)
 {
-	cinder::vec2 distanceBetweenCenters = mSegments[0].GetPosition() - position;
-	return distanceBetweenCenters.x <= mRadius && distanceBetweenCenters.y <= mRadius;
+    float xDistance = abs(position.x - mSegments[0].GetPosition().x);
+    float yDistance = abs(position.y - mSegments[0].GetPosition().y);
+    return xDistance < mRadius * 2 - 0.1f && yDistance < mRadius * 2 - 0.1f;
+}
+
+bool Snake::HeadIsCollidingWithSelf()
+{
+    for(int index = mLength -1 ; index > 0 ; index--)
+    {
+        if (HeadIsCollidingWith(mSegments[index].GetPosition()))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool Snake::IsCollidingWithWindow(float width, float height)

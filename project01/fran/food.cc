@@ -2,12 +2,12 @@
 #include "cinder/Rand.h"
 
 Food::Food(float radius):
-        mRadius(radius)
+		mRadius(radius)
 {}
 
 void Food::Update(double elapsedSeconds)
 {
-    mAnimateOffset = cinder::vec2(cos(elapsedSeconds) * mRadius, sin(elapsedSeconds) * mRadius);
+	mAnimateOffset = cinder::vec2(cos(elapsedSeconds) * mRadius, sin(elapsedSeconds) * mRadius);
 }
 
 void Food::Draw()
@@ -34,7 +34,7 @@ void Food::Draw()
 
 const cinder::vec2& Food::GetPosition()
 {
-    return mPosition;
+	return mPosition;
 }
 
 cinder::vec2 Food::GetOffsetPosition()

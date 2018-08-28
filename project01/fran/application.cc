@@ -17,86 +17,84 @@ void Application::prepareSettings(Settings* settings)
 
 void Application::keyDown(ci::app::KeyEvent keyEvent)
 {
-    switch (keyEvent.getCode())
-    {
-        case keyEvent.KEY_UP:
-        {
-            ChangeDirectionUp();
-            break;
-        }
-        case keyEvent.KEY_DOWN:
-        {
-            ChangeDirectionDown();
-            break;
-        }
-        case keyEvent.KEY_LEFT:
-        {
-            ChangeDirectionLeft();
-            break;
-        }
-        case keyEvent.KEY_RIGHT:
-        {
-            ChangeDirectionRight();
-            break;
-        }
-        case keyEvent.KEY_RETURN:
-        {
-            if (keyEvent.isAltDown())
-            {
-                mDisplayString = FULL_SCREEN_MESSAGE;
-                cinder::app::setFullScreen(true);
-            }
-            if (mGameOver)
+	switch (keyEvent.getCode())
+	{
+		case keyEvent.KEY_UP:
+		{
+			ChangeDirectionUp();
+			break;
+		}
+		case keyEvent.KEY_DOWN:
+		{
+			ChangeDirectionDown();
+			break;
+		}
+		case keyEvent.KEY_LEFT:
+		{
+			ChangeDirectionLeft();
+			break;
+		}
+		case keyEvent.KEY_RIGHT:
+		{
+			ChangeDirectionRight();
+			break;
+		}
+		case keyEvent.KEY_RETURN:
+		{
+			if (keyEvent.isAltDown())
 			{
-                StartNewGame();
+				mDisplayString = FULL_SCREEN_MESSAGE;
+				cinder::app::setFullScreen(true);
 			}
-            break;
-        }
-        case keyEvent.KEY_ESCAPE:
-        {
-            if (isFullScreen())
-            {
-                setFullScreen(false);
-                mDisplayString = GAME_TITLE;
-            }
-            else
-            {
-                quit();
-            }
-            break;
-        }
-        case keyEvent.KEY_F11:
-        {
-            setFullScreen(!isFullScreen());
-            mDisplayString = isFullScreen() ? FULL_SCREEN_MESSAGE : "SNAKE";
-            break;
-        }
-    }
+			if (mGameOver)
+			{
+				StartNewGame();
+			}
+			break;
+		}
+		case keyEvent.KEY_ESCAPE:
+		{
+			if (isFullScreen())
+			{
+				setFullScreen(false);
+				mDisplayString = GAME_TITLE;
+			}
+			else
+			{
+				quit();
+			}
+			break;
+		}
+		case keyEvent.KEY_F11:
+		{
+			setFullScreen(!isFullScreen());
+			mDisplayString = isFullScreen() ? FULL_SCREEN_MESSAGE : "SNAKE";
+			break;
+		}
+	}
 }
 
 void Application::setup()
 {
-    mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
+	mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
 	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
 	mFood.Respawn(getWindowWidth(), getWindowHeight());
 }
 
 void Application::draw()
 {
-    cinder::gl::clear();
+	cinder::gl::clear();
 
-    cinder::gl::setMatricesWindow( cinder::app::getWindowSize() );
-    cinder::gl::enableAlphaBlending();
+	cinder::gl::setMatricesWindow( cinder::app::getWindowSize() );
+	cinder::gl::enableAlphaBlending();
 
-    mFood.Draw();
+	mFood.Draw();
 
-    mSnake.Draw();
-
-    //cinder::gl::color( cinder::ColorA( 1, 0.8f, 0.25f, 1.0f ) );
+	mSnake.Draw();
 
 	cinder::gl::color(cinder::Color(0.9f, 1.0f, 1.0f));
-    auto renderSize = mTextureFontRef->measureString(mDisplayString);
-    mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent()));
+	auto renderSize = mTextureFontRef->measureString(mDisplayString);
+	mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent()));
 
 	//cinder::gl::color(cinder::Color(1.0f, 0.0f, 0.0f));
 	//cinder::gl::drawStrokedCircle(mFood.GetOffsetPosition(), ELEMENT_RADIUS); // debug collision detection
@@ -104,60 +102,64 @@ void Application::draw()
 
 void Application::update()
 {
-    if (mGameOver)
-    {
-        mDisplayString = "GAME OVER (hit enter to begin again)";
-    }
-    else
-    {
-    	mFood.Update(getElapsedSeconds());
-        mSnake.Update();
-        if (mSnake.HeadIsCollidingWith(mFood.GetPosition()))
+	if (mGameOver)
+	{
+		mDisplayString = "GAME OVER (hit enter to begin again)";
+	}
+
+	else
+	{
+
+		mFood.Update(getElapsedSeconds());
+
+		mSnake.Update();
+
+		if (mSnake.HeadIsCollidingWith(mFood.GetPosition()))
 		{
-        	++mSnake;
-        	mFood.Respawn(getWindowWidth(), getWindowHeight());
+			++mSnake;
+			mFood.Respawn(getWindowWidth(), getWindowHeight());
 		}
 
 		mDisplayString = "LEVEL " + std::to_string(mSnake.GetLength() - STARTING_LENGTH + 1);
 		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight()) || mSnake.HeadIsCollidingWithSelf();
-    }
+	}
 }
 
 void Application::ChangeDirectionUp()
 {
-    if (mDirectionOffset != DOWN_OFFSET)
-    {
-        mDirectionOffset = UP_OFFSET;
-    }
+	if (mDirectionOffset != DOWN_OFFSET)
+	{
+		mDirectionOffset = UP_OFFSET;
+	}
 
-    mSnake.SetDirection(mDirectionOffset);
+	mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionDown()
 {
-    if (mDirectionOffset != UP_OFFSET)
-    {
-        mDirectionOffset = DOWN_OFFSET;
-    }
+	if (mDirectionOffset != UP_OFFSET)
+	{
+		mDirectionOffset = DOWN_OFFSET;
+	}
 
-    mSnake.SetDirection(mDirectionOffset);
+	mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionLeft()
 {
-    if (mDirectionOffset != RIGHT_OFFSET)
-    {
-        mDirectionOffset = LEFT_OFFSET;
-    }
+	if (mDirectionOffset != RIGHT_OFFSET)
+	{
+		mDirectionOffset = LEFT_OFFSET;
+	}
 
-    mSnake.SetDirection(mDirectionOffset);
+	mSnake.SetDirection(mDirectionOffset);
 }
 void Application::ChangeDirectionRight()
 {
-    if (mDirectionOffset != LEFT_OFFSET)
-    {
-        mDirectionOffset = RIGHT_OFFSET;
-    }
+	if (mDirectionOffset != LEFT_OFFSET)
+	{
+		mDirectionOffset = RIGHT_OFFSET;
+	}
 
-    mSnake.SetDirection(mDirectionOffset);
+	mSnake.SetDirection(mDirectionOffset);
 }
 
 const cinder::vec2& Application::GetSafeStartingDirection(const cinder::vec2& startingPosition)

@@ -4,7 +4,6 @@
 #include <cinder/app/RendererGl.h>
 #include "cinder/gl/gl.h"
 #include <vector>
-#include <random>
 
 class Snake
 {
@@ -29,7 +28,6 @@ public:
 	void Update();
 	void Draw();
 	int GetLength();
-	const cinder::vec2& GetHeadPosition();
 	void SetDirection(const cinder::vec2& directionOffset);
 	cinder::vec2 SetInitialPosition(float width, float height);
 	bool HeadIsCollidingWith(const cinder::vec2 &startingPosition);

@@ -12,7 +12,7 @@ void Food::Update(double elapsedSeconds)
 
 void Food::Draw()
 {
-	// A Tasty Flower for a very hungry catepillar
+	// A Tasty Flower for a very hungry caterpillar
 	cinder::gl::color(cinder::Color(0.0f, 1.0f, 0.0f));
 	cinder::gl::drawLine(mPosition + mAnimateOffset, mPosition + cinder::vec2(0, 20));
 
@@ -32,12 +32,7 @@ void Food::Draw()
 
 }
 
-const cinder::vec2& Food::GetPosition()
-{
-	return mPosition;
-}
-
-cinder::vec2 Food::GetOffsetPosition()
+cinder::vec2 Food::GetPosition()
 {
 	return mPosition + mAnimateOffset;
 }

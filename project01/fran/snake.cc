@@ -30,11 +30,6 @@ int Snake::GetLength()
 	return mLength;
 }
 
-const cinder::vec2& Snake::GetHeadPosition()
-{
-	return mSegments[0].GetPosition();
-}
-
 void Snake::SetDirection(const cinder::vec2& directionOffset)
 {
 	mCurrentDirection = cinder::vec2(directionOffset.x * mRadius * 2, directionOffset.y * mRadius * 2);

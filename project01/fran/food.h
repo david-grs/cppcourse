@@ -10,8 +10,7 @@ public:
 	void Update(double elapsedSeconds);
 	void Draw();
 
-	const cinder::vec2& GetPosition();
-	cinder::vec2 GetOffsetPosition();
+	cinder::vec2 GetPosition();
 	void Respawn(float width, float height);
 
 private:

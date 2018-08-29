@@ -126,7 +126,7 @@ void Application::update()
 
 		mSnake.Update();
 
-		if (mSnake.HeadIsCollidingWith(mFood.GetOffsetPosition()))
+		if (mSnake.HeadIsCollidingWith(mFood.GetPosition()))
 		{
 			++mSnake;
 			mFood.Respawn(getWindowWidth(), getWindowHeight());

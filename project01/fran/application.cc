@@ -50,6 +50,11 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
 			{
 				StartNewGame();
 			}
+			if (mShowStartingScreen)
+			{
+				StartNewGame();
+				mShowStartingScreen = false;
+			}
 			break;
 		}
 		case keyEvent.KEY_ESCAPE:
@@ -68,7 +73,7 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
 		case keyEvent.KEY_F11:
 		{
 			setFullScreen(!isFullScreen());
-			mDisplayString = isFullScreen() ? FULL_SCREEN_MESSAGE : "SNAKE";
+			mDisplayString = isFullScreen() ? FULL_SCREEN_MESSAGE : GAME_TITLE;
 			break;
 		}
 	}
@@ -77,8 +82,6 @@ void Application::keyDown(ci::app::KeyEvent keyEvent)
 void Application::setup()
 {
 	mTextureFontRef = cinder::gl::TextureFont::create( cinder::Font("Times New Roman", 24) );
-	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
-	mFood.Respawn(getWindowWidth(), getWindowHeight());
 }
 
 void Application::draw()
@@ -89,12 +92,15 @@ void Application::draw()
 	cinder::gl::enableAlphaBlending();
 
 	mFood.Draw();
-
 	mSnake.Draw();
 
 	cinder::gl::color(cinder::Color(0.9f, 1.0f, 1.0f));
 	auto renderSize = mTextureFontRef->measureString(mDisplayString);
 	mTextureFontRef->drawString(mDisplayString, cinder::vec2( getWindowWidth() - renderSize.x - 10, getWindowHeight() - mTextureFontRef->getDescent()));
+
+	cinder::gl::color(cinder::Color(0.0f, 1.0f, 0.0f));
+	auto renderHighScoreSize = mTextureFontRef->measureString(mFinalScoreString);
+	mTextureFontRef->drawString(mFinalScoreString, cinder::vec2( getWindowWidth() / 2 - renderHighScoreSize.x, getWindowHeight() / 2 - mTextureFontRef->getDescent()));
 
 	//cinder::gl::color(cinder::Color(1.0f, 0.0f, 0.0f));
 	//cinder::gl::drawStrokedCircle(mFood.GetOffsetPosition(), ELEMENT_RADIUS); // debug collision detection
@@ -102,14 +108,23 @@ void Application::draw()
 
 void Application::update()
 {
+	if (mShowStartingScreen)
+	{
+		return;
+	}
+
 	if (mGameOver)
 	{
 		mDisplayString = "GAME OVER (hit enter to begin again)";
+		int finalScore = mSnake.GetLength() - STARTING_LENGTH;
+		if (finalScore > 0)
+		{
+			mFinalScoreString = "Final Score: " + std::to_string(finalScore);
+		}
 	}
 
 	else
 	{
-
 		mFood.Update(getElapsedSeconds());
 
 		mSnake.Update();
@@ -120,7 +135,7 @@ void Application::update()
 			mFood.Respawn(getWindowWidth(), getWindowHeight());
 		}
 
-		mDisplayString = "Score: " + std::to_string(mSnake.GetLength() - STARTING_LENGTH + 1);
+		mDisplayString = "Score: " + std::to_string(mSnake.GetLength() - STARTING_LENGTH);
 		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight()) || mSnake.HeadIsCollidingWithSelf();
 	}
 }
@@ -164,6 +179,7 @@ void Application::ChangeDirectionRight()
 
 void Application::StartNewGame()
 {
+	mFinalScoreString = "";
 	mSnake = Snake(STARTING_LENGTH, ELEMENT_RADIUS);
 	mDirectionOffset = mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
 	mFood.Respawn(getWindowWidth(), getWindowHeight());

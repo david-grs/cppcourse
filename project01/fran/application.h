@@ -21,10 +21,12 @@ public:
 
 private:
 	cinder::gl::TextureFontRef mTextureFontRef;
-	std::string mDisplayString = GAME_TITLE + " (hit enter to begin)";
+	std::string mDisplayString = "(hit enter to begin)";
+	std::string mFinalScoreString = GAME_TITLE;
 	Snake mSnake;
 	Food mFood;
 	cinder::vec2 mDirectionOffset = UP_OFFSET;
+	bool mShowStartingScreen = true;
 	bool mGameOver = false;
 
 	void ChangeDirectionUp();

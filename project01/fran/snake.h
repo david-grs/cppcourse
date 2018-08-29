@@ -31,7 +31,7 @@ public:
 	int GetLength();
 	const cinder::vec2& GetHeadPosition();
 	void SetDirection(const cinder::vec2& directionOffset);
-	void SetInitialPosition(float width, float height);
+	cinder::vec2 SetInitialPosition(float width, float height);
 	bool HeadIsCollidingWith(const cinder::vec2 &startingPosition);
 	bool HeadIsCollidingWithSelf();
 	bool IsCollidingWithWindow(float width, float height);
@@ -41,5 +41,7 @@ private:
 	float mRadius;
 	cinder::vec2 mCurrentDirection;
 	std::vector<Segment> mSegments;
+
+	const cinder::vec2& GetSafeStartingDirection(const cinder::vec2& startingPosition, float width, float height);
 };
 

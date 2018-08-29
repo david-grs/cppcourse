@@ -114,7 +114,7 @@ void Application::update()
 
 		mSnake.Update();
 
-		if (mSnake.HeadIsCollidingWith(mFood.GetPosition()))
+		if (mSnake.HeadIsCollidingWith(mFood.GetOffsetPosition()))
 		{
 			++mSnake;
 			mFood.Respawn(getWindowWidth(), getWindowHeight());
@@ -162,34 +162,10 @@ void Application::ChangeDirectionRight()
 	mSnake.SetDirection(mDirectionOffset);
 }
 
-const cinder::vec2& Application::GetSafeStartingDirection(const cinder::vec2& startingPosition)
-{
-	float verticalMidpoint = getWindowWidth() / 2;
-	float horizontalMidpoint = getWindowHeight() / 2;
-
-	if (startingPosition.x > verticalMidpoint && startingPosition.y > horizontalMidpoint)
-	{
-		return startingPosition.x < startingPosition.y ? LEFT_OFFSET : UP_OFFSET;
-	}
-
-	if (startingPosition.x <= verticalMidpoint && startingPosition.y > horizontalMidpoint)
-	{
-		return startingPosition.x < startingPosition.y ? RIGHT_OFFSET : UP_OFFSET;
-	}
-
-	if (startingPosition.x > verticalMidpoint && startingPosition.y <= horizontalMidpoint)
-	{
-		return startingPosition.x < startingPosition.y ? LEFT_OFFSET : DOWN_OFFSET;
-	}
-
-	return startingPosition.x < startingPosition.y ? RIGHT_OFFSET : DOWN_OFFSET;
-}
-
 void Application::StartNewGame()
 {
 	mSnake = Snake(STARTING_LENGTH, ELEMENT_RADIUS);
-	mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
-	mSnake.SetDirection(GetSafeStartingDirection(mSnake.GetHeadPosition()));
+	mDirectionOffset = mSnake.SetInitialPosition(getWindowWidth(), getWindowHeight());
 	mFood.Respawn(getWindowWidth(), getWindowHeight());
 	mGameOver = false;
 }

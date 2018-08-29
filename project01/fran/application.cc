@@ -101,9 +101,6 @@ void Application::draw()
 	cinder::gl::color(cinder::Color(0.0f, 1.0f, 0.0f));
 	auto renderHighScoreSize = mTextureFontRef->measureString(mFinalScoreString);
 	mTextureFontRef->drawString(mFinalScoreString, cinder::vec2( getWindowWidth() / 2 - renderHighScoreSize.x, getWindowHeight() / 2 - mTextureFontRef->getDescent()));
-
-	//cinder::gl::color(cinder::Color(1.0f, 0.0f, 0.0f));
-	//cinder::gl::drawStrokedCircle(mFood.GetOffsetPosition(), ELEMENT_RADIUS); // debug collision detection
 }
 
 void Application::update()

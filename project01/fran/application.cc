@@ -120,7 +120,7 @@ void Application::update()
 			mFood.Respawn(getWindowWidth(), getWindowHeight());
 		}
 
-		mDisplayString = "LEVEL " + std::to_string(mSnake.GetLength() - STARTING_LENGTH + 1);
+		mDisplayString = "Score: " + std::to_string(mSnake.GetLength() - STARTING_LENGTH + 1);
 		mGameOver = mSnake.IsCollidingWithWindow(getWindowWidth(), getWindowHeight()) || mSnake.HeadIsCollidingWithSelf();
 	}
 }

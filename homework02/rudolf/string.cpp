@@ -32,24 +32,23 @@ const bool String::operator==(const String& str)const
 {	
 	return std::equal(c_str() , c_str() + mSize , str.c_str());
 };
-String& String::operator+(const String& str)
+String String::operator+(const String& str)
 {	
 	String str2(c_str(), size() + str.size());
 	for(std::size_t i=0; i < str.mSize; i++) 
 	{		
 		str2.push_back(str.mString[i]);
 	}
-	*this = str2;
-	return *this;
+	return str2;
 }
 void String::push_back(const char c)
 {
-	if (mSize==mCapacity)
+	if (mSize == mCapacity)
 	{
 		add_capacity();
 	}
 	mString[mSize] = c;
-	mSize+=1;
+	mSize += 1;
 }
 void String::add_capacity()
 {

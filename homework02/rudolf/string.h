@@ -28,7 +28,7 @@ public:
 
 	operator std::string() const { return c_str(); }
 
-	String& operator+(const String& str);
+	String operator+(const String& str);
 	
 	void push_back(const char c);
 	void add_capacity();

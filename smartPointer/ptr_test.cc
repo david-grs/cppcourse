@@ -1,6 +1,3 @@
-// Copyright (c) Optiver I.P. B.V. 2018
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <iostream>
 #include "unique_ptr.h"
 
@@ -37,7 +34,7 @@ unique_ptr<T> make_unique()
 }
 
 
-TEST(Test, UniquePtrTest)
+int main()
 {
 	unique_ptr<Foo> fooptr = make_unique<Foo>();	
 	//(*fooptr).DoStuff();

@@ -14,20 +14,15 @@ public:
         mPtr(ptr)
     {}
 
-    UniquePtr(const UniquePtr& uniquePtr):
+    UniquePtr(UniquePtr&& uniquePtr):
         mPtr(uniquePtr.mPtr)
     {
-        std::cout << "Copy constructor" << std::endl;
-        const_cast<UniquePtr&>(uniquePtr).mPtr = nullptr;
+        uniquePtr.mPtr = nullptr;
     }
 
     ~UniquePtr()
     {
-        std::cout << "[deleter called]" << std::endl;
-        if (mPtr)
-            std::cout << *mPtr << std::endl;
         mPtr = nullptr;
-
     }
 
    inline T* operator->() const
@@ -53,7 +48,7 @@ public:
     UniquePtr& operator=(UniquePtr uniquePtr)
     {
         std::swap(mPtr, uniquePtr.mPtr);
-        std::cout << "Swapped" << std::endl;
+        uniquePtr.mPtr = nullptr;
         return *this;
     }
 

@@ -68,7 +68,6 @@ public:
     void reset(T* ptr)
     {
         std::swap(mPtr, ptr);
-        mPtr = nullptr;
     }
 
 private:

@@ -1,4 +1,3 @@
-#include <iostream>
 
 class Vector
 {
@@ -16,24 +15,14 @@ public:
 		return Vector(mX + rhs.mX, mY + rhs.mY);
 	}
 
-	Vector& operator+=(const Vector& rhs)
-	{
-		mX += rhs.mX;
-		mY += rhs.mY;
-		return *this;
-	}
+	Vector& operator+=(const Vector& rhs);
 
-	friend std::ostream& operator<<(std::ostream& stream, const Vector& rhs)
-	{
-		stream << "x:" << rhs.mX << " y:" << rhs.mY;
-		return stream;
-	}
-
-	const int GetX();
-	const int GetY();
+	int GetX() const;
+	int GetY() const;
 	void Add(const Vector&);
 	
 private:
 	int mX;
 	int mY;
 };
+

@@ -3,6 +3,12 @@
 #include <iostream>
 #include <cassert>
 
+std::ostream& operator<<(std::ostream& stream, const Vector& rhs)
+{
+	stream << "x:" << rhs.GetX() << " y:" << rhs.GetY();
+	return stream;
+}
+
 int main()
 {
 #ifdef NDEBUG
@@ -32,7 +38,7 @@ int main()
 	v3 += v3;
 	assert(v3.GetX() == 12);
 	assert(v3.GetY() == 14);
-
-	v3 = v1 + v2;
+  
+  v3 = v1 + v2;
 	std::cout << v1 << " + " << v2 << " = " << v3 << std::endl;
 }

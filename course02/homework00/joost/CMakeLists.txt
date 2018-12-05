@@ -7,3 +7,4 @@ set(sources
 
 add_executable(main ${sources})
 
+target_compile_options(main PRIVATE -Wall -Wextra -pedantic -Werror)

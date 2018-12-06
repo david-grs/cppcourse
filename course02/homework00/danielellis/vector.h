@@ -26,9 +26,7 @@ public:
 		{
 			mAllocatedMemory *= 2;
 			if (mAllocatedMemory > capacity())
-			{
 				throw RanOutOfMemoryException();
-			}
 		}
 		mMemory.at(size()) = element;
 		mSize += 1;
@@ -60,7 +58,3 @@ private:
 	size_t mAllocatedMemory = 8;
 	size_t mSize = 0;
 };
-
-
-
-

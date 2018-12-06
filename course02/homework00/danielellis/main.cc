@@ -20,9 +20,8 @@ int main()
 	assert(v.size() == 0);
 
 	for (int i = 0; i < 1000; ++i)
-	{
 		v.push_back(i);
-	}
+
 	assert(v.size() == 1000);
 	assert(v.back() == 999);
 	assert(v.at(500) == 500);

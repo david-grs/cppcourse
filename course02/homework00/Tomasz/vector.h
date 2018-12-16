@@ -11,17 +11,17 @@ private:
 
 public:
 	VectorInt() :
-		_size(0)
+		mSize(0)
 	{ }
 
-	size_t capacity() const
+	std::size_t capacity() const
 	{
-		return _data.size();
+		return mData.size();
 	}
 
-	size_t size() const
+	std::size_t size() const
 	{
-		return _size;
+		return mSize;
 	}
 
 	bool empty() const
@@ -39,7 +39,7 @@ public:
 		if (full())
 			throw std::out_of_range("VectorInt is already full");
 
-		_data[_size++] = value;
+		mData[mSize++] = value;
 	}
 
 	int front() const
@@ -47,14 +47,14 @@ public:
 		if (empty())
 			throw std::out_of_range("VectorInt is empty");
 
-		return _data[0];
+		return mData[0];
 	}
 
 	int& front() {
 		if (empty())
 			throw std::out_of_range("VectorInt is empty");
 
-		return _data[0];
+		return mData[0];
 	}
 
 	int back() const
@@ -62,24 +62,24 @@ public:
 		if (empty())
 			throw std::out_of_range("VectorInt is empty");
 
-		return _data[_size - 1];
+		return mData[mSize - 1];
 	}
 
 	int& back() {
 		if (empty())
 			throw std::out_of_range("VectorInt is empty");
 
-		return _data[_size - 1];
+		return mData[mSize - 1];
 	}
 
 	int operator[](std::size_t index) const
 	{
-		return _data[index];
+		return mData[index];
 	}
 
 	int& operator[](std::size_t index)
 	{
-		return _data[index];
+		return mData[index];
 	}
 
 	int at(std::size_t index) const
@@ -87,7 +87,7 @@ public:
 		if (!in_range(index))
 			throw std::out_of_range("VectorInt index out of range");
 
-		return _data[index];
+		return mData[index];
 	}
 
 	int& at(std::size_t index)
@@ -95,43 +95,53 @@ public:
 		if (!in_range(index))
 			throw std::out_of_range("VectorInt index out of range");
 
-		return _data[index];
+		return mData[index];
 	}
 
 	DataType::iterator begin()
 	{
-		return _data.begin();
+		return mData.begin();
 	}
 
 	DataType::const_iterator begin() const
 	{
-		return _data.begin();
+		return mData.begin();
+	}
+
+	DataType::const_iterator cbegin() const
+	{
+		return mData.cbegin();
 	}
 
 	DataType::iterator end()
 	{
-		return _data.begin() + _size;
+		return mData.begin() + mSize;
 	}
 
 	DataType::const_iterator end() const
 	{
-		return _data.begin() + _size;
+		return mData.begin() + mSize;
+	}
+
+	DataType::const_iterator cedn() const
+	{
+		return mData.cend();
 	}
 
 	void clear()
 	{
-		_size = 0;
+		mSize = 0;
 	}
 	
 private:
 
 	bool in_range(size_t index) const
 	{
-		return index < _size;
+		return index < mSize;
 	}
 
-	std::size_t _size;
-	DataType _data;
+	std::size_t mSize;
+	DataType mData;
 };
 
 

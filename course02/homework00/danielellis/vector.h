@@ -52,7 +52,7 @@ public:
 	int& at(const std::size_t position)
 	{
 		if (position < size())
-			return mMemory.at(position);
+			return mMemory[position];
 		else
 			throw std::out_of_range("Accessed element out of bounds");
 	}
@@ -60,7 +60,7 @@ public:
 	int at(const std::size_t position) const
 	{
 		if (position < size())
-			return mMemory.at(position);
+			return mMemory[position];
 		else
 			throw std::out_of_range("Accessed element out of bounds");
 	}

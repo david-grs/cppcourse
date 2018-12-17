@@ -3,41 +3,45 @@
 #include <array>
 #include <exception>
 
-struct RanOutOfMemoryException : public std::exception
-{
-};
-
 class VectorInt
 {
 public:
-	size_t size() const
+	std::size_t size() const
 	{
 		return mSize;
 	}
 
-	size_t capacity() const
+	std::size_t capacity() const
 	{
 		return mMemory.max_size();
 	}
 
-	void push_back(const int& element)
+	void push_back(const int element)
 	{
 		if (size() >= mAllocatedMemory)
 		{
 			mAllocatedMemory *= 2;
 			if (mAllocatedMemory > capacity())
-				throw RanOutOfMemoryException();
+				throw std::runtime_error("Ran out of memory");
 		}
-		mMemory.at(size()) = element;
+		mMemory[size()] = element;
 		mSize += 1;
 	}
 
 	int& back()
 	{
-		if (size() > 0)
-			return mMemory.at(size() - 1);
-		else
+		if (size() <= 0)
 			throw std::out_of_range("Our vector is empty so there is no last value");
+		else
+			return mMemory[size() - 1];
+	}
+
+	int back() const
+	{
+		if (size() <= 0)
+			throw std::out_of_range("Our vector is empty so there is no last value");
+		else
+			return mMemory[size() - 1];
 	}
 
 	void clear()
@@ -45,7 +49,15 @@ public:
 		mSize = 0;
 	}
 
-	int& at(const size_t& position)
+	int& at(const std::size_t position)
+	{
+		if (position < size())
+			return mMemory.at(position);
+		else
+			throw std::out_of_range("Accessed element out of bounds");
+	}
+
+	int at(const std::size_t position) const
 	{
 		if (position < size())
 			return mMemory.at(position);
@@ -55,6 +67,6 @@ public:
 
 private:
 	std::array<int, 1024> mMemory;
-	size_t mAllocatedMemory = 8;
-	size_t mSize = 0;
+	std::size_t mAllocatedMemory = 8;
+	std::size_t mSize = 0;
 };

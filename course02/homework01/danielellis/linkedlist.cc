@@ -57,13 +57,12 @@ void LinkedList::Append(int payload)
 
 shared_ptr<LinkedListNode> LinkedListNode::Clone(shared_ptr<LinkedListNode> last)
 {
-	LinkedListNode l;
+	auto l = make_shared<LinkedListNode>(mPayload);
 	if (mNext)
-		l.mNext = mNext->Clone(last);
+		l->mNext = mNext->Clone(last);
 	else
-		last = make_shared<LinkedListNode>(*this);
-	l.mPayload = mPayload;
-	return make_shared<LinkedListNode>(l);
+		last = l;
+	return l;
 }
 
 int& LinkedListNode::Retrieve(int indirectionsLeft)

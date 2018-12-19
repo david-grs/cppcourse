@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+
 class VectorInt
 {
 public:
@@ -7,15 +8,17 @@ public:
 
 	void push_back(int element);
 
-	size_t size();
+	std::size_t size() const;
 
-	size_t capacity();
+    std::size_t capacity();
 
 	int& back();
+	int back() const;
 
 	void clear();
 
-	int& at(size_t index);
+	int& at(std::size_t  index);
+	int at(std::size_t  index) const;
 
 private:
     std::array<int, 128> mData;

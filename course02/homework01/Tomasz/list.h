@@ -50,7 +50,7 @@ public:
 	List(const List& second);
 	~List();
 
-	void operator=(const List& second);
+	List& operator=(const List& second);
 
 	void insert(MutableIterator position, const T& value);
 	void push_front(const T& value);
@@ -199,12 +199,14 @@ List<T>::~List()
 }
 
 template<typename T>
-void List<T>::operator=(const List<T>& second)
+List<T>& List<T>::operator=(const List<T>& second)
 {
 	clear();
 
 	for (const auto& element : second)
 		push_back(element);
+
+	return *this;
 }
 
 template<typename T>

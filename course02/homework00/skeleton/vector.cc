@@ -1,4 +1,5 @@
 #include "vector.h"
+#include <cassert>
 
 int VectorInt::capacity() const
 {
@@ -12,12 +13,22 @@ int VectorInt::size() const
 
 int VectorInt::back() const
 {
-	return mData[mSize -1];
+	assert(mSize > 0);
+
+	return mData[mSize - 1];
 }
 
-void VectorInt::push_back(const int& x)
+int& VectorInt::back()
 {
-	mData[mSize++] = x;
+	assert(mSize > 0);
+	return mData[mSize - 1];
+}
+
+void VectorInt::push_back(int x)
+{
+	assert(mSize < capacity());
+    
+    mData[mSize++] = x;
 }
 
 void VectorInt::clear()

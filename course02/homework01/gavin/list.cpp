@@ -25,7 +25,7 @@ void List::insert(std::size_t pos, int data)
     auto new_element = std::make_shared<Element>(data);
     auto next = at(pos);
     auto prev = next->mPrevious;
-    prev->mNext = new_element;
+    prev.lock()->mNext = new_element;
     next->mPrevious = new_element;
     new_element->mNext = next;
     new_element->mPrevious = prev;
@@ -61,7 +61,7 @@ void List::erase(std::size_t pos)
     auto item = at(pos);
     auto prev = item->mPrevious;
     auto next = item->mNext;
-    prev->mNext = next;
+    prev.lock()->mNext = next;
     next->mPrevious = prev;
     mSize--;
 }
@@ -84,7 +84,8 @@ void List::pop_back()
 {
     if(!mHead)
         throw std::runtime_error("Cannot pop from empty list");
-    mHead = mHead->mPrevious;
+    auto prev = mHead->mPrevious;
+    mHead = prev.lock();
     mSize--;
 }
 

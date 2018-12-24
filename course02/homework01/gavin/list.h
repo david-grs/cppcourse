@@ -11,7 +11,7 @@ struct Element
     {}
     int mData{};
     std::shared_ptr<Element> mNext;
-    std::shared_ptr<Element> mPrevious;
+    std::weak_ptr<Element> mPrevious;
 };
 
 class List {

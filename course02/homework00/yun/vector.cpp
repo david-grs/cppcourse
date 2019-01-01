@@ -1,26 +1,32 @@
 #include "vector.h"
 
-VectorInt::VectorInt(){
-    vectorSize = 0;
-}
+VectorInt::VectorInt(): mSize(0) {}
 
-int VectorInt::size ()
+int VectorInt::size () const
 {
-	return vectorSize;
+	return mSize;
 }
 
-int VectorInt::capacity()
+int VectorInt::capacity() const
 {
-	return vectorData.size();
+	return mData.size();
 }
 
-int VectorInt::back()
+int VectorInt::back() const
 {
 	if (size() == 0)
 	{
 		throw std::out_of_range("empty VectorInt");
 	}
-	return vectorData[size() - 1];
+	return mData[size() - 1];
+}
+int& VectorInt::back()
+{
+	if (size() == 0)
+	{
+		throw std::out_of_range("empty VectorInt");
+	}
+	return mData[size() - 1];
 }
 
 void VectorInt::push_back(int newElement)
@@ -29,11 +35,11 @@ void VectorInt::push_back(int newElement)
 	{
 		throw std::out_of_range("VectorInt out of range");
 	}
-	vectorData[size()] = newElement;
-	vectorSize++;
+	mData[size()] = newElement;
+	mSize++;
 }
 
 void VectorInt::clear()
 {
-	vectorSize = 0;
+	mSize = 0;
 }

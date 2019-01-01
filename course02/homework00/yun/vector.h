@@ -1,25 +1,24 @@
-#include <array>
 #pragma once
+#include <array>
 
 class VectorInt
 {
 public:
-	int size();
+	VectorInt();
 
-	int capacity();
+	int size() const;
 
-	int back();
+	int capacity() const;
+
+	int back() const;
+	int& back();
 
 	void push_back(int);
 	
 	void clear();
 
-	VectorInt();
-
 private:
-	int vectorSize;
+	int mSize;
 	
-	std::array<int, 42> vectorData;
+	std::array<int, 42> mData;
 };
-
-

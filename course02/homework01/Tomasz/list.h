@@ -43,6 +43,8 @@ public:
 		friend List<T>;
 	};
 
+	using value_type = T;
+
 	using MutableIterator = Iterator<T>;
 	using ConstIterator = Iterator<const T>;
 

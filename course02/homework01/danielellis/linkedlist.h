@@ -2,15 +2,16 @@
 
 #include <memory>
 
-struct LinkedListNode
+class LinkedListNode
 {
+public:
 	LinkedListNode() = default;
 	LinkedListNode(const LinkedListNode& lln);
 	LinkedListNode(int payload);
-	std::shared_ptr<LinkedListNode> Clone(std::shared_ptr<LinkedListNode> last);
-	int& Retrieve(int indirectionsLeft);
 
-	std::shared_ptr<LinkedListNode> mNext;
+	LinkedListNode& operator=(const LinkedListNode& lln);
+
+	std::unique_ptr<LinkedListNode> mNext;
 	int mPayload;
 };
 
@@ -24,8 +25,10 @@ public:
 	int At(int position) const;
 	void Append(int payload);
 
+	LinkedList& operator=(const LinkedList& ll);
+
 private:
-	std::shared_ptr<LinkedListNode> mStart;
+	std::unique_ptr<LinkedListNode> mStart;
 	int mSize;
-	std::shared_ptr<LinkedListNode> mEnd;
+	LinkedListNode* mEnd;
 };

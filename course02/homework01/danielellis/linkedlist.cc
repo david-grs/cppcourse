@@ -2,21 +2,45 @@
 
 #include <stdexcept>
 
-using namespace std;
-
 LinkedList::LinkedList() : mSize(0)
 {
 }
 
 LinkedList::LinkedList(const LinkedList& ll)
 {
-	if (ll.Size() > 0)
-	{
-		shared_ptr<LinkedListNode> last;
-		mStart = ll.mStart->Clone(last);
-		mEnd = last;
-	}
 	mSize = ll.Size();
+	if (mSize > 0)
+	{
+		mStart.reset(new LinkedListNode(*ll.mStart));
+		LinkedListNode* ourNode = mStart.get();
+		LinkedListNode* theirNode = ll.mStart.get();
+		for (int i = 0; i < mSize - 1; ++i)
+		{
+			ourNode->mNext.reset(new LinkedListNode(*(theirNode->mNext)));
+			ourNode = ourNode->mNext.get();
+			theirNode = theirNode->mNext.get();
+		}
+		mEnd = ourNode;
+	}
+}
+
+LinkedList& LinkedList::operator=(const LinkedList& ll)
+{
+	mSize = ll.Size();
+	if (mSize > 0)
+	{
+		mStart.reset(new LinkedListNode(*ll.mStart));
+		LinkedListNode* ourNode = mStart.get();
+		LinkedListNode* theirNode = ll.mStart.get();
+		for (int i = 0; i < mSize - 1; ++i)
+		{
+			ourNode->mNext.reset(new LinkedListNode(*(theirNode->mNext)));
+			ourNode = ourNode->mNext.get();
+			theirNode = theirNode->mNext.get();
+		}
+		mEnd = ourNode;
+	}
+	return *this;
 }
 
 int LinkedList::Size() const
@@ -27,50 +51,40 @@ int LinkedList::Size() const
 int& LinkedList::At(int position)
 {
 	if (position >= Size())
-		throw out_of_range("Position out of range of this list");
-	return mStart->Retrieve(position);
+		throw std::out_of_range("Position out of range of this list");
+	LinkedListNode* requiredNode = mStart.get();
+	for (int i = 0; i < position; ++i)
+	{
+		requiredNode = requiredNode->mNext.get();
+	}
+	return requiredNode->mPayload;
 }
 
 int LinkedList::At(int position) const
 {
 	if (position >= Size())
-		throw out_of_range("Position out of range of this list");
-	int result = mStart->Retrieve(position);
-	return result;
+		throw std::out_of_range("Position out of range of this list");
+	LinkedListNode* requiredNode = mStart.get();
+	for (int i = 0; i < position; ++i)
+	{
+		requiredNode = requiredNode->mNext.get();
+	}
+	return requiredNode->mPayload;
 }
 
 void LinkedList::Append(int payload)
 {
-	auto newNode = make_shared<LinkedListNode>(payload);
 	if (Size() == 0)
 	{
-		mStart = newNode;
-		mEnd = mStart;
+		mStart.reset(new LinkedListNode(payload));
+		mEnd = mStart.get();
 	}
 	else
 	{
-		mEnd->mNext = newNode;
-		mEnd = newNode;
+		mEnd->mNext.reset(new LinkedListNode(payload));
+		mEnd = mEnd->mNext.get();
 	}
 	mSize++;
-}
-
-shared_ptr<LinkedListNode> LinkedListNode::Clone(shared_ptr<LinkedListNode> last)
-{
-	auto l = make_shared<LinkedListNode>(mPayload);
-	if (mNext)
-		l->mNext = mNext->Clone(last);
-	else
-		last = l;
-	return l;
-}
-
-int& LinkedListNode::Retrieve(int indirectionsLeft)
-{
-	if (indirectionsLeft > 0)
-		return mNext->Retrieve(indirectionsLeft - 1);
-	else
-		return mPayload;
 }
 
 LinkedListNode::LinkedListNode(int payload)
@@ -81,6 +95,10 @@ LinkedListNode::LinkedListNode(int payload)
 LinkedListNode::LinkedListNode(const LinkedListNode& lln)
 {
 	mPayload = lln.mPayload;
-	if (mNext)
-		mNext = make_shared<LinkedListNode>(lln);
+}
+
+LinkedListNode& LinkedListNode::operator=(const LinkedListNode& lln)
+{
+	mPayload = lln.mPayload;
+	return *this;
 }

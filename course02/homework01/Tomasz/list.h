@@ -25,6 +25,12 @@ public:
 		ConstIterator(const List<T>& owner, Node* node);
 
 	public:
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using reference = T & ;
+		using pointer = T * ;
+		using iterator_category = std::bidirectional_iterator_tag;
+
 		ConstIterator operator++(int);
 		ConstIterator& operator++();
 		ConstIterator operator--(int);
@@ -62,10 +68,6 @@ public:
 	};
 
 	using value_type = T;
-	using difference_type = std::ptrdiff_t;
-	using reference = T&;
-	using pointer = T*;
-	using iterator_category = std::bidirectional_iterator_tag;
 
 	List();
 	List(const List& second);

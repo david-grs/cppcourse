@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cassert>
+#include <iterator>
 
 template<typename T>
 class List
@@ -18,41 +19,59 @@ private:
 	};
 
 public:
-	template<typename E>
-	class Iterator
+	class ConstIterator
 	{
-	private:
-		Iterator(const List<T>& owner, Node* node);
+	protected:
+		ConstIterator(const List<T>& owner, Node* node);
 
 	public:
-		Iterator operator++(int);
-		Iterator& operator++();
-		Iterator operator--(int);
-		Iterator& operator--();
+		ConstIterator operator++(int);
+		ConstIterator& operator++();
+		ConstIterator operator--(int);
+		ConstIterator& operator--();
 
-		E& operator*() const;
-		E* operator->() const;
+		const T& operator*() const;
+		const T* operator->() const;
 
-		bool operator==(const Iterator& second);
-		bool operator!=(const Iterator& second);
+		bool operator==(const ConstIterator& second) const;
+		bool operator!=(const ConstIterator& second) const;
 
-	private:
+	protected:
 		const List<T>& mOwner;
 		Node* mNode;
 
 		friend List<T>;
 	};
 
-	using value_type = T;
+	class MutableIterator : public ConstIterator
+	{
+	protected:
+		MutableIterator(const List<T>& owner, Node* node);
 
-	using MutableIterator = Iterator<T>;
-	using ConstIterator = Iterator<const T>;
+	public:
+		MutableIterator operator++(int);
+		MutableIterator& operator++();
+		MutableIterator operator--(int);
+		MutableIterator& operator--();
+
+		T& operator*();
+		T* operator->();
+
+	protected:
+		friend List<T>;
+	};
+
+	using value_type = T;
+	using difference_type = std::ptrdiff_t;
+	using reference = T&;
+	using pointer = T*;
+	using iterator_category = std::bidirectional_iterator_tag;
 
 	List();
 	List(const List& second);
 	~List();
 
-	List& operator=(const List& second);
+	List& operator=(List<T> second);
 
 	void insert(MutableIterator position, const T& value);
 	void push_front(const T& value);
@@ -105,76 +124,108 @@ List<T>::Node::Node(const T& data) :
 { }
 
 template<typename T>
-template<typename E>
-List<T>::Iterator<E>::Iterator(const List<T>& owner, List<T>::Node* node) :
+List<T>::ConstIterator::ConstIterator(const List<T>& owner, List<T>::Node* node) :
 	mOwner(owner),
 	mNode(node)
 { }
 
 template<typename T>
-template<typename E>
-typename List<T>::Iterator<E> List<T>::Iterator<E>::operator++(int)
+List<T>::MutableIterator::MutableIterator(const List<T>& owner, List<T>::Node* node) :
+	List<T>::ConstIterator::ConstIterator(owner, node)
+{ }
+
+template<typename T>
+typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
 {
-	Iterator copy = *this;
+	List<T>::ConstIterator copy = *this;
 	operator++();
 	return copy;
 }
 
 template<typename T>
-template<typename E>
-typename List<T>::Iterator<E>& List<T>::Iterator<E>::operator++()
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
 {
-	mNode =
-		mNode
-		? mNode->next
-		: mOwner.mBegin;
+	mNode = mNode ? mNode->next : mOwner.mBegin;
 	return *this;
 }
 
 template<typename T>
-template<typename E>
-typename List<T>::Iterator<E> List<T>::Iterator<E>::operator--(int)
+typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
 {
-	Iterator copy = *this;
+	List<T>::ConstIterator copy = *this;
 	operator--();
 	return copy;
 }
 
 template<typename T>
-template<typename E>
-typename List<T>::Iterator<E>& List<T>::Iterator<E>::operator--()
+typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
 {
-	mNode =
-		mNode
-		? mNode->prev
-		: mOwner.mEnd;
+	mNode = mNode ? mNode->prev : mOwner.mEnd;
 	return *this;
 }
 
 template<typename T>
-template<typename E>
-E& List<T>::Iterator<E>::operator*() const
+typename List<T>::MutableIterator List<T>::MutableIterator::operator++(int)
+{
+	List<T>::MutableIterator copy = *this;
+	operator++();
+	return copy;
+}
+
+template<typename T>
+typename List<T>::MutableIterator& List<T>::MutableIterator::operator++()
+{
+	mNode = mNode ? mNode->next : mOwner.mBegin;
+	return *this;
+}
+
+template<typename T>
+typename List<T>::MutableIterator List<T>::MutableIterator::operator--(int)
+{
+	List<T>::MutableIterator copy = *this;
+	operator--();
+	return copy;
+}
+
+template<typename T>
+typename List<T>::MutableIterator& List<T>::MutableIterator::operator--()
+{
+	mNode = mNode ? mNode->prev : mOwner.mEnd;
+	return *this;
+}
+
+template<typename T>
+const T& List<T>::ConstIterator::operator*() const
 {
 	return mNode->data;
 }
 
 template<typename T>
-template<typename E>
-E* List<T>::Iterator<E>::operator->() const
+const T* List<T>::ConstIterator::operator->() const
 {
 	return &(mNode->data);
 }
 
 template<typename T>
-template<typename E>
-bool List<T>::Iterator<E>::operator==(const List<T>::Iterator<E>& second)
+T& List<T>::MutableIterator::operator*()
+{
+	return mNode->data;
+}
+
+template<typename T>
+T* List<T>::MutableIterator::operator->()
+{
+	return &(mNode->data);
+}
+
+template<typename T>
+bool List<T>::ConstIterator::operator==(const List<T>::ConstIterator& second) const
 {
 	return mNode == second.mNode;
 }
 
 template<typename T>
-template<typename E>
-bool List<T>::Iterator<E>::operator!=(const List<T>::Iterator<E>& second)
+bool List<T>::ConstIterator::operator!=(const List<T>::ConstIterator& second) const
 {
 	return mNode != second.mNode;
 }
@@ -201,12 +252,13 @@ List<T>::~List()
 }
 
 template<typename T>
-List<T>& List<T>::operator=(const List<T>& second)
+List<T>& List<T>::operator=(List<T> second)
 {
 	clear();
 
-	for (const auto& element : second)
-		push_back(element);
+	std::swap(this->mBegin, second.mBegin);
+	std::swap(this->mEnd, second.mEnd);
+	std::swap(this->mSize, second.mSize);
 
 	return *this;
 }

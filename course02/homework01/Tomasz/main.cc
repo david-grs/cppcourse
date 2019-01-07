@@ -387,7 +387,6 @@ void call_test()
 
 int main()
 {
-	std::list<int> a;
 	test_empty();
 	test_push_back();
 	test_push_front();

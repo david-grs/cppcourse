@@ -9,6 +9,7 @@ public:
 	LinkedListNode(const LinkedListNode& lln);
 	LinkedListNode(int payload);
 
+	LinkedListNode& swap(LinkedListNode& lln);
 	LinkedListNode& operator=(const LinkedListNode& lln);
 
 	std::unique_ptr<LinkedListNode> mNext;
@@ -25,7 +26,8 @@ public:
 	int At(int position) const;
 	void Append(int payload);
 
-	LinkedList& operator=(const LinkedList& ll);
+	LinkedList& swap(LinkedList& ll);
+	LinkedList& operator=(LinkedList ll);
 
 private:
 	std::unique_ptr<LinkedListNode> mStart;

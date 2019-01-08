@@ -24,22 +24,18 @@ LinkedList::LinkedList(const LinkedList& ll)
 	}
 }
 
-LinkedList& LinkedList::operator=(const LinkedList& ll)
+LinkedList& LinkedList::swap(LinkedList& ll)
 {
-	mSize = ll.Size();
-	if (mSize > 0)
-	{
-		mStart.reset(new LinkedListNode(*ll.mStart));
-		LinkedListNode* ourNode = mStart.get();
-		LinkedListNode* theirNode = ll.mStart.get();
-		for (int i = 0; i < mSize - 1; ++i)
-		{
-			ourNode->mNext.reset(new LinkedListNode(*(theirNode->mNext)));
-			ourNode = ourNode->mNext.get();
-			theirNode = theirNode->mNext.get();
-		}
-		mEnd = ourNode;
-	}
+	using std::swap;
+	swap(this->mSize, ll.mSize);
+	swap(this->mStart, ll.mStart);
+	swap(this->mEnd, ll.mEnd);
+	return *this;
+}
+
+LinkedList& LinkedList::operator=(LinkedList ll)
+{
+	swap(ll);
 	return *this;
 }
 
@@ -95,6 +91,13 @@ LinkedListNode::LinkedListNode(int payload)
 LinkedListNode::LinkedListNode(const LinkedListNode& lln)
 {
 	mPayload = lln.mPayload;
+}
+
+LinkedListNode& LinkedListNode::swap(LinkedListNode& lln)
+{
+	using std::swap;
+	swap(this->mPayload, lln.mPayload);
+	swap(this->mNext, lln.mNext);
 }
 
 LinkedListNode& LinkedListNode::operator=(const LinkedListNode& lln)

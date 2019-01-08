@@ -63,6 +63,9 @@ public:
 		T& operator*();
 		T* operator->();
 
+		using ConstIterator::operator*;
+		using ConstIterator::operator->;
+
 	protected:
 		friend List<T>;
 	};

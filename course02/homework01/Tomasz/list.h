@@ -43,7 +43,7 @@ public:
 		bool operator!=(const ConstIterator& second) const;
 
 	protected:
-		const List<T>& mOwner;
+		const List<T>* mOwner;
 		Node* mNode;
 
 		friend List<T>;
@@ -130,7 +130,7 @@ List<T>::Node::Node(const T& data) :
 
 template<typename T>
 List<T>::ConstIterator::ConstIterator(const List<T>& owner, List<T>::Node* node) :
-	mOwner(owner),
+	mOwner(&owner),
 	mNode(node)
 { }
 
@@ -150,7 +150,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
 template<typename T>
 typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
 {
-	mNode = mNode ? mNode->next : mOwner.mBegin;
+	mNode = mNode ? mNode->next : mOwner->mBegin;
 	return *this;
 }
 
@@ -165,7 +165,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
 template<typename T>
 typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
 {
-	mNode = mNode ? mNode->prev : mOwner.mEnd;
+	mNode = mNode ? mNode->prev : mOwner->mEnd;
 	return *this;
 }
 
@@ -180,7 +180,7 @@ typename List<T>::MutableIterator List<T>::MutableIterator::operator++(int)
 template<typename T>
 typename List<T>::MutableIterator& List<T>::MutableIterator::operator++()
 {
-	mNode = mNode ? mNode->next : mOwner.mBegin;
+	mNode = mNode ? mNode->next : mOwner->mBegin;
 	return *this;
 }
 
@@ -195,7 +195,7 @@ typename List<T>::MutableIterator List<T>::MutableIterator::operator--(int)
 template<typename T>
 typename List<T>::MutableIterator& List<T>::MutableIterator::operator--()
 {
-	mNode = mNode ? mNode->prev : mOwner.mEnd;
+	mNode = mNode ? mNode->prev : mOwner->mEnd;
 	return *this;
 }
 
@@ -271,7 +271,7 @@ List<T>& List<T>::operator=(List<T> second)
 template<typename T>
 void List<T>::insert(List<T>::MutableIterator position, const T& value)
 {
-	assert(&position.mOwner == this);
+	assert(position.mOwner == this);
 
 	if (mSize == 0)
 		insert_first(value);
@@ -304,7 +304,7 @@ void List<T>::push_back(const T& value)
 template<typename T>
 void List<T>::erase(List<T>::MutableIterator position)
 {
-	assert(&position.mOwner == this);
+	assert(position.mOwner == this);
 
 	if (mSize == 1)
 		erase_last();

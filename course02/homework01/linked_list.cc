@@ -1,89 +1,63 @@
 #include "linked_list.h"
-#include <exception>
 
-using Node = LinkedList::Node;
-
-LinkedList::LinkedList()
+void LinkedList::PushBack(int key)
 {
-}
+	auto newNode = std::make_unique<Node>(key);
 
-LinkedList::~LinkedList()
-{
-	clear();
-}
-
-void LinkedList::Insert(int key)
-{
-	Node* node = new Node;
-	node->data = key;
-	
 	if (mHead)
 	{
-		mTail->next = node;
-		mTail = mTail->next;
+		Node* node = mHead.get();
+		while (node->mNext)
+		{
+			node = node->mNext.get();
+		}
+		node->mNext = std::move(newNode);
 	}
 	else
 	{
-		mHead = node;
-		mTail = node;
+		mHead = std::move(newNode);
 	}
+	
 	++mSize;
-#ifndef NDEBUG
-	cout << "Inserted node: " << node->data << endl;
-#endif // !NDEBUG
 }
 
-void LinkedList::Remove(int key)
+void LinkedList::EraseAt(int position)
 {
-	Node* current = mHead;
-	Node* previous = nullptr;
-	while (current)
+	if (position < Size())
 	{
-		if (current->data == key)
+		Node* current = mHead.get();
+		Node* previous = current;
+		while (position > 0)
 		{
-			if (current == mHead)
-			{
-				mHead = mHead->next;
-			}
-			else
-			{
-				previous->next = current->next;
-			}
-			--mSize;
-#ifndef NDEBUG
-			cout << "Removed node: " << current->data << endl;
-#endif // !NDEBUG
-			delete current;
-			return;
+			previous = current;
+			current = current->mNext.get();
+			--position;
 		}
-		previous = current;
-		current = current->next;
-	}	
-	throw LinkedListError("Element was not found");
-}
-
-Node* LinkedList::Find(int key)
-{
-	Node* node = mHead;
-	while (node)
-	{
-		if (node->data == key)
-		{
-			return node;
-		}
-		node = node->next;
+		previous->mNext = std::move(current->mNext);
+		--mSize;
 	}
-	return End();
+	else
+	{
+		throw std::out_of_range("Cannot erase element");
+	}
 }
 
-const Node* LinkedList::End() const
+Node& LinkedList::At(int position) const
 {
-	return mTail;
-}
-
-bool LinkedList::Empty() const
-{
-	return mSize == 0;
+	if (position < Size())
+	{
+		auto node = mHead.get();
+		while (position > 0)
+		{
+			node = node->mNext.get();
+			--position;
+		}
+		return *node;
+	}
+	else
+	{
+		throw std::out_of_range("Could not find the element");
+	}
 }
 
 std::size_t LinkedList::Size() const
@@ -91,19 +65,16 @@ std::size_t LinkedList::Size() const
 	return mSize;
 }
 
-void LinkedList::clear()
+bool LinkedList::Empty() const
 {
-	Node* node = mHead;
-	while (node)
-	{
-		Node* nodeToDelete = node;
-		node = node->next;
-
-#ifndef NDEBUG
-		cout << "Deleting node: " << nodeToDelete->data << endl;
-#endif // !NDEBUG
-		delete nodeToDelete;
-	}
+	return Size() == 0;
 }
+
+void LinkedList::Clear()
+{
+	mSize = 0;
+	mHead.reset();
+}
+
 
 

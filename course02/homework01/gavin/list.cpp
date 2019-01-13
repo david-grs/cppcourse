@@ -1,39 +1,36 @@
-#include <memory>
-
-#include <memory>
-
 #include "list.h"
 
+#include <memory>
+
 void List::clear() {
-    std::unique_ptr<Element> newList;
-    mFirst = std::move(newList);
+    mFirst.reset();
     mSize = 0;
 }
 
 void List::insert(std::size_t pos, int data)
 {
-    if(pos == 0)
-    {
-        push_front(data);
-        return;
-    }
-    if(pos == size())
-    {
-        push_back(data);
-        return;
-    }
-    auto new_element = std::make_shared<Element>(data);
-    auto next = at(pos);
-    auto prev = next->mPrevious;
-    prev->mNext = new_element;
-    next->mPrevious = new_element;
-    new_element->mNext = next;
-    new_element->mPrevious = prev;
+    auto newElement = std::make_shared<Node>(data);
+    auto next = pos == size() ? nullptr : at(pos);
+    auto prev = pos == 0 ? nullptr : at(pos-1);
 
+    if(next)
+    {
+        newElement->mNext = next;
+        next->mPrevious = newElement;
+    }
+    if(prev)
+    {
+        newElement->mPrevious = prev;
+        prev->mNext = newElement;
+    }
+    if(pos == 0)
+        mFirst = newElement;
+    if(pos == size())
+        mHead = newElement;
     mSize++;
 }
 
-std::shared_ptr<Element> List::at(std::size_t pos) const
+std::shared_ptr<Node> List::at(std::size_t pos) const
 {
     if(pos >= size())
         throw std::out_of_range("Index out of range");
@@ -48,44 +45,32 @@ std::shared_ptr<Element> List::at(std::size_t pos) const
 
 void List::erase(std::size_t pos)
 {
-    if(pos == 0)
-    {
-        pop_front();
-        return;
-    }
-    if(pos == size()-1)
-    {
-        pop_back();
-        return;
-    }
     auto item = at(pos);
     auto prev = item->mPrevious;
     auto next = item->mNext;
-    prev->mNext = next;
-    next->mPrevious = prev;
+    if(next)
+    {
+        next->mPrevious = prev;
+    }
+    if(prev)
+    {
+        prev->mNext = next;
+    }
+    if(pos == 0)
+        mFirst = next;
+    if(pos == size() - 1)
+        mHead = prev;
     mSize--;
 }
 
 void List::push_back(int data)
 {
-    auto new_element = std::make_shared<Element>(data);
-    if(!mHead)
-    {
-        mHead = new_element;
-        mSize++;
-    }
-    mHead->mNext = new_element;
-    new_element->mPrevious = mHead;
-    mHead = new_element;
-    mSize++;
+    insert(size(), data);
 }
 
 void List::pop_back()
 {
-    if(!mHead)
-        throw std::runtime_error("Cannot pop from empty list");
-    mHead = mHead->mPrevious;
-    mSize--;
+    erase(size()-1);
 }
 
 std::size_t List::size() const
@@ -95,28 +80,12 @@ std::size_t List::size() const
 
 void List::push_front(int data)
 {
-    std::shared_ptr<Element> new_element = std::make_shared<Element>(data);
-    if(mFirst)
-    {
-        new_element->mNext = mFirst;
-        mFirst->mPrevious = new_element;
-        mFirst = new_element;
-    }else
-    {
-        mFirst = new_element;
-        mHead = mFirst;
-    }
-    mSize++;
+    insert(0, data);
 }
 
 void List::pop_front()
 {
-    if(size() == 0)
-        throw std::out_of_range("cannot pop from an empty list");
-    auto new_front = mFirst->mNext;
-    new_front->mPrevious.reset();
-    mFirst = new_front;
-    mSize--;
+    erase(0);
 }
 
 int& List::get(std::size_t pos)
@@ -137,6 +106,13 @@ List::List(std::initializer_list<int> elements)
 
 List::List(const List &other)
 {
-    for(std::size_t i = 0; i < other.size(); i++)
+    for( std::size_t i = 0; i < other.size(); i++ )
         push_back(other.get(i));
+}
+
+List &List::operator=(List other) {
+    std::swap(mSize, other.mSize);
+    std::swap(mHead, other.mHead);
+    std::swap(mFirst, other.mFirst);
+    return *this;
 }

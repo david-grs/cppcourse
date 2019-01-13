@@ -2,23 +2,22 @@
 // Created by gavin on 19/12/2018.
 //
 
-#include <cstdio>
 #include <memory>
-#include <iostream>
-struct Element
+struct Node
 {
-    Element(int data) : mData(data)
+    explicit Node(int data) : mData(data)
     {}
     int mData{};
-    std::shared_ptr<Element> mNext;
-    std::shared_ptr<Element> mPrevious;
+    std::shared_ptr<Node> mNext;
+    std::shared_ptr<Node> mPrevious;
 };
 
 class List {
 public:
-    List(){};
+    List() = default;
     List(std::initializer_list<int> elements);
     List(const List &other);
+    List& operator=(List other);
 
     void clear();
 
@@ -39,9 +38,9 @@ public:
     int get(std::size_t pos) const;
     int& get(std::size_t pos);
 private:
-    std::shared_ptr<Element> mFirst;
-    std::shared_ptr<Element> mHead = mFirst;
+    std::shared_ptr<Node> mFirst;
+    std::shared_ptr<Node> mHead = mFirst;
+    std::shared_ptr<Node> at(std::size_t pos) const;
     std::size_t mSize = 0;
-    std::shared_ptr<Element> at(std::size_t pos) const;
 
 };

@@ -1,70 +1,51 @@
-#include <iostream>
+#pragma once
 
-using namespace std;
+#include <iostream>
+#include <memory>
+
+struct Node
+{
+	explicit Node(int data) :
+		mData(data) {}
+
+	std::unique_ptr<Node> mNext;
+	int mData;
+};
 
 class LinkedList
 {
+	using NodePointer = typename std::unique_ptr<Node>;
 
 public:
-	LinkedList();
-	~LinkedList();
-
-	struct Node
-	{
-		Node* next{ nullptr };
-		int data;
-	};
-
-	void Insert(int key);
-	void Remove(int key);
-	Node* Find(int key);
-	const Node* End() const;
+	void PushBack(int key);
+	void EraseAt(int position);
+	Node& At(int position) const;
 	std::size_t Size() const;
 	bool Empty() const;
+	void Clear();
 
-	friend ostream &operator<<(ostream&, LinkedList&);
+	friend std::ostream &operator<<(std::ostream&, LinkedList&);
 
 private:
-
-	void clear();
-	Node* find_previous(int k);
-
-	Node* mHead{ nullptr };
-	Node* mTail{ nullptr };
+	NodePointer mHead;
 	std::size_t mSize = 0;
 };
 
-inline ostream &operator<<(ostream &output, LinkedList& linkedList) {
-	
-	LinkedList::Node* node = new LinkedList::Node;
-	
+inline std::ostream &operator<<(std::ostream &output, LinkedList& linkedList) {
+		
 	if (linkedList.mHead)
 	{
-		output << "LinkedList content:" << endl; 
-		for (node = linkedList.mHead; node != 0; node = node->next)
+		auto* node = linkedList.mHead.get();
+		output << "LinkedList content:\n"; 
+		while (node)
 		{
-			output << node->data << endl;
+			output << node->mData << std::endl;
+			node = node->mNext.get();
 		}
 	}
 	else
 	{
-		output << "LinkedList is empty" << endl;
+		output << "LinkedList is empty.";
 	}
-
 	return output;
 }
-
-struct LinkedListError : public std::exception
-{
-	LinkedListError(const char* description) :
-		mDescription(description)
-	{
-	}
-
-	const char* what() const throw ()
-	{
-		return mDescription;
-	}
-
-	const char* mDescription;
-};

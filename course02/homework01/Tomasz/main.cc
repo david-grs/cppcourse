@@ -3,6 +3,7 @@
 #include <cassert>
 #include <list>
 #include <iostream>
+#include <algorithm>
 
 struct TestDisposableClass
 {
@@ -385,6 +386,29 @@ void call_test()
 	assert(sum == 10);
 }
 
+void sort_test()
+{
+	List<int> a;
+
+	a.push_back(3);
+	a.push_back(1);
+	a.push_back(6);
+	a.push_back(4);
+	a.push_back(5);
+	a.push_back(2);
+
+	std::sort(a.begin(), a.end());
+
+	auto iter = a.begin();
+
+	assert(*(iter++) == 1);
+	assert(*(iter++) == 2);
+	assert(*(iter++) == 3);
+	assert(*(iter++) == 4);
+	assert(*(iter++) == 5);
+	assert(*(iter++) == 6);
+}
+
 int main()
 {
 	test_empty();
@@ -405,4 +429,5 @@ int main()
 	const_iterator_test();
 	mutation_test();
 	call_test();
+	sort_test();
 }

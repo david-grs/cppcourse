@@ -19,7 +19,7 @@ private:
 		Node* prev;
 	};
 
-public:
+public:	
 	template<typename iterator_type, typename iterator_value_type>
 	class IteratorBase : public std::iterator<std::bidirectional_iterator_tag, iterator_value_type>
 	{
@@ -61,6 +61,14 @@ public:
 	};
 
 	using value_type = T;
+	using allocator_type = std::allocator<T>;
+	using reference = T & ;
+	using const_reference = const T&;
+	using pointer = T * ;
+	using const_pointer = const T*;
+	using iterator = Iterator;
+	using const_iterator = ConstIterator;
+	using size_type = size_t;
 
 	List();
 	List(const List& second);

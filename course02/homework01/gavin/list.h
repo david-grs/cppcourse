@@ -12,6 +12,26 @@ struct Node
     std::shared_ptr<Node> mPrevious;
 };
 
+class iterator : public std::iterator<std::forward_iterator_tag, int>
+{
+public:
+    using value_type = int;
+    explicit iterator(Node* itr) : mItr(itr){}
+
+    iterator(const iterator &other);
+    iterator& operator=(iterator other);
+
+    const iterator operator++(int);
+    iterator& operator++();
+    bool operator !=(const iterator& other);
+    bool operator ==(const iterator& other);
+    int& operator*() { return mItr->mData;};
+    int* operator->() { return &mItr->mData;};
+
+private:
+    Node *mItr;
+};
+
 class List {
 public:
     List() = default;
@@ -37,6 +57,10 @@ public:
 
     int get(std::size_t pos) const;
     int& get(std::size_t pos);
+
+    iterator begin();
+    iterator end();
+
 private:
     std::shared_ptr<Node> mFirst;
     std::shared_ptr<Node> mHead = mFirst;

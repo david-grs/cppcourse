@@ -116,3 +116,39 @@ List &List::operator=(List other) {
     std::swap(mFirst, other.mFirst);
     return *this;
 }
+
+iterator List::begin() {
+    return iterator(mFirst.get());
+}
+
+iterator List::end() {
+    return iterator(nullptr);
+}
+
+iterator& iterator::operator++() {
+    mItr = mItr->mNext.get();
+    return *this;
+}
+
+bool iterator::operator!=(const iterator &other) {
+    return mItr != other.mItr;
+}
+
+bool iterator::operator==(const iterator &other) {
+    return mItr == other.mItr;
+}
+
+iterator::iterator(const iterator &other) {
+    mItr = other.mItr;
+}
+
+iterator &iterator::operator=(iterator other) {
+    std::swap(mItr, other.mItr);
+    return *this;
+}
+
+const iterator iterator::operator++(int a) {
+    for(int i=0; i < a; i++)
+        mItr = mItr->mNext.get();
+    return iterator(mItr);
+}

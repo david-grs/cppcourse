@@ -1,4 +1,4 @@
-#include "linked_list.h"
+#include "linked_list.tpp"
 #include <cassert>
 
 void test_push_back()
@@ -80,6 +80,31 @@ void test_print_linked_list()
 	std::cout << linkedList << std::endl;
 }
 
+void test_iterator()
+{
+	LinkedList<int> linkedList;
+
+	linkedList.PushBack(1);
+	linkedList.PushBack(2);
+	linkedList.PushBack(3);
+	
+	int expectedValue = 1;
+	for (auto value : linkedList)
+	{
+		assert(value == expectedValue);
+		++expectedValue;
+	}
+
+	// test derefernece operator
+	expectedValue = 1;
+	for (auto it = linkedList.begin(); it != linkedList.end(); ++it)
+	{
+		assert(*it == expectedValue);
+		++expectedValue;
+	}
+
+}
+
 int main()
 {
 #ifdef NDEBUG
@@ -92,6 +117,7 @@ int main()
 	test_get_at();
 	test_get_at_bad();
 	test_print_linked_list();
+	test_iterator();
 
 	return 0;
 }

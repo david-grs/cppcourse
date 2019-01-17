@@ -39,12 +39,12 @@ LinkedList::LinkedList(const LinkedList& ll)
 	mSize = ll.Size();
 	if (mSize > 0)
 	{
-		mStart.reset(new LinkedListNode(*ll.mStart));
+		mStart = std::make_unique<LinkedListNode>(*ll.mStart);
 		LinkedListNode* ourNode = mStart.get();
 		LinkedListNode* theirNode = ll.mStart.get();
 		for (int i = 0; i < mSize - 1; ++i)
 		{
-			ourNode->mNext.reset(new LinkedListNode(*(theirNode->mNext)));
+			ourNode->mNext = std::make_unique<LinkedListNode>(*(theirNode->mNext));
 			ourNode = ourNode->mNext.get();
 			theirNode = theirNode->mNext.get();
 		}
@@ -100,12 +100,12 @@ void LinkedList::Append(int payload)
 {
 	if (Size() == 0)
 	{
-		mStart.reset(new LinkedListNode(payload));
+		mStart = std::make_unique<LinkedListNode>(payload);
 		mEnd = mStart.get();
 	}
 	else
 	{
-		mEnd->mNext.reset(new LinkedListNode(payload));
+		mEnd->mNext = std::make_unique<LinkedListNode>(payload);
 		mEnd = mEnd->mNext.get();
 	}
 	mSize++;

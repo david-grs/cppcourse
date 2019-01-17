@@ -6,7 +6,7 @@
 class LinkedListNode
 {
 public:
-	LinkedListNode() = default;
+	LinkedListNode() = delete;
 	LinkedListNode(const LinkedListNode& lln);
 	LinkedListNode(int payload);
 

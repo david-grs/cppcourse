@@ -1,12 +1,13 @@
-#include "linked_list.h"
+//#include "linked_list.h"
 
-void LinkedList::PushBack(int key)
+template <class T>
+void LinkedList<T>::PushBack(T key)
 {
-	auto newNode = std::make_unique<Node>(key);
+	auto newNode = std::make_unique<Node<T>>(key);
 
 	if (mHead)
 	{
-		Node* node = mHead.get();
+		Node<T>* node = mHead.get();
 		while (node->mNext)
 		{
 			node = node->mNext.get();
@@ -20,12 +21,13 @@ void LinkedList::PushBack(int key)
 	++mSize;
 }
 
-void LinkedList::EraseAt(int position)
+template <class T>
+void LinkedList<T>::EraseAt(int position)
 {
 	if (position >= 0 && position < Size())
 	{
-		Node* current = mHead.get();
-		Node* previous = current;
+		Node<T>* current = mHead.get();
+		Node<T>* previous = current;
 		while (position > 0)
 		{
 			previous = current;
@@ -41,7 +43,8 @@ void LinkedList::EraseAt(int position)
 	}
 }
 
-Node& LinkedList::At(int position) const
+template <class T>
+T& LinkedList<T>::At(int position) const
 {
 	if (position < Size())
 	{
@@ -51,7 +54,7 @@ Node& LinkedList::At(int position) const
 			node = node->mNext.get();
 			--position;
 		}
-		return *node;
+		return node->mData;
 	}
 	else
 	{
@@ -59,17 +62,20 @@ Node& LinkedList::At(int position) const
 	}
 }
 
-std::size_t LinkedList::Size() const
+template <class T>
+std::size_t LinkedList<T>::Size() const
 {
 	return mSize;
 }
 
-bool LinkedList::Empty() const
+template <class T>
+bool LinkedList<T>::Empty() const
 {
 	return Size() == 0;
 }
 
-void LinkedList::Clear()
+template <class T>
+void LinkedList<T>::Clear()
 {
 	mSize = 0;
 	mHead.reset();

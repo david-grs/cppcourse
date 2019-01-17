@@ -3,7 +3,7 @@
 
 void test_push_back()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	linkedList.PushBack(0);
 
@@ -13,7 +13,7 @@ void test_push_back()
 
 void test_erase_at()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	linkedList.PushBack(0);
 	linkedList.PushBack(1);
@@ -26,7 +26,7 @@ void test_erase_at()
 
 void test_erase_at_bad()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	bool catchedError = false;
 	try 
@@ -43,18 +43,18 @@ void test_erase_at_bad()
 
 void test_get_at()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	linkedList.PushBack(0);
 	linkedList.PushBack(1);
 
-	auto& node = linkedList.At(0);
-	assert(node.mData == 0);
+	auto& value = linkedList.At(0);
+	assert(value == 0);
 }
 
 void test_get_at_bad()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	bool catchedError = false;
 	try
@@ -71,7 +71,7 @@ void test_get_at_bad()
 
 void test_print_linked_list()
 {
-	LinkedList linkedList;
+	LinkedList<int> linkedList;
 
 	linkedList.PushBack(5);
 	linkedList.PushBack(2);

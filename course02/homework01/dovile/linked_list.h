@@ -3,35 +3,39 @@
 #include <iostream>
 #include <memory>
 
+template <class T>
 struct Node
 {
-	explicit Node(int data) :
+	explicit Node(T data) :
 		mData(data) {}
 
-	std::unique_ptr<Node> mNext;
-	int mData;
+	std::unique_ptr<Node<T>> mNext;
+	T mData;
 };
 
+template<class T>
 class LinkedList
 {
-	using NodePointer = typename std::unique_ptr<Node>;
+	using NodePointer = typename std::unique_ptr<Node<T>>;
 
 public:
-	void PushBack(int key);
+	void PushBack(T key);
 	void EraseAt(int position);
-	Node& At(int position) const;
+	T& At(int position) const;
 	std::size_t Size() const;
 	bool Empty() const;
 	void Clear();
 
-	friend std::ostream &operator<<(std::ostream&, LinkedList&);
+	template <class U>
+	friend std::ostream &operator<<(std::ostream&, LinkedList<U>&);
 
 private:
 	NodePointer mHead;
 	std::size_t mSize = 0;
 };
 
-inline std::ostream &operator<<(std::ostream &output, LinkedList& linkedList) {
+template<class T>
+inline std::ostream &operator<<(std::ostream &output, LinkedList<T>& linkedList) {
 		
 	if (linkedList.mHead)
 	{

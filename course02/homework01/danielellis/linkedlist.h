@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <iterator>
 
 class LinkedListNode
 {
@@ -16,6 +17,21 @@ public:
 	int mPayload;
 };
 
+class Iterator : public std::iterator<std::forward_iterator_tag, int>
+{
+public:
+	Iterator();
+	Iterator(LinkedListNode* lln);
+
+	int& operator*();
+	Iterator operator++();
+	bool operator==(const Iterator& other);
+	bool operator!=(const Iterator& other);
+
+private:
+	LinkedListNode* mCurrentNode;
+};
+
 class LinkedList
 {
 public:
@@ -25,6 +41,8 @@ public:
 	int& At(int position);
 	int At(int position) const;
 	void Append(int payload);
+	Iterator Begin();
+	Iterator End();
 
 	LinkedList& swap(LinkedList& ll);
 	LinkedList& operator=(LinkedList ll);

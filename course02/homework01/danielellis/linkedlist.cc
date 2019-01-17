@@ -2,6 +2,34 @@
 
 #include <stdexcept>
 
+Iterator::Iterator(LinkedListNode* lln) : mCurrentNode(lln)
+{
+}
+
+Iterator::Iterator() : mCurrentNode(nullptr)
+{
+}
+
+Iterator Iterator::operator++()
+{
+	mCurrentNode = mCurrentNode->mNext.get();
+}
+
+int& Iterator::operator*()
+{
+	return mCurrentNode->mPayload;
+}
+
+bool Iterator::operator==(const Iterator& rhs)
+{
+	return (this->mCurrentNode == rhs.mCurrentNode);
+}
+
+bool Iterator::operator!=(const Iterator& rhs)
+{
+	return !(*this == rhs);
+}
+
 LinkedList::LinkedList() : mSize(0)
 {
 }
@@ -81,6 +109,16 @@ void LinkedList::Append(int payload)
 		mEnd = mEnd->mNext.get();
 	}
 	mSize++;
+}
+
+Iterator LinkedList::Begin()
+{
+	return Iterator(mStart.get());
+}
+
+Iterator LinkedList::End()
+{
+	return Iterator();
 }
 
 LinkedListNode::LinkedListNode(int payload)

@@ -2,6 +2,23 @@
 
 #include <cassert>
 
+int IteratorTest()
+{
+	LinkedList l;
+
+	for (int i = 0; i < 100; ++i)
+	{
+		l.Append(i);
+	}
+
+	int counter = 0;
+	for (Iterator iter = l.Begin(); iter != l.End(); ++iter)
+	{
+		assert(*iter == counter);
+		counter++;
+	}
+}
+
 int main()
 {
 #ifdef NDEBUG
@@ -41,6 +58,12 @@ int main()
 
 	l3.At(3) = 666;
 	assert(l.At(3) == 2);
+
+
+	IteratorTest();
+
+
+
 
 	return 0;
 }

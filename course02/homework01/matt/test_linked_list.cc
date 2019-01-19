@@ -17,6 +17,11 @@ int main()
 	lAssigned = l;
 	std::cout << "lAssigned:" << lAssigned << std::endl;
 
+	std::cout << "iterator: " << std::endl;
+	for(auto i: l)
+	std::cout << i << " ";
+	std::cout << std::endl;
+
 	return 0;
 }
 

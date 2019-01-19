@@ -1,4 +1,7 @@
 
+// Linked List
+#include <algorithm>
+
 template<typename T>
 LinkedList<T>::LinkedList() {}
 	 
@@ -40,3 +43,50 @@ void LinkedList<T>::Append(const T& data)
 	 mSize++;
 }
 
+//Linked List Iterator
+
+template<typename T>
+LinkedListIterator<T> LinkedList<T>::begin()
+{
+  return LinkedListIterator<T>{mFirst.get()};
+}
+
+template<typename T>
+LinkedListIterator<T> LinkedList<T>::end()
+{
+  return LinkedListIterator<T>{mLast->mNext.get()};
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const LinkedList<T>& list)
+{
+	Node<T>* ptrNode = list.mFirst.get();
+	while(ptrNode != nullptr)
+	{
+		stream << ptrNode->mData << ", ";
+		ptrNode = ptrNode->mNext.get();
+	}
+
+	return stream;
+}
+
+template<typename T>
+LinkedListIterator<T>::LinkedListIterator(Node<T>* ptrNode) : mPtrNode(ptrNode){}
+
+template<typename T>
+LinkedListIterator<T>& LinkedListIterator<T>::operator++()
+{
+	mPtrNode = mPtrNode->mNext.get();
+}
+
+template<typename T>
+bool LinkedListIterator<T>::operator !=(const LinkedListIterator& other)
+{
+   return mPtrNode != other.mPtrNode;
+}
+
+template<typename T>
+T& LinkedListIterator<T>::operator*()
+{
+   return mPtrNode->mData;
+}

@@ -2,7 +2,6 @@
 #include "linkedlist.h"
 
 
-LinkedListInt::LinkedListInt(): mSize(0), mHead(nullptr) {}
 
 int LinkedListInt::size() const
 {
@@ -36,4 +35,32 @@ void LinkedListInt::clear()
 {
 	mSize = 0;
 	mHead.reset();
+}
+
+
+LinkedListIterator LinkedListIterator::operator++()
+{
+	if ((*nodePtr)->next){
+	nodePtr = &((*nodePtr)->next);
+	} else {
+		nodePtr = nullptr;
+	}
+	return nodePtr;
+}
+
+LinkedListIterator LinkedListIterator::operator++(int)
+{
+	LinkedListIterator result(*this);
+	++(*this);
+	return result;
+}
+
+bool LinkedListIterator::operator==(const LinkedListIterator& other)
+{
+	return nodePtr == other.nodePtr;
+}
+
+bool LinkedListIterator::operator!=(const LinkedListIterator& other)
+{
+	return nodePtr != other.nodePtr;
 }

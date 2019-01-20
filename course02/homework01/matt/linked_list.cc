@@ -31,7 +31,6 @@ void LinkedList<T>::Append(const T& data)
 	 if(mFirst==nullptr)
 	 {
 		mFirst = std::make_unique<Node<T>>(data);
-		std::cout << mFirst->mData << std::endl;
 		mLast = mFirst.get();
 	}
 	else

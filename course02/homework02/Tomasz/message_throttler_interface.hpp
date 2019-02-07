@@ -13,8 +13,8 @@ public:
 	void send(const _Message& message);
 
 private:
-	void clear_buffer(std::size_t now);
-	void update_buffer(std::size_t now);
+	void try_make_space_in_buffer(std::size_t now);
+	void add_to_buffer(std::size_t now);
 
 	void consume(const _Message& message, std::size_t now);
 	void dispose(const _Message& message);
@@ -36,7 +36,7 @@ void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _Messa
 {
 	std::size_t now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-	clear_buffer(now);
+	try_make_space_in_buffer(now);
 
 	if (mBuffer.full())
 		dispose(message);
@@ -45,14 +45,14 @@ void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _Messa
 }
 
 template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::clear_buffer(std::size_t now)
+void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::try_make_space_in_buffer(std::size_t now)
 {
-	while (!mBuffer.empty() && mBuffer.front() < now)
+	if (mBuffer.full() && mBuffer.front() < now)
 		mBuffer.pop();
 }
 
 template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::update_buffer(std::size_t now)
+void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::add_to_buffer(std::size_t now)
 {
 	mBuffer.push(now);
 }
@@ -61,7 +61,7 @@ template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, 
 void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::consume(const _Message& message, std::size_t now)
 {
 	mMessageConsumer(message);
-	update_buffer(now);
+	add_to_buffer(now);
 }
 
 template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>

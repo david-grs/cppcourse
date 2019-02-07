@@ -30,10 +30,11 @@ message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDi
 template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
 message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>& message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer>::from(const _ClientId& clientId)
 {
-	auto client = mClients.find(clientId);
+	return mClients.try_emplace(clientId, mMessageConsumer, mMessageDisposer).first->second;
+}
 
-	if (client == mClients.end())
-		client = mClients.try_emplace(clientId, mMessageConsumer, mMessageDisposer).first;
-
-	return client->second;
+template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
+message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer> make_message_throttler(_MessageConsumer messageConsumer, _MessageDisposer messageDisposer)
+{
+	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer>(messageConsumer, messageDisposer);
 }

@@ -4,68 +4,69 @@
 
 #include "short_circular_buffer.hpp"
 
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
+template<
+	std::size_t _BufferSize,
+	typename _Message,
+	typename _MessageConsumer,
+	typename _MessageDisposer,
+	typename _Timestamp,
+	typename _Timestamper,
+	typename _TimestampValidator,
+	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>
+>
 class message_throttler_interface
 {
 public:
-	message_throttler_interface(_MessageConsumer& messageConsumer, _MessageDisposer& messageDisposer);
+	message_throttler_interface(
+		const _MessageConsumer& messageConsumer, 
+		const _MessageDisposer& messageDisposer, 
+		const _Timestamper& timestamper,
+		const _TimestampValidator& timestampValidator) :
+		mMessageConsumer(messageConsumer),
+		mMessageDisposer(messageDisposer),
+		mTimestamper(timestamper),
+		mTimestampValidator(timestampValidator)
+	{ }
 
-	void send(const _Message& message);
+	void send(const _Message& message)
+	{
+		auto now = _Timestamper{}();
+
+		try_make_space_in_buffer(now);
+		try_send(message, now);
+	}
 
 private:
-	void try_make_space_in_buffer(std::size_t now);
-	void add_to_buffer(std::size_t now);
+	void try_make_space_in_buffer(const _Timestamp& now)
+	{
+		if (mBuffer.full() && !mTimestampValidator(now, mBuffer.front()))
+			mBuffer.pop();
+	}
 
-	void consume(const _Message& message, std::size_t now);
-	void dispose(const _Message& message);
+	void try_send(const _Message& message, const _Timestamp& now)
+	{
+		if (mBuffer.full())
+			dispose(message);
+		else
+			consume(message, now);
+	}
 
-	_MessageConsumer& mMessageConsumer;
-	_MessageDisposer& mMessageDisposer;
+	void consume(const _Message& message, const _Timestamp& now)
+	{
+		mMessageConsumer(message);
+		mBuffer.push(now);
+	}
 
-	short_circular_buffer<std::size_t, _BufferSize> mBuffer;
+	void dispose(const _Message& message)
+	{
+		mMessageDisposer(message);
+	}
+
+	_MessageConsumer mMessageConsumer;
+	_MessageDisposer mMessageDisposer;
+
+	_Timestamper mTimestamper;
+	_TimestampValidator mTimestampValidator;
+
+	_Buffer mBuffer;
 };
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::message_throttler_interface(_MessageConsumer& messageConsumer, _MessageDisposer& messageDisposer) :
-	mMessageConsumer(messageConsumer),
-	mMessageDisposer(messageDisposer)
-{ }
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::send(const _Message& message)
-{
-	std::size_t now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
-	try_make_space_in_buffer(now);
-
-	if (mBuffer.full())
-		dispose(message);
-	else
-		consume(message, now);
-}
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::try_make_space_in_buffer(std::size_t now)
-{
-	if (mBuffer.full() && mBuffer.front() < now)
-		mBuffer.pop();
-}
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::add_to_buffer(std::size_t now)
-{
-	mBuffer.push(now);
-}
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::consume(const _Message& message, std::size_t now)
-{
-	mMessageConsumer(message);
-	add_to_buffer(now);
-}
-
-template<std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-void message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>::dispose(const _Message& message)
-{
-	mMessageDisposer(message);
-}

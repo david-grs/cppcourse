@@ -4,37 +4,45 @@
 
 #include "message_throttler_interface.hpp"
 
-template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
+template<
+	typename _ClientId,
+	std::size_t _BufferSize,
+	typename _Message,
+	typename _MessageConsumer,
+	typename _MessageDisposer,
+	typename _Timestamp,
+	typename _Timestamper,
+	typename _TimestampValidator,
+	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampValidator>,
+	typename _Map = std::map<_ClientId, _MessageThrottlerInterface>
+>
 class message_throttler
 {
 public:
-	using message_throttler_interface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>;
+	message_throttler(
+		const _MessageConsumer& messageConsumer, 
+		const _MessageDisposer& messageDisposer, 
+		const _Timestamper& timestamper,
+		const _TimestampValidator& timestampValidator) :
+		mMessageConsumer(messageConsumer),
+		mMessageDisposer(messageDisposer),
+		mTimestampValidator(timestampValidator)
+	{ }
 
-	message_throttler(_MessageConsumer& messageConsumer, _MessageDisposer& messageDisposer);
-
-	message_throttler_interface& from(const _ClientId& clientId);
+	_MessageThrottlerInterface& from(const _ClientId& clientId)
+	{
+		return mClients.try_emplace(
+			clientId, 
+			mMessageConsumer, mMessageDisposer, mTimestamper, mTimestampValidator
+		).first->second;
+	}
 
 private:
 	_MessageConsumer mMessageConsumer;
 	_MessageDisposer mMessageDisposer;
 
-	std::map<_ClientId, message_throttler_interface> mClients;
+	_Timestamper mTimestamper;
+	_TimestampValidator mTimestampValidator;
+
+	_Map mClients;
 };
-
-template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer>::message_throttler(_MessageConsumer& messageConsumer, _MessageDisposer& messageDisposer) :
-	mMessageConsumer(messageConsumer),
-	mMessageDisposer(messageDisposer)
-{ }
-
-template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer>& message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer>::from(const _ClientId& clientId)
-{
-	return mClients.try_emplace(clientId, mMessageConsumer, mMessageDisposer).first->second;
-}
-
-template<typename _ClientId, std::size_t _BufferSize, typename _Message, typename _MessageConsumer, typename _MessageDisposer>
-message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer> make_message_throttler(_MessageConsumer messageConsumer, _MessageDisposer messageDisposer)
-{
-	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer>(messageConsumer, messageDisposer);
-}

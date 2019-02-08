@@ -4,6 +4,7 @@ set(sources
 	main.cc
 	message_throttler.hpp
 	message_throttler_interface.hpp
+	message_throttler_commons.hpp
 	short_circular_buffer.hpp
 )
 

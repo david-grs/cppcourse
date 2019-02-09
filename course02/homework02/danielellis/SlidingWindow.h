@@ -35,7 +35,7 @@ std::vector<Message> SlidingWindow<Message>::DumpMessages(int clientId) const
 {
 	auto buffer = mClientBuffers.find(clientId);
 	if (buffer != mClientBuffers.end())
-		return mClientBuffers.at(clientId).DumpMessages();
+		return buffer->second.DumpMessages();
 	else
 		return std::vector<Message>();
 }

@@ -50,9 +50,18 @@ void TestMultipleClients()
 	}
 }
 
+void TestDumpQuietClient()
+{
+	WindowConfig conf;
+	auto slidingWindow = SlidingWindow<int>(conf);
+	auto dump = slidingWindow.DumpMessages(1);
+	assert(dump.size() == 0);
+}
+
 int main()
 {
 	TestDroppedLastMessage();
 	TestMultipleClients();
+	TestDumpQuietClient();
 	return 0;
 }

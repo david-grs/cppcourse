@@ -11,6 +11,8 @@ template<class Message>
 class SlidingWindow
 {
 public:
+	using value_type = Message;
+
 	SlidingWindow(const WindowConfig& conf);
 	void Send(int clientId, const Message& message);
 	std::vector<Message> DumpMessages(int clientId) const;

@@ -22,6 +22,8 @@ template<class Message>
 class Buffer
 {
 public:
+	using value_type = Message;
+
 	Buffer(const WindowConfig& conf);
 	void TryToAddMessage(const Message& message);
 	std::vector<Message> DumpMessages() const;

@@ -26,6 +26,7 @@ public:
 		const _TimestampThreshold& timestampThreshold) :
 		mMessageConsumer(messageConsumer),
 		mMessageDisposer(messageDisposer),
+		mTimestamper(timestamper),
 		mTimestampThreshold(timestampThreshold)
 	{ }
 

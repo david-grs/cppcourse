@@ -30,7 +30,7 @@ public:
 
 	message_throttler_interface& send(const _Message& message)
 	{
-		auto now = _Timestamper{}();
+		auto now = mTimestamper();
 
 		try_make_space_in_buffer(now);
 		try_send(message, now);

@@ -5,32 +5,28 @@
 #include <chrono>
 
 template<typename _Message>
-class message_swallower
+struct message_swallower
 {
-public:
 	void operator()(const _Message& message)
 	{ }
 };
 
-class chrono_timestamp_threshold
+struct chrono_timestamp_threshold
 {
-public:
 	chrono_timestamp_threshold(std::chrono::milliseconds milliseconds) :
 		milliseconds(milliseconds)
 	{ }
 
-	bool operator()(std::chrono::milliseconds now, std::chrono::milliseconds last)
+	bool operator()(std::chrono::milliseconds now, std::chrono::milliseconds timestamp)
 	{
-		return (now - last) < milliseconds;
+		return (now - timestamp) < milliseconds;
 	}
 
-private:
 	std::chrono::milliseconds milliseconds;
 };
 
-class chrono_timestamper
+struct chrono_timestamper
 {
-public:
 	std::chrono::milliseconds operator()()
 	{
 		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());

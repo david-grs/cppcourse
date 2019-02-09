@@ -12,10 +12,10 @@ public:
 	{ }
 };
 
-class chrono_timestamp_validator
+class chrono_timestamp_threshold
 {
 public:
-	chrono_timestamp_validator(std::chrono::milliseconds milliseconds) :
+	chrono_timestamp_threshold(std::chrono::milliseconds milliseconds) :
 		milliseconds(milliseconds)
 	{ }
 
@@ -45,18 +45,18 @@ template<
 	typename _MessageDisposer = message_swallower<_Message>,
 	typename _Timestamp = std::chrono::milliseconds,
 	typename _Timestamper = chrono_timestamper,
-	typename _TimestampValidator = chrono_timestamp_validator
+	typename _TimestampThreshold = chrono_timestamp_threshold
 >
-message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampValidator> make_message_throttler(
+message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold> make_message_throttler(
 	_MessageConsumer messageConsumer = {},
 	_MessageDisposer messageDisposer = {},
 	_Timestamper timestamper = {},
-	_TimestampValidator timestampValidator = { std::chrono::milliseconds {1000} }
+	_TimestampThreshold timestampThreshold = { std::chrono::milliseconds {1000} }
 )
 {
-	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampValidator>(
+	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold>(
 		messageConsumer,
 		messageDisposer,
 		timestamper,
-		timestampValidator);
+		timestampThreshold);
 }

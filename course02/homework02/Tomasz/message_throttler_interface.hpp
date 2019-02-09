@@ -11,7 +11,7 @@ template<
 	typename _MessageDisposer,
 	typename _Timestamp,
 	typename _Timestamper,
-	typename _TimestampValidator,
+	typename _TimestampThreshold,
 	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>
 >
 class message_throttler_interface
@@ -21,11 +21,11 @@ public:
 		const _MessageConsumer& messageConsumer, 
 		const _MessageDisposer& messageDisposer, 
 		const _Timestamper& timestamper,
-		const _TimestampValidator& timestampValidator) :
+		const _TimestampThreshold & timestampThreshold) :
 		mMessageConsumer(messageConsumer),
 		mMessageDisposer(messageDisposer),
 		mTimestamper(timestamper),
-		mTimestampValidator(timestampValidator)
+		mTimestampThreshold(timestampThreshold)
 	{ }
 
 	message_throttler_interface& send(const _Message& message)
@@ -41,7 +41,7 @@ public:
 private:
 	void try_make_space_in_buffer(const _Timestamp& now)
 	{
-		if (mBuffer.full() && !mTimestampValidator(now, mBuffer.front()))
+		if (mBuffer.full() && !mTimestampThreshold(now, mBuffer.front()))
 			mBuffer.pop();
 	}
 
@@ -68,7 +68,7 @@ private:
 	_MessageDisposer mMessageDisposer;
 
 	_Timestamper mTimestamper;
-	_TimestampValidator mTimestampValidator;
+	_TimestampThreshold mTimestampThreshold;
 
 	_Buffer mBuffer;
 };

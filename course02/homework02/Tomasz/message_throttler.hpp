@@ -12,8 +12,8 @@ template<
 	typename _MessageDisposer,
 	typename _Timestamp,
 	typename _Timestamper,
-	typename _TimestampValidator,
-	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampValidator>,
+	typename _TimestampThreshold,
+	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold>,
 	typename _Map = std::map<_ClientId, _MessageThrottlerInterface>
 >
 class message_throttler
@@ -23,17 +23,17 @@ public:
 		const _MessageConsumer& messageConsumer, 
 		const _MessageDisposer& messageDisposer, 
 		const _Timestamper& timestamper,
-		const _TimestampValidator& timestampValidator) :
+		const _TimestampThreshold& timestampThreshold) :
 		mMessageConsumer(messageConsumer),
 		mMessageDisposer(messageDisposer),
-		mTimestampValidator(timestampValidator)
+		mTimestampThreshold(timestampThreshold)
 	{ }
 
 	_MessageThrottlerInterface& from(const _ClientId& clientId)
 	{
 		return mClients.try_emplace(
 			clientId, 
-			mMessageConsumer, mMessageDisposer, mTimestamper, mTimestampValidator
+			mMessageConsumer, mMessageDisposer, mTimestamper, mTimestampThreshold
 		).first->second;
 	}
 
@@ -42,7 +42,7 @@ private:
 	_MessageDisposer mMessageDisposer;
 
 	_Timestamper mTimestamper;
-	_TimestampValidator mTimestampValidator;
+	_TimestampThreshold mTimestampThreshold;
 
 	_Map mClients;
 };

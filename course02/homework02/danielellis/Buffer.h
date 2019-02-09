@@ -3,6 +3,7 @@
 #include <deque>
 #include <chrono>
 #include <vector>
+#include <stdexcept>
 
 struct WindowConfig
 {
@@ -21,7 +22,7 @@ template<class Message>
 class Buffer
 {
 public:
-	Buffer(WindowConfig& conf) : mWindowConfig(conf) {}
+	Buffer(WindowConfig& conf);
 	void TryToAddMessage(const Message& message);
 	std::vector<Message> DumpMessages() const;
 
@@ -31,6 +32,14 @@ private:
 	WindowConfig mWindowConfig;
 	std::deque<TimestampedMessage<Message> > mTimestampedMessages;
 };
+
+template<class Message>
+Buffer<Message>::Buffer(WindowConfig& conf) :
+		mWindowConfig(conf)
+{
+	if (conf.mMaxNumMessages <= 0)
+		throw std::runtime_error("Invalid configuration: max number of messages per time window must be positive!");
+}
 
 template<class Message>
 bool Buffer<Message>::CanAddMessage(std::chrono::time_point<std::chrono::steady_clock> currentTime) const

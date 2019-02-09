@@ -22,7 +22,7 @@ template<class Message>
 class Buffer
 {
 public:
-	Buffer(WindowConfig& conf);
+	Buffer(const WindowConfig& conf);
 	void TryToAddMessage(const Message& message);
 	std::vector<Message> DumpMessages() const;
 
@@ -34,7 +34,7 @@ private:
 };
 
 template<class Message>
-Buffer<Message>::Buffer(WindowConfig& conf) :
+Buffer<Message>::Buffer(const WindowConfig& conf) :
 		mWindowConfig(conf)
 {
 	if (conf.mMaxNumMessages <= 0)

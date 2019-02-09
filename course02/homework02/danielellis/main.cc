@@ -58,10 +58,27 @@ void TestDumpQuietClient()
 	assert(dump.size() == 0);
 }
 
+void TestNegativeNumMessagesInWindowConf()
+{
+	WindowConfig conf;
+	conf.mMaxNumMessages = -5;
+	bool failed = true;
+	try
+	{
+		auto slidingWindow = SlidingWindow<int>(conf);
+	}
+	catch (std::exception e)
+	{
+		failed = false;
+	}
+	assert(!failed);
+}
+
 int main()
 {
 	TestDroppedLastMessage();
 	TestMultipleClients();
 	TestDumpQuietClient();
+	TestNegativeNumMessagesInWindowConf();
 	return 0;
 }

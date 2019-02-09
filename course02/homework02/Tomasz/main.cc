@@ -1,11 +1,32 @@
 #include "message_throttler_commons.hpp"
 
 #include <functional>
+#include <iostream>
 
 using Message = int;
 using UserId = std::size_t;
 
-void basic_test()
+void buffer_empty_test()
+{
+	short_circular_buffer<UserId, 4> buffer;
+
+	assert(buffer.empty());
+}
+
+void buffer_full_test()
+{
+	short_circular_buffer<UserId, 4> buffer;
+
+	buffer.push(1);
+	buffer.push(2);
+	buffer.push(3);
+	buffer.push(4);
+
+	assert(buffer.full());
+	assert(buffer.front() == 1);
+}
+
+void throttler_test()
 {
 	Message last_consumed_message = 0;
 
@@ -20,7 +41,7 @@ void basic_test()
 	assert(last_consumed_message == 3);
 }
 
-void dispose_test()
+void throttler_dispose_test()
 {
 	Message last_consumed_message = 0;
 	Message last_disposed_message = 0;
@@ -38,11 +59,13 @@ void dispose_test()
 	message_bus.from(1).send(6);
 
 	assert(last_consumed_message == 4);
-	assert(last_consumed_message == 6);
+	assert(last_disposed_message == 6);
 }
 
 int main()
 {
-	basic_test();
-	dispose_test();
+	buffer_empty_test();
+	buffer_full_test();
+	//throttler_test();
+	//throttler_dispose_test();
 }

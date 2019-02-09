@@ -28,12 +28,14 @@ public:
 		mTimestampValidator(timestampValidator)
 	{ }
 
-	void send(const _Message& message)
+	message_throttler_interface& send(const _Message& message)
 	{
 		auto now = _Timestamper{}();
 
 		try_make_space_in_buffer(now);
 		try_send(message, now);
+
+		return *this;
 	}
 
 private:

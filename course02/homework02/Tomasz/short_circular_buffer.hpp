@@ -9,22 +9,23 @@ class short_circular_buffer
 public:
 	short_circular_buffer() :
 		mBegin(0),
-		mEnd(1)
+		mSize(0)
 	{ }
 
 	void push(const _Ty& value)
 	{
 		assert(!full());
 
-		mBuffer[mEnd] = value;
-		mEnd = next_index(mEnd);
+		mBuffer[crop_index(mBegin + mSize)] = value;
+		mSize++;
 	}
 
 	void pop()
 	{
 		assert(!empty());
 
-		mBegin = next_index(mBegin);
+		mBegin = crop_index(mBegin + 1);
+		mSize--;
 	}
 
 	_Ty& front()
@@ -36,23 +37,22 @@ public:
 
 	bool empty() const
 	{
-		return mEnd == next_index(mBegin);
+		return mSize == 0;
 	}
 
 	bool full() const
 	{
-		return mEnd == mBegin;
+		return mSize == _Size;
 	}
 
-
 private:
-	size_t next_index(std::size_t index) const
+	size_t crop_index(std::size_t index) const
 	{
-		return (mBegin + 1) % _Size;
+		return index % _Size;
 	}
 
 	std::array<_Ty, _Size> mBuffer;
 
 	std::size_t mBegin;
-	std::size_t mEnd;
+	std::size_t mSize;
 };

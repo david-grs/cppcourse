@@ -1,18 +1,13 @@
 #pragma once
 
-#include <chrono>
-
-#include "short_circular_buffer.hpp"
-
 template<
-	std::size_t _BufferSize,
 	typename _Message,
 	typename _MessageConsumer,
 	typename _MessageDisposer,
 	typename _Timestamp,
 	typename _Timestamper,
 	typename _TimestampThreshold,
-	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>
+	typename _Buffer
 >
 class message_throttler_interface
 {

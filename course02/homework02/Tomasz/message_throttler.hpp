@@ -1,22 +1,17 @@
 #pragma once
 
-#include<map>
 #include<memory>
-
-#include "message_throttler_interface.hpp"
 
 template<
 	typename _ClientId,
-	std::size_t _BufferSize,
 	typename _Message,
 	typename _MessageConsumer,
 	typename _MessageDisposer,
 	typename _Timestamp,
 	typename _Timestamper,
 	typename _TimestampThreshold,
-	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>,
-	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer>,
-	typename _Map = std::map<_ClientId, std::unique_ptr<_MessageThrottlerInterface>>
+	typename _MessageThrottlerInterface,
+	typename _Map
 >
 class message_throttler
 {

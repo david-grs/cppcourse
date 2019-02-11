@@ -18,10 +18,10 @@ class message_throttler_interface
 {
 public:
 	message_throttler_interface(
-		const _MessageConsumer& messageConsumer, 
-		const _MessageDisposer& messageDisposer, 
-		const _Timestamper& timestamper,
-		const _TimestampThreshold & timestampThreshold) :
+		_MessageConsumer& messageConsumer, 
+		_MessageDisposer& messageDisposer, 
+		_Timestamper& timestamper,
+		_TimestampThreshold & timestampThreshold) :
 		mMessageConsumer(messageConsumer),
 		mMessageDisposer(messageDisposer),
 		mTimestamper(timestamper),
@@ -67,11 +67,11 @@ private:
 		mMessageDisposer(message);
 	}
 
-	_MessageConsumer mMessageConsumer;
-	_MessageDisposer mMessageDisposer;
+	_MessageConsumer& mMessageConsumer;
+	_MessageDisposer& mMessageDisposer;
 
-	_Timestamper mTimestamper;
-	_TimestampThreshold mTimestampThreshold;
+	_Timestamper& mTimestamper;
+	_TimestampThreshold& mTimestampThreshold;
 
 	_Buffer mBuffer;
 };

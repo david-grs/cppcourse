@@ -41,16 +41,19 @@ template<
 	typename _MessageConsumer = message_swallower<_Message>,
 	typename _MessageDisposer = message_swallower<_Message>,
 	typename _Timestamper = chrono_timestamper,
-	typename _TimestampThreshold = chrono_timestamp_threshold
+	typename _TimestampThreshold = chrono_timestamp_threshold,
+	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>,
+	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer>,
+	typename _Map = std::map<_ClientId, std::unique_ptr<_MessageThrottlerInterface>>
 >
-message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold> make_message_throttler(
+message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer, _MessageThrottlerInterface, _Map> make_message_throttler(
 	_MessageConsumer messageConsumer = {},
 	_MessageDisposer messageDisposer = {},
 	_TimestampThreshold timestampThreshold = { std::chrono::milliseconds {1000} },
 	_Timestamper timestamper = {}
 )
 {
-	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold>(
+	return message_throttler<_ClientId, _BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer>(
 		messageConsumer,
 		messageDisposer,
 		timestamper,

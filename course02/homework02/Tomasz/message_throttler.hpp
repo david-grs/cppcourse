@@ -14,7 +14,8 @@ template<
 	typename _Timestamp,
 	typename _Timestamper,
 	typename _TimestampThreshold,
-	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold>,
+	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>,
+	typename _MessageThrottlerInterface = message_throttler_interface<_BufferSize, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer>,
 	typename _Map = std::map<_ClientId, std::unique_ptr<_MessageThrottlerInterface>>
 >
 class message_throttler

@@ -28,6 +28,9 @@ public:
 		mTimestampThreshold(timestampThreshold)
 	{ }
 
+	message_throttler_interface(const message_throttler_interface&) = delete;
+	message_throttler_interface& operator=(const message_throttler_interface&) = delete;
+
 	message_throttler_interface& send(const _Message& message)
 	{
 		auto now = mTimestamper();

@@ -19,23 +19,6 @@ struct TimestampedMessage
 	std::string mText;
 	Timestamp mArrivalTime;
 };
-/*
-class PerUserThrottle
-{
-friend class Throttle;
-
-public:
-	PerUserThrottle(UserID id)
-
-private:
-	void EnqueueMessage(std::string message);
-	void FlushMessages(Timestamp ts);
-
-	std
-	std::deque<TimestampedMessage> mQueue;
-}
-*/
-
 
 class Throttle
 {

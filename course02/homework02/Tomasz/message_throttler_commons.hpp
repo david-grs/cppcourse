@@ -3,7 +3,6 @@
 #include <map>
 #include <chrono>
 
-#include "short_circular_buffer.hpp"
 #include "message_throttler.hpp"
 #include "message_throttler_interface.hpp"
 
@@ -14,21 +13,7 @@ struct message_swallower
 	{ }
 };
 
-struct chrono_timestamp_threshold
-{
-	chrono_timestamp_threshold(std::chrono::milliseconds milliseconds) :
-		milliseconds(milliseconds)
-	{ }
-
-	bool operator()(std::chrono::milliseconds now, std::chrono::milliseconds timestamp)
-	{
-		return (now - timestamp) < milliseconds;
-	}
-
-	std::chrono::milliseconds milliseconds;
-};
-
-struct chrono_timestamper
+struct chrono_clock
 {
 	std::chrono::milliseconds operator()()
 	{
@@ -38,27 +23,21 @@ struct chrono_timestamper
 
 template<
 	typename _ClientId,
-	std::size_t _BufferSize,
 	typename _Message,
-	typename _Timestamp = std::chrono::milliseconds,
+	typename _Clock = chrono_clock,
 	typename _MessageConsumer = message_swallower<_Message>,
-	typename _MessageDisposer = message_swallower<_Message>,
-	typename _Timestamper = chrono_timestamper,
-	typename _TimestampThreshold = chrono_timestamp_threshold,
-	typename _Buffer = short_circular_buffer<_Timestamp, _BufferSize>,
-	typename _MessageThrottlerInterface = message_throttler_interface<_Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _Buffer>,
-	typename _Map = std::map<_ClientId, std::unique_ptr<_MessageThrottlerInterface>>
+	typename _MessageDisposer = message_swallower<_Message>
 >
-message_throttler<_ClientId, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _MessageThrottlerInterface, _Map> make_message_throttler(
+message_throttler<_ClientId, _Message, _Clock, _MessageConsumer, _MessageDisposer> make_message_throttler(
+	std::size_t bufferSize,
+	decltype(_Clock{}() - _Clock{}()) threashold,
 	_MessageConsumer messageConsumer = {},
-	_MessageDisposer messageDisposer = {},
-	_TimestampThreshold timestampThreshold = { std::chrono::milliseconds {1000} },
-	_Timestamper timestamper = {}
+	_MessageDisposer messageDisposer = {}
 )
 {
-	return message_throttler<_ClientId, _Message, _MessageConsumer, _MessageDisposer, _Timestamp, _Timestamper, _TimestampThreshold, _MessageThrottlerInterface, _Map>(
+	return message_throttler<_ClientId, _Message, _Clock, _MessageConsumer, _MessageDisposer>(
+		bufferSize,
+		threashold,
 		messageConsumer,
-		messageDisposer,
-		timestamper,
-		timestampThreshold);
+		messageDisposer);
 }

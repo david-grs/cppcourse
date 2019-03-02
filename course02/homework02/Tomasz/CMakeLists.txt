@@ -5,8 +5,7 @@ set(sources
 	message_throttler.hpp
 	message_throttler_interface.hpp
 	message_throttler_commons.hpp
-	short_circular_buffer.hpp
 )
 
 add_executable(main ${sources})
-
+include_directories(${Boost_INCLUDE_DIR})

@@ -1,7 +1,7 @@
 #include <cinder/Area.h>
 #include <glm/vec2.hpp>
 
-void ReturnToPlayArea(cinder::Area &bounds, glm::vec2 &pos)
+void ReturnToPlayArea(const cinder::Area &bounds, glm::vec2 &pos)
 {
     if(pos.x > bounds.x2)
         pos.x = bounds.x1 + (pos.x - bounds.x2);

@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.0)
 project(homework)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 if (NOT DEFINED CINDER_PATH)
     message(FATAL_ERROR "CINDER_PATH not set, e.g. -DCINDER_PATH=~/src/cinder")

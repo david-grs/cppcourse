@@ -2,18 +2,23 @@
 
 #include <glm/vec2.hpp>
 #include "collidable.h"
+class Laser;
 
 class Asteroid : public Collidable {
 public:
-    Asteroid(GameObject& parent, glm::vec2 direction, glm::vec2 position, float size, float speed);
+    Asteroid(GameWorld* root, glm::vec2 direction, glm::vec2 position, float size, float speed);
 
-    void Update(float frameDelta) override;
+    void Update(FrameDelta frameDelta) override;
     void Draw() override;
-    void Collide(Collidable& other) override;
-    void Break();
+
+    void Collide(Laser &laser);
+
+    template<typename T>
+    void Collide(T&){}
 private:
     glm::vec2 mDirection;
     float mSpeed;
+    void Break();
 };
 
 

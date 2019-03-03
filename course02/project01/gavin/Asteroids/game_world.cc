@@ -6,23 +6,36 @@
 using namespace std::chrono_literals;
 
 GameWorld::GameWorld(Controller &controller) :
-        GameObject(),
-        mController(controller){
-    CreateGameObject<Ship>(ci::app::getWindowCenter(), glm::vec2{0.0, 1.0}, mController);
+        mController(controller)
+{
+    SpawnObject<Ship>(ci::app::getWindowCenter(), glm::vec2{0.0, 1.0}, &mController);
     RegisterCallback([this](){
         SpawnAsteroid();
     }, 5s);
 }
 
-void GameWorld::Update(const float frameDelta)
+void GameWorld::Update(FrameDelta frameDelta)
 {
     UpdateCollisions();
-    GameObject::Update(frameDelta);
+    mCallbacks.erase(std::remove_if(mCallbacks.begin(), mCallbacks.end(), [this](auto &callback){return Call(callback);}), mCallbacks.end());
+    mWorldContents.RemoveIf([](auto&& child){return child.GetDestroyed();});
+    mWorldContents.ForAll([frameDelta](auto&& child){child.Update(frameDelta);});
 }
 
 void GameWorld::Draw()
 {
-    GameObject::Draw();
+    mWorldContents.ForAll([](auto&& child){child.Draw();});
+}
+
+bool GameWorld::Call(Callback &callback)
+{
+    auto now = std::chrono::steady_clock::now();
+    if(now > std::get<1>(callback))
+    {
+        std::get<0>(callback)();
+        return true;
+    }
+    return false;
 }
 
 void GameWorld::SpawnAsteroid()
@@ -34,19 +47,12 @@ void GameWorld::SpawnAsteroid()
     }, 10s);
 }
 
-void GameWorld::AddCollider(Collidable* collidable)
-{
-    mColliders.push_back(collidable);
-}
-
 void GameWorld::UpdateCollisions() {
-    //FIXME: collection of references without ownership?
-    for(auto a : mColliders)
-        for(auto b : mColliders)
-            if(a != b and a->Overlaps(*b))
-                a->Collide(*b);
-}
+    mWorldContents.ForAllOf<Collidable>([&](auto&& a){
+        mWorldContents.ForAllOf<Collidable>([&](auto&& b){
+            if(a.GetId() != b.GetId() and a.Overlaps(b))
+                a.Collide(b);
+        });
+    });
 
-void GameWorld::RemoveCollider(Collidable *collidable) {
-    mColliders.erase(std::remove_if(mColliders.begin(), mColliders.end(), [collidable](Collidable* collider){return collider == collidable;}), mColliders.end());
 }

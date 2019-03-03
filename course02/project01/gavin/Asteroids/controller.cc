@@ -1,7 +1,3 @@
-//
-// Created by gavinparker on 29/12/18.
-//
-
 #include "controller.h"
 using namespace ci::app;
 

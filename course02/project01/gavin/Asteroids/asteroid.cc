@@ -1,39 +1,37 @@
-#include "asteroid.h"
-#include "utils.h"
 #include <cinder/gl/gl.h>
 #include <cinder/app/App.h>
 #include <glm/gtc/random.hpp>
+#include "game_world.h"
+#include "utils.h"
 
-Asteroid::Asteroid(GameObject& parent, glm::vec2 direction, glm::vec2 position, float size, float speed) :
-                Collidable(parent, Tag::Asteroid, position, size),
+using namespace std::chrono_literals;
+
+
+Asteroid::Asteroid(GameWorld* root, glm::vec2 direction, glm::vec2 position, float size, float speed) :
+                Collidable(root, root->GetId(), position, size),
                 mDirection(direction),
                 mSpeed(speed) {
 }
 
-void Asteroid::Update(float frameDelta)
+void Asteroid::Update(FrameDelta frameDelta)
 {
-    auto dist = mDirection * mSpeed * frameDelta;
+    auto dist = mDirection * mSpeed * frameDelta.count();
     mPosition += dist;
     auto bounds = ci::app::getWindowBounds();
     if(!bounds.contains(mPosition))
         ReturnToPlayArea(bounds, mPosition);
-    GameObject::Update(frameDelta);
 }
 
 void Asteroid::Draw()
 {
     ci::gl::drawStrokedCircle(mPosition, mSize);
-    GameObject::Draw();
 }
 
-void Asteroid::Collide(Collidable &other)
+void Asteroid::Collide(Laser&)
 {
-    if(other.GetTag() == Tag::Laser)
-    {
-        Destroy();
-        if(mSize > 5)
-            Break();
-    }
+    Destroy();
+    if(mSize > 5)
+        Break();
 }
 
 void Asteroid::Break()
@@ -41,6 +39,6 @@ void Asteroid::Break()
     for(int i = 0; i < 2; i++)
     {
         auto direction = glm::sphericalRand(1.0);
-        CreateFreeGameObject<Asteroid>(glm::normalize(direction), mPosition, mSize/2, mSpeed*2);
+        mRoot->CreateGameObject<Asteroid>(glm::normalize(direction), mPosition, mSize/2, mSpeed*2);
     }
 }

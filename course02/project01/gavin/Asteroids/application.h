@@ -1,10 +1,9 @@
 #pragma once
+#include "controller.h"
+#include "game_world.h"
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 #include <cinder/gl/gl.h>
-#include "ship.h"
-#include "controller.h"
-#include "game_world.h"
 
 using namespace ci::app;
 

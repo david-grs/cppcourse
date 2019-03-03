@@ -13,10 +13,10 @@ public:
     void Rotate(float degreesClockwise);
     void Fire();
 
-    void Collide(Asteroid &asteroid);
+    void Collide(const Asteroid &asteroid);
 
     template<typename T>
-    void Collide(T&){}
+    void Collide(const T&){}
 
 private:
     glm::vec2 mHeading;

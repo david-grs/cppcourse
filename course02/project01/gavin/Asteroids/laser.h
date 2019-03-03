@@ -11,7 +11,7 @@ public:
     void Draw() override;
 
     template<typename T>
-    void Collide(T&){}
+    void Collide(const T&){}
 
 private:
     glm::vec2 mDirection;

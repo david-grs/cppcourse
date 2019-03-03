@@ -27,7 +27,7 @@ void Asteroid::Draw()
     ci::gl::drawStrokedCircle(mPosition, mSize);
 }
 
-void Asteroid::Collide(Laser&)
+void Asteroid::Collide(const Laser&)
 {
     Destroy();
     if(mSize > 5)

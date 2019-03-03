@@ -11,10 +11,10 @@ public:
     void Update(FrameDelta frameDelta) override;
     void Draw() override;
 
-    void Collide(Laser &laser);
+    void Collide(const Laser &laser);
 
     template<typename T>
-    void Collide(T&){}
+    void Collide(const T&){}
 private:
     glm::vec2 mDirection;
     float mSpeed;

@@ -1,3 +1,10 @@
+# Pacman
+<img src="https://github.com/dovito/Pacman/blob/master/pacman.gif" width="400" height="300">
+
+## Improvement TODOs:
+* Add sensible ghost walking algorithm
+* Improve pacman's controling
+
 # Setup
 ## Linux
 ```

@@ -1,9 +1,8 @@
 #include <iostream>
 #include <string>
 
-class Date
+struct Date
 {
-public:
 	explicit Date(int year, int month, int day) :
 		year{year},
 		month{month},

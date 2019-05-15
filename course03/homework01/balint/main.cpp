@@ -29,7 +29,7 @@ public:
 
   operator bool() const { return isEmpty(); }
 
-  LinkedListInt cad() {
+  LinkedListInt cad() const {
     if (isEmpty()) {
       return emptyList();
     }
@@ -87,7 +87,20 @@ LinkedListInt cons(int i, LinkedListInt &l) {
 
 std::unique_ptr<int> car(LinkedListInt l) { return l.car(); }
 
-LinkedListInt cad(LinkedListInt &l) { return l.cad(); }
+LinkedListInt cad(const LinkedListInt &l) { return l.cad(); }
+
+LinkedListInt pushBack(LinkedListInt& orig, int newelem){
+  if (orig){
+    LinkedListInt tmp1 = cad(orig);
+    LinkedListInt tmp2 = pushBack(tmp1, newelem);
+
+    return LinkedListInt(*car(orig), tmp2);
+  }
+  else{
+    return LinkedListInt(newelem);
+  }
+}
+
 int main() {
   LinkedListInt test = LinkedListInt();
   if (test.isEmpty()) {
@@ -122,6 +135,14 @@ int main() {
   }
   if (!test4.isEmpty()) {
     std::cout << "test4 is NOT empty" << std::endl;
+  }
+
+  LinkedListInt test5 = pushBack(test3, 99);
+  if (test5.isEmpty()) {
+    std::cout << "test5 is empty" << std::endl;
+  }
+  if (!test5.isEmpty()) {
+    std::cout << "test5 is NOT empty" << std::endl;
   }
 
   return 0;

@@ -6,12 +6,15 @@
 class Date
 {
 public:
+
+	Date() : Date(1970, 1, 1) {}
+
 	explicit Date(int year, int month, int day) :
 		mYear(year),
 		mMonth(month),
 		mDay(day)
 	{
-		assert(IsValid());
+		ThrowOnInvalidDate();
 	}
 
 	int GetYear() const { return mYear; }
@@ -21,30 +24,20 @@ public:
 	void SetYear(int year)
 	{
 		mYear = year;
-		assert(IsValid());
+		ThrowOnInvalidDate();
 	}
 
 	void SetMonth(int month)
 	{
 		mMonth = month;
-		assert(IsValid());
+		ThrowOnInvalidDate();
 	}
 
 	void SetDay(int day)
 	{
 		mDay = day;
-		assert(IsValid());
+		ThrowOnInvalidDate();
 	}
-
-	std::string AsString() const
-	{
-		std::stringstream ss;
-		ss.fill('0');
-		ss << std::setw(4) << mYear;
-		ss << std::setw(2) << mMonth;
-		ss << std::setw(2) << mDay;
-		return ss.str();
-	};
 
 private:
 	int mYear, mMonth, mDay;
@@ -54,13 +47,34 @@ private:
 		// Edge cases not handled
 		return (mYear > 0) && (mMonth > 0 && mMonth <= 12) && (mDay <= 31);
 	}
+
+	class InvalidDateException {};
+
+	void ThrowOnInvalidDate() const
+	{
+		if (not IsValid())
+			throw InvalidDateException();
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Date& date)
+	{
+		std::stringstream ss;
+		ss.fill('0');
+		ss << std::setw(4) << date.mYear;
+		ss << std::setw(2) << date.mMonth;
+		ss << std::setw(2) << date.mDay;
+		return os << ss.str();
+	}
 };
 
 int main()
 {
-	Date date(1993, 10, 20);
-	std::cout << date.AsString() << std::endl;
+	Date defaultDate;
+	std::cout << defaultDate << std::endl;
 
-	// Will terminate at an assertion 
+	Date date(1993, 10, 20);
+	std::cout << date << std::endl;
+
+	// Will throw 
 	Date wrongDate(2015, 13, 20);
 }

@@ -80,6 +80,28 @@ TEST(LLintTest, nth) {
   }
 }
 
+TEST(LLintTest, pushBack) {
+
+  LLint lshort = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
+  LLint l = pushBack(lshort, 42);
+  ASSERT_EQ(nth(l, 0), 1);
+  ASSERT_EQ(nth(l, 1), 2);
+  ASSERT_EQ(nth(l, 2), 3);
+  ASSERT_EQ(nth(l, 3), 4);
+  ASSERT_EQ(nth(l, 4), 42);
+  try {
+    int i = nth(l, 5);
+    i += 1;
+  } catch (std::runtime_error const &err) {
+    EXPECT_EQ(err.what(), std::string("Car called on empty list."));
+  }
+  try {
+    int i = nth(l, -1);
+    i += 1;
+  } catch (std::runtime_error const &err) {
+    EXPECT_EQ(err.what(), std::string("Cant index with negative index"));
+  }
+}
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

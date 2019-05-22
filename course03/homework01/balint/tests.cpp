@@ -54,21 +54,15 @@ TEST(LLintTest, cdrOnEmpty){
   ASSERT_EQ(i, 42);
   
 }
-// TEST(LLintTest, cdrOnOneElement){
-//   Node  m {3};
-//   LLint l = m;
-//   LLint cdrOfL = cdr(l);
-//   int i=99;
-//   if (cdrOfL.list){
-//     i=-1;
-//   }
-//   else{
-//     i=42;
-//   }
+TEST(LLintTest, consReading){
 
-//   ASSERT_EQ(i, 42);
+  LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
+  ASSERT_EQ(car(l), 1);
+  ASSERT_EQ(car(cdr(l)), 2);
+  ASSERT_EQ(car(cdr(cdr(l))), 3);
+  ASSERT_EQ(car(cdr(cdr(cdr(l)))), 4);
   
-// }
+}
 
 
 int main(int argc, char **argv) {

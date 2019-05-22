@@ -40,22 +40,23 @@ public:
     list = other.list ? std::make_unique<Node>( *other.list ): nullptr;
     return *this;
   }
-  LLint(Lst& lst) { list = lst ? std::make_unique<Node>(*lst): nullptr ; }
+  LLint(const Lst& lst) { list = lst ? std::make_unique<Node>(*lst): nullptr ; }
   LLint(Node n) { list = std::make_unique<Node>(n); }
   Node copyNode(){return Node(*list);}
   Node copyNodeNext(){return Node(*( *list ).next);}
+  static LLint emptyList(){return LLint(nullptr);}
 
   Lst list;
 };
 
-int car(LLint& l){
+int car(const LLint& l){
   if ( l ) {
       return (*l.list).elem;}
   else{
     throw std::runtime_error("Car called on empty list.");
   }
 }
-LLint cdr(LLint& l){
+LLint cdr(const LLint& l){
   if (l){
     return LLint(l.list->next);
   }
@@ -63,7 +64,10 @@ LLint cdr(LLint& l){
     return LLint(Node());
   }
 }
-LLint cad(LLint l){
+LLint cons(int i, LLint l){
   // return LLint(*(*l.list).next);
-  return LLint(l.copyNodeNext());
+  Node firstNode = Node(i);
+  Lst restOfList = l.list ? std::make_unique<Node>(*l.list): nullptr ; 
+  firstNode.next = std::move(restOfList);
+  return firstNode;
 }

@@ -37,49 +37,47 @@ public:
   ~LLint() { list.reset(); }
   LLint(const LLint &other) { list = std::make_unique<Node>(*other.list); }
   LLint &operator=(const LLint &other) {
-    list = other.list ? std::make_unique<Node>( *other.list ): nullptr;
+    list = other.list ? std::make_unique<Node>(*other.list) : nullptr;
     return *this;
   }
-  LLint(const Lst& lst) { list = lst ? std::make_unique<Node>(*lst): nullptr ; }
+  LLint(const Lst &lst) { list = lst ? std::make_unique<Node>(*lst) : nullptr; }
   LLint(Node n) { list = std::make_unique<Node>(n); }
-  Node copyNode(){return Node(*list);}
-  Node copyNodeNext(){return Node(*( *list ).next);}
-  static LLint emptyList(){return LLint(nullptr);}
+  Node copyNode() { return Node(*list); }
+  Node copyNodeNext() { return Node(*(*list).next); }
+  static LLint emptyList() { return LLint(nullptr); }
 
   Lst list;
 };
 
-int car(const LLint& l){
-  if ( l ) {
-      return (*l.list).elem;}
-  else{
+int car(const LLint &l) {
+  if (l) {
+    return (*l.list).elem;
+  } else {
     throw std::runtime_error("Car called on empty list.");
   }
 }
-LLint cdr(const LLint& l){
-  if (l){
+LLint cdr(const LLint &l) {
+  if (l) {
     return LLint(l.list->next);
-  }
-  else{
+  } else {
     return LLint(Node());
   }
 }
-LLint cons(int i, LLint l){
+LLint cons(int i, LLint l) {
   // return LLint(*(*l.list).next);
   Node firstNode = Node(i);
-  Lst restOfList = l.list ? std::make_unique<Node>(*l.list): nullptr ; 
+  Lst restOfList = l.list ? std::make_unique<Node>(*l.list) : nullptr;
   firstNode.next = std::move(restOfList);
   return firstNode;
 }
 
-int nth(const LLint& l, int i){
-  if (i<0){
+int nth(const LLint &l, int i) {
+  if (i < 0) {
     throw std::runtime_error("Cant index with negative index");
   }
-  if (i==0){
+  if (i == 0) {
     return car(l);
-  }
-  else{
-    return nth(cdr(l), i-1);
+  } else {
+    return nth(cdr(l), i - 1);
   }
 }

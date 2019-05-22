@@ -82,21 +82,19 @@ int nth(const LLint &l, int i) {
   }
 }
 
-LLint pushBack(const LLint& l, int i){
-  if (l){
+LLint pushBack(const LLint &l, int i) {
+  if (l) {
     return cons(car(l), pushBack(cdr(l), i));
-  }
-  else{
-    
+  } else {
+
     return LLint(i);
   }
 }
 
-int len(const LLint& l){
-  if (l){
+int len(const LLint &l) {
+  if (l) {
     return 1 + len(cdr(l));
-  }
-  else {
+  } else {
     return 0;
   }
 }

@@ -91,3 +91,12 @@ LLint pushBack(const LLint& l, int i){
     return LLint(i);
   }
 }
+
+int len(const LLint& l){
+  if (l){
+    return 1 + len(cdr(l));
+  }
+  else {
+    return 0;
+  }
+}

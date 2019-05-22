@@ -102,6 +102,16 @@ TEST(LLintTest, pushBack) {
     EXPECT_EQ(err.what(), std::string("Cant index with negative index"));
   }
 }
+
+TEST(LLintTest, len) {
+
+  LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
+  ASSERT_EQ(len(l), 4);
+  ASSERT_EQ(len(cdr(l)), 3);
+  ASSERT_EQ(len(cdr(cdr(l))), 2);
+  ASSERT_EQ(len(cdr(cdr(cdr(l)))), 1);
+  ASSERT_EQ(len(cdr(cdr(cdr(cdr(l))))), 0);
+}
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

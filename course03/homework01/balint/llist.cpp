@@ -40,7 +40,7 @@ public:
     list = other.list ? std::make_unique<Node>( *other.list ): nullptr;
     return *this;
   }
-  LLint(Lst& lst) { list = lst ? std::make_unique<Node>(*lst): std::make_unique<Node>(*lst) ; }
+  LLint(Lst& lst) { list = lst ? std::make_unique<Node>(*lst): nullptr ; }
   LLint(Node n) { list = std::make_unique<Node>(n); }
   Node copyNode(){return Node(*list);}
   Node copyNodeNext(){return Node(*( *list ).next);}

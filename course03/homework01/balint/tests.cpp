@@ -63,6 +63,15 @@ TEST(LLintTest, consReading){
   ASSERT_EQ(car(cdr(cdr(cdr(l)))), 4);
   
 }
+TEST(LLintTest, nth){
+
+  LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
+  ASSERT_EQ(nth(l, 0), 1);
+  ASSERT_EQ(nth(l, 1), 2);
+  ASSERT_EQ(nth(l, 2), 3);
+  ASSERT_EQ(nth(l, 3), 4);
+  
+}
 
 
 int main(int argc, char **argv) {

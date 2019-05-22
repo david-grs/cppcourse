@@ -71,3 +71,15 @@ LLint cons(int i, LLint l){
   firstNode.next = std::move(restOfList);
   return firstNode;
 }
+
+int nth(const LLint& l, int i){
+  if (i<0){
+    throw std::runtime_error("Cant index with negative index");
+  }
+  if (i==0){
+    return car(l);
+  }
+  else{
+    return nth(cdr(l), i-1);
+  }
+}

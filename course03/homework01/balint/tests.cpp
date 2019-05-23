@@ -28,7 +28,7 @@ TEST(LLintTest, cars)
 {
   Node m = {3};
   LLint l1 = m;
-  ASSERT_EQ(3, car(l1));
+  ASSERT_EQ(3, l1.car());
 }
 
 TEST(LLintTest, CarOnEmptyThrows)
@@ -37,7 +37,7 @@ TEST(LLintTest, CarOnEmptyThrows)
   LLint l = m;
   try
     {
-      int i = car(l);
+      int i = l.car();
       i += 1;
     }
   catch (std::runtime_error const &err)
@@ -65,10 +65,10 @@ TEST(LLintTest, cdrOnEmpty)
 TEST(LLintTest, consReading)
 {
   LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
-  ASSERT_EQ(car(l), 1);
-  ASSERT_EQ(car(cdr(l)), 2);
-  ASSERT_EQ(car(cdr(cdr(l))), 3);
-  ASSERT_EQ(car(cdr(cdr(cdr(l)))), 4);
+  ASSERT_EQ(l.car(), 1);
+  ASSERT_EQ(cdr(l).car(), 2);
+  ASSERT_EQ(cdr(cdr(l)).car(), 3);
+  ASSERT_EQ(cdr(cdr(cdr(l))).car(), 4);
 }
 TEST(LLintTest, nth)
 {

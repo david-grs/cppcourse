@@ -18,12 +18,12 @@ int main()
   LLint ls2 = ls1;
   ls2.mlist->mnext = std::move(ls3.mlist);
   // LLint ls2_cad = cad(ls2);
-  // std::cout<<"car of ls2: "<<car(ls2)<<std::endl;
+  // std::cout<<"car of ls2: "<<ls2.car()<<std::endl;
 
   LLint consed = cons(100, cons(99, ls1));
-  std::cout << "First elem is: " << car(consed) << std::endl;
-  std::cout << "Second elem is: " << car(cdr(consed)) << std::endl;
-  std::cout << "Third elem is: " << car(cdr(cdr(consed))) << std::endl;
+  std::cout << "First elem is: " << consed.car() << std::endl;
+  std::cout << "Second elem is: " << cdr(consed).car() << std::endl;
+  std::cout << "Third elem is: " << cdr(cdr(consed)).car() << std::endl;
   // Lst n;
   // Lst n = Node(1, Node());
   // Node n = Node();

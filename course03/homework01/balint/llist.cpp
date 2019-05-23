@@ -4,33 +4,33 @@
 
 struct Node
 {
-  int elem;
-  std::unique_ptr<Node> next;
+  int melem;
+  std::unique_ptr<Node> mnext;
 
-  Node() : elem(), next(){};
-  Node(int i) : elem(i), next(){};
+  Node() : melem(), mnext(){};
+  Node(int i) : melem(i), mnext(){};
 
-  ~Node() { next.reset(); }
+  ~Node() { mnext.reset(); }
   Node(const Node &other)
   {
-    if (other.elem)
+    if (other.melem)
       {
-	elem = other.elem;
+	melem = other.melem;
       }
-    if (other.next)
+    if (other.mnext)
       {
-	next = std::make_unique<Node>(*other.next);
+	mnext = std::make_unique<Node>(*other.mnext);
       }
   }
   Node &operator=(const Node &other)
   {
-    if (other.elem)
+    if (other.melem)
       {
-	elem = other.elem;
+	melem = other.melem;
       }
-    if (other.next)
+    if (other.mnext)
       {
-	next = std::make_unique<Node>(*other.next);
+	mnext = std::make_unique<Node>(*other.mnext);
       }
     return *this;
   }
@@ -41,39 +41,39 @@ typedef std::unique_ptr<Node> Lst;
 class LLint
 {
  public:
-  operator bool() const { return list ? list->elem ? true : false : false; }
-  ~LLint() { list.reset(); }
-  LLint(const LLint &other) { list = std::make_unique<Node>(*other.list); }
+  operator bool() const { return mlist ? mlist->melem ? true : false : false; }
+  ~LLint() { mlist.reset(); }
+  LLint(const LLint &other) { mlist = std::make_unique<Node>(*other.mlist); }
   LLint &operator=(const LLint &other)
   {
-    list = other.list ? std::make_unique<Node>(*other.list) : nullptr;
+    mlist = other.mlist ? std::make_unique<Node>(*other.mlist) : nullptr;
     return *this;
   }
-  LLint(const Lst &lst) { list = lst ? std::make_unique<Node>(*lst) : nullptr; }
-  LLint(Node n) { list = std::make_unique<Node>(n); }
-  Node copyNode() { return Node(*list); }
-  Node copyNodeNext() { return Node(*(*list).next); }
+  LLint(const Lst &lst) { mlist = lst ? std::make_unique<Node>(*lst) : nullptr; }
+  LLint(Node n) { mlist = std::make_unique<Node>(n); }
+  Node copyNode() { return Node(*mlist); }
+  Node copyNodeMnext() { return Node(*(*mlist).mnext); }
   static LLint emptyList() { return LLint(nullptr); }
 
-  Lst list;
+  Lst mlist;
 };
 
 int car(const LLint &l)
 {
   if (l)
     {
-      return (*l.list).elem;
+      return (*l.mlist).melem;
     }
   else
     {
-      throw std::runtime_error("Car called on empty list.");
+      throw std::runtime_error("Car called on empty mlist.");
     }
 }
 LLint cdr(const LLint &l)
 {
   if (l)
     {
-      return LLint(l.list->next);
+      return LLint(l.mlist->mnext);
     }
   else
     {
@@ -82,10 +82,10 @@ LLint cdr(const LLint &l)
 }
 LLint cons(int i, LLint l)
 {
-  // return LLint(*(*l.list).next);
+  // return LLint(*(*l.mlist).mnext);
   Node firstNode = Node(i);
-  Lst restOfList = l.list ? std::make_unique<Node>(*l.list) : nullptr;
-  firstNode.next = std::move(restOfList);
+  Lst restOfList = l.mlist ? std::make_unique<Node>(*l.mlist) : nullptr;
+  firstNode.mnext = std::move(restOfList);
   return firstNode;
 }
 

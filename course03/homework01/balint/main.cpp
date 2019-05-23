@@ -11,12 +11,12 @@ int main()
   Lst tmp2 = std::make_unique<Node>(n);
   Node m2 = m;
   Node m3 = Node(m);
-  // m2.next = std::move(m3);
-  m2.next = std::make_unique<Node>(m3);
+  // m2.mnext = std::move(m3);
+  m2.mnext = std::make_unique<Node>(m3);
   LLint ls1 = LLint(m3);
   LLint ls3 = LLint(n);
   LLint ls2 = ls1;
-  ls2.list->next = std::move(ls3.list);
+  ls2.mlist->mnext = std::move(ls3.mlist);
   // LLint ls2_cad = cad(ls2);
   // std::cout<<"car of ls2: "<<car(ls2)<<std::endl;
 

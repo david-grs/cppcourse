@@ -4,24 +4,24 @@
 TEST(NodeTest, ReadingOut)
 {
   Node m = {3};
-  ASSERT_EQ(3, m.elem);
+  ASSERT_EQ(3, m.melem);
   Node mcopy = m;
-  ASSERT_EQ(3, mcopy.elem);
+  ASSERT_EQ(3, mcopy.melem);
   Node m2 = {4};
-  ASSERT_EQ(4, m2.elem);
+  ASSERT_EQ(4, m2.melem);
   mcopy = m2;
-  ASSERT_EQ(4, mcopy.elem);
+  ASSERT_EQ(4, mcopy.melem);
   Node m3 = Node(m2);
-  ASSERT_EQ(4, m3.elem);
+  ASSERT_EQ(4, m3.melem);
 }
 
 TEST(LLintTest, Creating)
 {
   Node m = {3};
   LLint l1 = m;
-  ASSERT_EQ(3, (*l1.list).elem);
+  ASSERT_EQ(3, (*l1.mlist).melem);
   LLint l2 = l1;
-  ASSERT_EQ(3, (*l2.list).elem);
+  ASSERT_EQ(3, (*l2.mlist).melem);
 }
 
 TEST(LLintTest, cars)
@@ -42,7 +42,7 @@ TEST(LLintTest, CarOnEmptyThrows)
     }
   catch (std::runtime_error const &err)
     {
-      EXPECT_EQ(err.what(), std::string("Car called on empty list."));
+      EXPECT_EQ(err.what(), std::string("Car called on empty mlist."));
     }
 }
 TEST(LLintTest, cdrOnEmpty)
@@ -84,7 +84,7 @@ TEST(LLintTest, nth)
     }
   catch (std::runtime_error const &err)
     {
-      EXPECT_EQ(err.what(), std::string("Car called on empty list."));
+      EXPECT_EQ(err.what(), std::string("Car called on empty mlist."));
     }
   try
     {
@@ -113,7 +113,7 @@ TEST(LLintTest, pushBack)
     }
   catch (std::runtime_error const &err)
     {
-      EXPECT_EQ(err.what(), std::string("Car called on empty list."));
+      EXPECT_EQ(err.what(), std::string("Car called on empty mlist."));
     }
   try
     {

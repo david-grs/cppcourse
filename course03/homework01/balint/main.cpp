@@ -2,7 +2,8 @@
 
 // TESTS
 
-int main() {
+int main()
+{
   int i;
   Node n = {3};
   Node m = {4};
@@ -26,10 +27,13 @@ int main() {
   // Lst n;
   // Lst n = Node(1, Node());
   // Node n = Node();
-  if (ls2) {
-    i = 0;
-  } else {
-    i = 1;
-  }
+  if (ls2)
+    {
+      i = 0;
+    }
+  else
+    {
+      i = 1;
+    }
   std::cout << "Node is: " << i << std::endl;
 }

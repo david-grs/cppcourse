@@ -49,7 +49,7 @@ TEST(LLintTest, cdrOnEmpty)
 {
   Node m;
   LLint l = m;
-  LLint cdrOfL = cdr(l);
+  LLint cdrOfL = l.cdr();
   int i = 99;
   if (cdrOfL)
     {
@@ -66,9 +66,9 @@ TEST(LLintTest, consReading)
 {
   LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
   ASSERT_EQ(l.car(), 1);
-  ASSERT_EQ(cdr(l).car(), 2);
-  ASSERT_EQ(cdr(cdr(l)).car(), 3);
-  ASSERT_EQ(cdr(cdr(cdr(l))).car(), 4);
+  ASSERT_EQ(l.cdr().car(), 2);
+  ASSERT_EQ(l.cdr().cdr().car(), 3);
+  ASSERT_EQ(l.cdr().cdr().cdr().car(), 4);
 }
 TEST(LLintTest, nth)
 {
@@ -130,10 +130,10 @@ TEST(LLintTest, len)
 {
   LLint l = cons(1, cons(2, cons(3, cons(4, LLint::emptyList()))));
   ASSERT_EQ(len(l), 4);
-  ASSERT_EQ(len(cdr(l)), 3);
-  ASSERT_EQ(len(cdr(cdr(l))), 2);
-  ASSERT_EQ(len(cdr(cdr(cdr(l)))), 1);
-  ASSERT_EQ(len(cdr(cdr(cdr(cdr(l))))), 0);
+  ASSERT_EQ(len(l.cdr()), 3);
+  ASSERT_EQ(len(l.cdr().cdr()), 2);
+  ASSERT_EQ(len(l.cdr().cdr().cdr()), 1);
+  ASSERT_EQ(len(l.cdr().cdr().cdr().cdr()), 0);
 }
 int main(int argc, char **argv)
 {

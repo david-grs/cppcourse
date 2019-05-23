@@ -22,8 +22,8 @@ int main()
 
   LLint consed = cons(100, cons(99, ls1));
   std::cout << "First elem is: " << consed.car() << std::endl;
-  std::cout << "Second elem is: " << cdr(consed).car() << std::endl;
-  std::cout << "Third elem is: " << cdr(cdr(consed)).car() << std::endl;
+  std::cout << "Second elem is: " << consed.cdr().car() << std::endl;
+  std::cout << "Third elem is: " << consed.cdr().cdr().car() << std::endl;
   // Lst n;
   // Lst n = Node(1, Node());
   // Node n = Node();

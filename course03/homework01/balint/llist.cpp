@@ -55,32 +55,32 @@ class LLint
   Node copyNodeMnext() { return Node(*(*mlist).mnext); }
   static LLint emptyList() { return LLint(nullptr); }
   // int operator[](int i) const {return nth(*this, i);}
-  int car() const 
+  int car() const
   {
     if (*this)
       {
-        return (*mlist).melem;
+	return (*mlist).melem;
       }
     else
       {
-        throw std::runtime_error("Car called on empty mlist.");
+	throw std::runtime_error("Car called on empty mlist.");
+      }
+  }
+  LLint cdr() const
+  {
+    if (*this)
+      {
+	return LLint(mlist->mnext);
+      }
+    else
+      {
+	return LLint(nullptr);
       }
   }
 
   Lst mlist;
 };
 
-LLint cdr(const LLint &l)
-{
-  if (l)
-    {
-      return LLint(l.mlist->mnext);
-    }
-  else
-    {
-      return LLint(Node());
-    }
-}
 LLint cons(int i, LLint l)
 {
   // return LLint(*(*l.mlist).mnext);
@@ -102,7 +102,7 @@ int nth(const LLint &l, int i)
     }
   else
     {
-      return nth(cdr(l), i - 1);
+      return nth(l.cdr(), i - 1);
     }
 }
 
@@ -110,7 +110,7 @@ LLint pushBack(const LLint &l, int i)
 {
   if (l)
     {
-      return cons(l.car(), pushBack(cdr(l), i));
+      return cons(l.car(), pushBack(l.cdr(), i));
     }
   else
     {
@@ -122,7 +122,7 @@ int len(const LLint &l)
 {
   if (l)
     {
-      return 1 + len(cdr(l));
+      return 1 + len(l.cdr());
     }
   else
     {

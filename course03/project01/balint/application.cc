@@ -41,14 +41,15 @@ class BasicApp : public App
   void drawRightBat();
   void moveBall();
 
-  bool ballCollidesDown_p() { return (mBallPos + mBallVel).x >= (getWindowHeight() - mBarrierWidth - mBallRadius) ? true : false; }
+  bool ballCollidesDown_p() { return (mBallPos + mBallVel).x >= (width - mBarrierWidth - mBallRadius) ? true : false; }
   bool ballCollidesUp_p() { return (mBallPos + mBallVel).x <= ( mBarrierWidth + mBallRadius ) ? true : false; }
   bool ballCollidesLeft_p() { return (mBallPos + mBallVel).y <= ( mBarrierWidth   + mBallRadius) ? true : false; }
-  bool ballCollidesRight_p() { return (mBallPos + mBallVel).y >= (getWindowWidth() - mBarrierWidth - mBallRadius) ? true : false; }
+  bool ballCollidesRight_p() { return (mBallPos + mBallVel).y >= (height - mBarrierWidth - mBallRadius) ? true : false; }
 };
 
 void prepareSettings(BasicApp::Settings* settings) {
   settings->setMultiTouchEnabled(false);
+  settings->setWindowSize(800,600);
 }
 
 void BasicApp::update()
@@ -92,8 +93,8 @@ void BasicApp::moveBall()
 
 void BasicApp::setup(){
   
-  float halfHeight = getWindowHeight()/2;
-  float halfWidth = getWindowWidth()/2;
+  float halfHeight = height/2;
+  float halfWidth = width/2;
   mLeftBatPos = halfHeight;
   mRightBatPos = halfHeight;
   mBallPos = vec2(halfWidth, halfHeight);
@@ -128,10 +129,10 @@ void BasicApp::keyDown(KeyEvent event)
 void BasicApp::drawSurroundings()
 {
   gl::color(Color::white());
-  gl::drawSolidRect(Rectf(0, 0, mBarrierWidth, getWindowHeight()));
-  gl::drawSolidRect(Rectf(0, 0, getWindowWidth(), mBarrierWidth));
-  gl::drawSolidRect(Rectf(0, getWindowHeight() - mBarrierWidth, getWindowWidth(), getWindowHeight()));
-  gl::drawSolidRect(Rectf(getWindowWidth() - mBarrierWidth, 0, getWindowWidth(), getWindowHeight()));
+  gl::drawSolidRect(Rectf(0, 0, mBarrierWidth, height));
+  gl::drawSolidRect(Rectf(0, 0, width, mBarrierWidth));
+  gl::drawSolidRect(Rectf(0, height - mBarrierWidth, width, height));
+  gl::drawSolidRect(Rectf(width - mBarrierWidth, 0, width, height));
 }
 void BasicApp::drawBall()
 {
@@ -141,6 +142,7 @@ void BasicApp::drawBall()
 
 void BasicApp::drawLeftBat()
 {
+  gl::color(Color(1,0,0)); // red
   float xposmin = mLeftBatPos - 0.5 * batLength;
   float xposmax = mLeftBatPos + 0.5 * batLength;
   gl::drawSolidRect(Rectf(mBarrierWidth, xposmin, 2*mBarrierWidth, xposmax));
@@ -148,10 +150,10 @@ void BasicApp::drawLeftBat()
 
 void BasicApp::drawRightBat()
 {
+  gl::color(Color(0,1,0)); //  green
   float xposmin = mRightBatPos - 0.5 * batLength;
   float xposmax = mRightBatPos + 0.5 * batLength;
-  float width = getWindowWidth();
-  gl::drawSolidRect(Rectf(width - 2*mBarrierWidth, xposmin, width - mBarrierWidth, xposmax));
+  gl::drawSolidRect(Rectf(width - 2*mBarrierWidth , xposmin, width - mBarrierWidth , xposmax));
 };
 
 void BasicApp::draw()
@@ -160,11 +162,11 @@ void BasicApp::draw()
   // both the color and depth buffers.
   gl::clear(Color::gray(0.1f));
 
-  int height = getWindowHeight();
-  int width = getWindowWidth();
+  int height = height;
+  int width = width;
   // gl::drawSolidCircle( vec2( 15.0f, 25.0f ), 50.0f );
-  float x = cos(getElapsedSeconds() * 1 / 7) * 200 + getWindowWidth() / 2;
-  float y = sin(getElapsedSeconds() * 2) * 200 + getWindowHeight() / 2;
+  float x = cos(getElapsedSeconds() * 1 / 7) * 200 + width / 2;
+  float y = sin(getElapsedSeconds() * 2) * 200 + height / 2;
 
   drawSurroundings();
   // mBallPos = vec2(x, y);

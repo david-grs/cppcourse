@@ -41,10 +41,18 @@ class BasicApp : public App
   void drawRightBat();
   void moveBall();
 
-  bool ballCollidesDown_p() { return (mBallPos + mBallVel).x >= (width - mBarrierWidth - mBallRadius) ? true : false; }
-  bool ballCollidesUp_p() { return (mBallPos + mBallVel).x <= ( mBarrierWidth + mBallRadius ) ? true : false; }
-  bool ballCollidesLeft_p() { return (mBallPos + mBallVel).y <= ( mBarrierWidth   + mBallRadius) ? true : false; }
-  bool ballCollidesRight_p() { return (mBallPos + mBallVel).y >= (height - mBarrierWidth - mBallRadius) ? true : false; }
+  Rectf mLeftBarrier;
+  Rectf mRightBarrier;
+  Rectf mTopBarrier;
+  Rectf mBottomBarrier;
+
+  bool ballCollidesDown_p() { return ballCollidesWithRect(mBottomBarrier); }
+  bool ballCollidesRight_p() { return ballCollidesWithRect(mRightBarrier); }
+  bool ballCollidesUp_p() { return ballCollidesWithRect(mTopBarrier); }
+  bool ballCollidesLeft_p() { return ballCollidesWithRect(mLeftBarrier); }
+
+  bool ballCollidesWithRect(Rectf& rect);
+  vec2 advanceBall();
 };
 
 void prepareSettings(BasicApp::Settings* settings) {
@@ -74,21 +82,28 @@ void BasicApp::moveBall()
 {
   if (ballCollidesDown_p())
     {
-      mBallVel.x *= -1;
+      // std::cout<<"Ball collides down"<<std::endl;
+      mBallVel.y *= -1;
     }
   else if (ballCollidesUp_p())
     {
-      mBallVel.x *= -1;
+      // std::cout<<"Ball collides top"<<std::endl;
+      mBallVel.y *= -1;
     }
   else if (ballCollidesLeft_p())
     {
-      mBallVel.y *= -1;
+      // std::cout<<"Ball collides left"<<std::endl;
+      mBallVel.x *= -1;
     }
   else if (ballCollidesRight_p())
     {
-      mBallVel.y *= -1;
+      // std::cout<<"Ball collides right"<<std::endl;
+      mBallVel.x *= -1;
     }
-  mBallPos += mBallVel;
+  mBallPos =advanceBall();
+}
+vec2 BasicApp::advanceBall(){
+  return mBallPos + mBallVel;
 }
 
 void BasicApp::setup(){
@@ -99,6 +114,11 @@ void BasicApp::setup(){
   mRightBatPos = halfHeight;
   mBallPos = vec2(halfWidth, halfHeight);
   mBallVel = vec2(1,1);
+
+  mLeftBarrier = Rectf(0, 0, mBarrierWidth, height);
+  mRightBarrier = Rectf(width - mBarrierWidth, 0, width, height);
+  mTopBarrier = Rectf(0, 0, width, mBarrierWidth);
+  mBottomBarrier = Rectf(0, height - mBarrierWidth, width, height);
 }
 void BasicApp::mouseDrag(MouseEvent event)
 {
@@ -129,15 +149,30 @@ void BasicApp::keyDown(KeyEvent event)
 void BasicApp::drawSurroundings()
 {
   gl::color(Color::white());
-  gl::drawSolidRect(Rectf(0, 0, mBarrierWidth, height));
-  gl::drawSolidRect(Rectf(0, 0, width, mBarrierWidth));
-  gl::drawSolidRect(Rectf(0, height - mBarrierWidth, width, height));
-  gl::drawSolidRect(Rectf(width - mBarrierWidth, 0, width, height));
+  gl::drawSolidRect(mLeftBarrier);
+  gl::color(Color(1,0,0)); //red
+  gl::drawSolidRect(mTopBarrier);
+  gl::color(Color(0,1,0)); //green
+  gl::drawSolidRect(mBottomBarrier);
+  gl::color(Color(0,0,1)); //blue
+  gl::drawSolidRect(mRightBarrier);
 }
 void BasicApp::drawBall()
 {
   gl::color(Color::white());
   gl::drawSolidCircle(mBallPos, mBallRadius);
+}
+
+Rectf getBallBoundingRect(vec2& ballPos, float ballRadius)
+{
+  return Rectf(ballPos.x - ballRadius, ballPos.y - ballRadius, ballPos.x + ballRadius, ballPos.y + ballRadius);
+}
+bool BasicApp::ballCollidesWithRect(Rectf& rect){
+  vec2 NextBallPos = advanceBall();
+  Rectf RectBoundingNextBallPos = getBallBoundingRect(NextBallPos, mBallRadius);
+  // std::cout<<"ball pos: "<<RectBoundingNextBallPos<<std::endl;
+  // std::cout<<"rect pos: "<<rect<<std::endl;
+  return rect.intersects(RectBoundingNextBallPos);
 }
 
 void BasicApp::drawLeftBat()
@@ -164,15 +199,14 @@ void BasicApp::draw()
 
   int height = height;
   int width = width;
-  // gl::drawSolidCircle( vec2( 15.0f, 25.0f ), 50.0f );
-  float x = cos(getElapsedSeconds() * 1 / 7) * 200 + width / 2;
-  float y = sin(getElapsedSeconds() * 2) * 200 + height / 2;
 
   drawSurroundings();
-  // mBallPos = vec2(x, y);
   drawBall();
   drawLeftBat();
   drawRightBat();
+  Rectf bound = getBallBoundingRect(mBallPos, mBallRadius);
+  gl::drawStrokedRect(bound);
+
 
   // Set the current draw color to orange by setting values for
   // red, green and blue directly. Values range from 0 to 1.

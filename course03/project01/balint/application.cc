@@ -30,7 +30,7 @@ class BasicApp : public App
   float mRightBatPos;
   vec2 mBallPos;
   vec2 mBallVel;
-  float batLength = 200;
+  float mBatLength = 200;
   float mBallRadius = 13;
   float height = 600;
   float width = 800;
@@ -46,6 +46,8 @@ class BasicApp : public App
   Rectf mTopBarrier;
   Rectf mBottomBarrier;
 
+  Rectf mLeftBat, mRightBat;
+
   bool ballCollidesDown_p() { return ballCollidesWithRect(mBottomBarrier); }
   bool ballCollidesRight_p() { return ballCollidesWithRect(mRightBarrier); }
   bool ballCollidesUp_p() { return ballCollidesWithRect(mTopBarrier); }
@@ -53,11 +55,14 @@ class BasicApp : public App
 
   bool ballCollidesWithRect(Rectf& rect);
   vec2 advanceBall();
+  void moveLeftBat(bool up_p);
+  void moveRightBat(bool up_p);
 };
 
-void prepareSettings(BasicApp::Settings* settings) {
+void prepareSettings(BasicApp::Settings* settings)
+{
   settings->setMultiTouchEnabled(false);
-  settings->setWindowSize(800,600);
+  settings->setWindowSize(800, 600);
 }
 
 void BasicApp::update()
@@ -76,6 +81,12 @@ void BasicApp::update()
     {
       accumulator -= timestep;
       moveBall();
+      if (mLeftBat.getCenter().y-100 < mBallPos.y){
+        moveLeftBat(false);
+      }
+      else if (mLeftBat.getCenter().y+100 > mBallPos.y){
+        moveLeftBat(true);
+      }
     }
 }
 void BasicApp::moveBall()
@@ -100,30 +111,57 @@ void BasicApp::moveBall()
       // std::cout<<"Ball collides right"<<std::endl;
       mBallVel.x *= -1;
     }
-  mBallPos =advanceBall();
+  else if (ballCollidesWithRect(mRightBarrier))
+    {
+      std::cout << "GAME OVER: YOU WON";
+    }
+  else if (ballCollidesWithRect(mLeftBarrier))
+    {
+      std::cout << "GAME OVER: YOU WON";
+    }
+  mBallPos = advanceBall();
 }
-vec2 BasicApp::advanceBall(){
-  return mBallPos + mBallVel;
-}
+vec2 BasicApp::advanceBall() { return mBallPos + mBallVel; }
 
-void BasicApp::setup(){
-  
-  float halfHeight = height/2;
-  float halfWidth = width/2;
+void BasicApp::setup()
+{
+  // init
+
+  float halfHeight = height / 2;
+  float halfWidth = width / 2;
   mLeftBatPos = halfHeight;
   mRightBatPos = halfHeight;
   mBallPos = vec2(halfWidth, halfHeight);
-  mBallVel = vec2(1,1);
+  mBallVel = vec2(1, 1);
 
   mLeftBarrier = Rectf(0, 0, mBarrierWidth, height);
   mRightBarrier = Rectf(width - mBarrierWidth, 0, width, height);
   mTopBarrier = Rectf(0, 0, width, mBarrierWidth);
   mBottomBarrier = Rectf(0, height - mBarrierWidth, width, height);
+
+  mLeftBat = Rectf(mBarrierWidth, mLeftBatPos - 0.5 * mBatLength, 2 * mBarrierWidth, mLeftBatPos + 0.5 * mBatLength);
+  mRightBat = Rectf(width - 2 * mBarrierWidth, mRightBatPos - 0.5 * mBatLength, width - mBarrierWidth,
+		    mRightBatPos + 0.5 * mBatLength);
 }
 void BasicApp::mouseDrag(MouseEvent event)
 {
   // Store the current mouse position in the list.
   mPoints.push_back(event.getPos());
+}
+
+void BasicApp::moveLeftBat(bool up_p)
+{
+  vec2 move = vec2(0, up_p ? -1 : 1);
+  // std::cout<<"MOving left bat up: "<<up_p<<std::endl;
+  if ( (mLeftBat.getCenter() + move).x >0 && (mLeftBat.getCenter() + move).x <height){
+    mLeftBat.offset(move);
+  }
+}
+void BasicApp::moveRightBat(bool up_p)
+{
+  vec2 move = vec2(0, up_p ? -20 : 20);
+  // std::cout<<"MOving right bat up: "<<up_p<<std::endl;
+  mRightBat.offset(move);
 }
 
 void BasicApp::keyDown(KeyEvent event)
@@ -145,16 +183,24 @@ void BasicApp::keyDown(KeyEvent event)
       else
 	quit();
     }
+  else if (event.getCode() == KeyEvent::KEY_UP)
+    {
+      moveRightBat(true);
+    }
+  else if (event.getCode() == KeyEvent::KEY_DOWN)
+    {
+      moveRightBat(false);
+    }
 }
 void BasicApp::drawSurroundings()
 {
   gl::color(Color::white());
   gl::drawSolidRect(mLeftBarrier);
-  gl::color(Color(1,0,0)); //red
+  gl::color(Color(1, 0, 0));  // red
   gl::drawSolidRect(mTopBarrier);
-  gl::color(Color(0,1,0)); //green
+  gl::color(Color(0, 1, 0));  // green
   gl::drawSolidRect(mBottomBarrier);
-  gl::color(Color(0,0,1)); //blue
+  gl::color(Color(0, 0, 1));  // blue
   gl::drawSolidRect(mRightBarrier);
 }
 void BasicApp::drawBall()
@@ -167,7 +213,8 @@ Rectf getBallBoundingRect(vec2& ballPos, float ballRadius)
 {
   return Rectf(ballPos.x - ballRadius, ballPos.y - ballRadius, ballPos.x + ballRadius, ballPos.y + ballRadius);
 }
-bool BasicApp::ballCollidesWithRect(Rectf& rect){
+bool BasicApp::ballCollidesWithRect(Rectf& rect)
+{
   vec2 NextBallPos = advanceBall();
   Rectf RectBoundingNextBallPos = getBallBoundingRect(NextBallPos, mBallRadius);
   // std::cout<<"ball pos: "<<RectBoundingNextBallPos<<std::endl;
@@ -177,18 +224,14 @@ bool BasicApp::ballCollidesWithRect(Rectf& rect){
 
 void BasicApp::drawLeftBat()
 {
-  gl::color(Color(1,0,0)); // red
-  float xposmin = mLeftBatPos - 0.5 * batLength;
-  float xposmax = mLeftBatPos + 0.5 * batLength;
-  gl::drawSolidRect(Rectf(mBarrierWidth, xposmin, 2*mBarrierWidth, xposmax));
+  gl::color(Color(1, 0, 0));  // red
+  gl::drawSolidRect(mLeftBat);
 };
 
 void BasicApp::drawRightBat()
 {
-  gl::color(Color(0,1,0)); //  green
-  float xposmin = mRightBatPos - 0.5 * batLength;
-  float xposmax = mRightBatPos + 0.5 * batLength;
-  gl::drawSolidRect(Rectf(width - 2*mBarrierWidth , xposmin, width - mBarrierWidth , xposmax));
+  gl::color(Color(0, 1, 0));  //  green
+  gl::drawSolidRect(mRightBat);
 };
 
 void BasicApp::draw()
@@ -206,7 +249,6 @@ void BasicApp::draw()
   drawRightBat();
   Rectf bound = getBallBoundingRect(mBallPos, mBallRadius);
   gl::drawStrokedRect(bound);
-
 
   // Set the current draw color to orange by setting values for
   // red, green and blue directly. Values range from 0 to 1.

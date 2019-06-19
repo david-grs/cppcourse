@@ -9,7 +9,6 @@ using namespace ci::app;
 class BasicApp : public App
 {
  public:
-
   // Cinder will call 'keyDown' when the user presses a key on the keyboard.
   // See also: keyUp.
   void keyDown(KeyEvent event) override;
@@ -73,16 +72,18 @@ void BasicApp::update()
   double elapsed = getElapsedSeconds() - time;
   time += elapsed;
   accumulator += math<double>::min(elapsed, 0.1);  // prevents 'spiral of death'
-  while ( (accumulator >= timestep) and not mGameOver)
+  while ((accumulator >= timestep) and not mGameOver)
     {
       accumulator -= timestep;
       moveBall();
-      if (mLeftBat.getCenter().y+200 < mBallPos.y){
-        moveLeftBat(false);
-      }
-      else if (mLeftBat.getCenter().y-200 > mBallPos.y){
-        moveLeftBat(true);
-      }
+      if (mLeftBat.getCenter().y + 200 < mBallPos.y)
+	{
+	  moveLeftBat(false);
+	}
+      else if (mLeftBat.getCenter().y - 200 > mBallPos.y)
+	{
+	  moveLeftBat(true);
+	}
     }
 }
 void BasicApp::moveBall()
@@ -109,13 +110,15 @@ void BasicApp::moveBall()
     }
   else if (ballCollidesWithRect(mRightBarrier))
     {
-      std::cout << "GAME OVER: YOU LOST"<<std::endl;;
-      mGameOver=true;
+      std::cout << "GAME OVER: YOU LOST" << std::endl;
+      ;
+      mGameOver = true;
     }
   else if (ballCollidesWithRect(mLeftBarrier))
     {
-      std::cout << "GAME OVER: YOU WON"<<std::endl;;
-      mGameOver=true;
+      std::cout << "GAME OVER: YOU WON" << std::endl;
+      ;
+      mGameOver = true;
     }
   mBallPos = advanceBall();
 }
@@ -146,9 +149,10 @@ void BasicApp::moveLeftBat(bool up_p)
 {
   vec2 move = vec2(0, up_p ? -1 : 1);
   // std::cout<<"MOving left bat up: "<<up_p<<std::endl;
-  if ( (mLeftBat.getCenter() + move).x >0 && (mLeftBat.getCenter() + move).x <height){
-    mLeftBat.offset(move);
-  }
+  if ((mLeftBat.getCenter() + move).x > 0 && (mLeftBat.getCenter() + move).x < height)
+    {
+      mLeftBat.offset(move);
+    }
 }
 void BasicApp::moveRightBat(bool up_p)
 {

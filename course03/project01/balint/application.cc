@@ -137,7 +137,7 @@ void BasicApp::setup()
   mTopBarrier = Rectf(0, 0, width, mBarrierWidth);
   mBottomBarrier = Rectf(0, height - mBarrierWidth, width, height);
 
-  mLeftBat = Rectf(mBarrierWidth, mLeftBatPos - 0.25 * mBatLength, 2 * mBarrierWidth, mLeftBatPos + 0.25 * mBatLength);
+  mLeftBat = Rectf(mBarrierWidth, mLeftBatPos - 0.5 * mBatLength, 2 * mBarrierWidth, mLeftBatPos + 0.5 * mBatLength);
   mRightBat = Rectf(width - 2 * mBarrierWidth, mRightBatPos - 0.5 * mBatLength, width - mBarrierWidth,
 		    mRightBatPos + 0.5 * mBatLength);
 }

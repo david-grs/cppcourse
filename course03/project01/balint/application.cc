@@ -9,9 +9,6 @@ using namespace ci::app;
 class BasicApp : public App
 {
  public:
-  // Cinder will call 'mouseDrag' when the user moves the mouse while holding one of its buttons.
-  // See also: mouseMove, mouseDown, mouseUp and mouseWheel.
-  void mouseDrag(MouseEvent event) override;
 
   // Cinder will call 'keyDown' when the user presses a key on the keyboard.
   // See also: keyUp.
@@ -24,10 +21,7 @@ class BasicApp : public App
 
  private:
   // This will maintain a list of points which we will draw line segments between
-  std::vector<vec2> mPoints;
   float mBarrierWidth = 5;
-  float mLeftBatPos;
-  float mRightBatPos;
   vec2 mBallPos;
   vec2 mBallVel;
   float mBatLength = 200;
@@ -47,6 +41,8 @@ class BasicApp : public App
   Rectf mBottomBarrier;
 
   Rectf mLeftBat, mRightBat;
+
+  bool mGameOver = false;
 
   bool ballCollidesDown_p() { return ballCollidesWithRect(mBottomBarrier); }
   bool ballCollidesRight_p() { return ballCollidesWithRect(mRightBarrier); }
@@ -77,14 +73,14 @@ void BasicApp::update()
   double elapsed = getElapsedSeconds() - time;
   time += elapsed;
   accumulator += math<double>::min(elapsed, 0.1);  // prevents 'spiral of death'
-  while (accumulator >= timestep)
+  while ( (accumulator >= timestep) and not mGameOver)
     {
       accumulator -= timestep;
       moveBall();
-      if (mLeftBat.getCenter().y-100 < mBallPos.y){
+      if (mLeftBat.getCenter().y+200 < mBallPos.y){
         moveLeftBat(false);
       }
-      else if (mLeftBat.getCenter().y+100 > mBallPos.y){
+      else if (mLeftBat.getCenter().y-200 > mBallPos.y){
         moveLeftBat(true);
       }
     }
@@ -101,23 +97,25 @@ void BasicApp::moveBall()
       // std::cout<<"Ball collides top"<<std::endl;
       mBallVel.y *= -1;
     }
-  else if (ballCollidesLeft_p())
+  else if (ballCollidesWithRect(mLeftBat))
     {
       // std::cout<<"Ball collides left"<<std::endl;
       mBallVel.x *= -1;
     }
-  else if (ballCollidesRight_p())
+  else if (ballCollidesWithRect(mRightBat))
     {
       // std::cout<<"Ball collides right"<<std::endl;
       mBallVel.x *= -1;
     }
   else if (ballCollidesWithRect(mRightBarrier))
     {
-      std::cout << "GAME OVER: YOU WON";
+      std::cout << "GAME OVER: YOU LOST"<<std::endl;;
+      mGameOver=true;
     }
   else if (ballCollidesWithRect(mLeftBarrier))
     {
-      std::cout << "GAME OVER: YOU WON";
+      std::cout << "GAME OVER: YOU WON"<<std::endl;;
+      mGameOver=true;
     }
   mBallPos = advanceBall();
 }
@@ -129,8 +127,8 @@ void BasicApp::setup()
 
   float halfHeight = height / 2;
   float halfWidth = width / 2;
-  mLeftBatPos = halfHeight;
-  mRightBatPos = halfHeight;
+  float mLeftBatPos = halfHeight;
+  float mRightBatPos = halfHeight;
   mBallPos = vec2(halfWidth, halfHeight);
   mBallVel = vec2(1, 1);
 
@@ -139,14 +137,9 @@ void BasicApp::setup()
   mTopBarrier = Rectf(0, 0, width, mBarrierWidth);
   mBottomBarrier = Rectf(0, height - mBarrierWidth, width, height);
 
-  mLeftBat = Rectf(mBarrierWidth, mLeftBatPos - 0.5 * mBatLength, 2 * mBarrierWidth, mLeftBatPos + 0.5 * mBatLength);
+  mLeftBat = Rectf(mBarrierWidth, mLeftBatPos - 0.25 * mBatLength, 2 * mBarrierWidth, mLeftBatPos + 0.25 * mBatLength);
   mRightBat = Rectf(width - 2 * mBarrierWidth, mRightBatPos - 0.5 * mBatLength, width - mBarrierWidth,
 		    mRightBatPos + 0.5 * mBatLength);
-}
-void BasicApp::mouseDrag(MouseEvent event)
-{
-  // Store the current mouse position in the list.
-  mPoints.push_back(event.getPos());
 }
 
 void BasicApp::moveLeftBat(bool up_p)
@@ -169,11 +162,6 @@ void BasicApp::keyDown(KeyEvent event)
   if (event.getChar() == 'f')
     {  // Toggle full screen when the user presses the 'f' key.
       setFullScreen(!isFullScreen());
-    }
-  else if (event.getCode() == KeyEvent::KEY_SPACE)
-    {
-      // Clear the list of points when the user presses the space bar.
-      mPoints.clear();
     }
   else if (event.getCode() == KeyEvent::KEY_ESCAPE)
     {
@@ -259,12 +247,6 @@ void BasicApp::draw()
   // using a few convenience functions: 'begin' will tell OpenGL to
   // start constructing a line strip, 'vertex' will add a point to the
   // line strip and 'end' will execute the draw calls on the GPU.
-  gl::begin(GL_LINE_STRIP);
-  for (const vec2& point : mPoints)
-    {
-      gl::vertex(point);
-    }
-  gl::end();
 }
 
 // This line tells Cinder to actually create and run the application.

@@ -1,6 +1,6 @@
 set(LIBRARY_NAME hw2_lib)
 
-add_library(${LIBRARY_NAME} linked_list.h linked_list.cc)
+add_library(${LIBRARY_NAME} tuple.h linked_list.cc)
 
 find_package(Boost 1.58 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})

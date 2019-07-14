@@ -53,6 +53,10 @@ class BasicApp : public App
   vec2 advanceBall();
   void moveLeftBat(bool up_p);
   void moveRightBat(bool up_p);
+
+  const Color Red{1,0,0};
+  const Color Green{0,1,0};
+  const Color Blue{0,0,1};
 };
 
 void prepareSettings(BasicApp::Settings* settings)
@@ -189,11 +193,11 @@ void BasicApp::drawSurroundings()
 {
   gl::color(Color::white());
   gl::drawSolidRect(mLeftBarrier);
-  gl::color(Color(1, 0, 0));  // red
+  gl::color(Red);
   gl::drawSolidRect(mTopBarrier);
-  gl::color(Color(0, 1, 0));  // green
+  gl::color(Green);
   gl::drawSolidRect(mBottomBarrier);
-  gl::color(Color(0, 0, 1));  // blue
+  gl::color(Blue);
   gl::drawSolidRect(mRightBarrier);
 }
 void BasicApp::drawBall()
@@ -217,13 +221,13 @@ bool BasicApp::ballCollidesWithRect(Rectf& rect)
 
 void BasicApp::drawLeftBat()
 {
-  gl::color(Color(1, 0, 0));  // red
+  gl::color(Red);
   gl::drawSolidRect(mLeftBat);
 };
 
 void BasicApp::drawRightBat()
 {
-  gl::color(Color(0, 1, 0));  //  green
+  gl::color(Green);
   gl::drawSolidRect(mRightBat);
 };
 

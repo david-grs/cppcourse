@@ -62,7 +62,7 @@ void prepareSettings(BasicApp::Settings* settings)
 
 void BasicApp::update()
 {
-  static const double timestep = 1.0 / 60.0;
+  static const double timestepSeconds = 1.0 / 60.0;
 
   // Keep track of time.
   static double time = getElapsedSeconds();
@@ -72,9 +72,9 @@ void BasicApp::update()
   double elapsed = getElapsedSeconds() - time;
   time += elapsed;
   accumulator += math<double>::min(elapsed, 0.1);  // prevents 'spiral of death'
-  while ((accumulator >= timestep) and not mGameOver)
+  while ((accumulator >= timestepSeconds) and not mGameOver)
     {
-      accumulator -= timestep;
+      accumulator -= timestepSeconds;
       moveBall();
       if (mLeftBat.getCenter().y + 200 < mBallPos.y)
 	{

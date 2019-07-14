@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
@@ -71,7 +72,7 @@ void BasicApp::update()
   // Calculate elapsed time since last frame.
   double elapsed = getElapsedSeconds() - time;
   time += elapsed;
-  accumulator += math<double>::min(elapsed, 0.1);  // prevents 'spiral of death'
+  accumulator += std::min(elapsed, 0.1);  // prevents 'spiral of death'
   while ((accumulator >= timestepSeconds) and not mGameOver)
     {
       accumulator -= timestepSeconds;

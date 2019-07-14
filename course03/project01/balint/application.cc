@@ -73,7 +73,7 @@ void BasicApp::update()
   double elapsed = getElapsedSeconds() - time;
   time += elapsed;
   accumulator += std::min(elapsed, 0.1);  // prevents 'spiral of death'
-  while ((accumulator >= timestepSeconds) and not mGameOver)
+  while ((accumulator >= timestepSeconds) && !mGameOver)
     {
       accumulator -= timestepSeconds;
       moveBall();

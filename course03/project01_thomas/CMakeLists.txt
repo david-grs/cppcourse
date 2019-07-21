@@ -17,10 +17,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${cxx_compile_options}")
 set(SOURCES
 	application.h
 	application.cc
+	game.h
+	game.cc
 )
 
 ci_make_app(
-	APP_NAME    "snake"
+	APP_NAME    "2048"
 	SOURCES     ${SOURCES}
 	INCLUDES    ${CMAKE_CURRENT_SOURCE_DIR}
 	CINDER_PATH ${CINDER_PATH}

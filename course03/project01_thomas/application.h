@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game.h"
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 
@@ -14,4 +15,6 @@ public:
 	void update() override;
 
 	static void prepareSettings(Settings*);
+private:
+	Game mGame;
 };

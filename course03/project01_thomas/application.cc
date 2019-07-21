@@ -14,13 +14,18 @@ void Application::prepareSettings(Settings* settings)
 	settings->setFullScreen(false);
 }
 
-void Application::keyDown(ci::app::KeyEvent)
+void Application::keyDown(ci::app::KeyEvent event)
 {
+	if( event.getCode() == ci::app::KeyEvent::KEY_RIGHT ) {
+		mGame.right();
+	}
+
 	/* cinder::app::console() << "Key." << std::endl; */
 }
 
 void Application::setup()
 {
+	mGame.setup();
 	std::cout << "Setup." << std::endl;
 	/* cinder::app::console() << "Key." << std::endl; */
 }

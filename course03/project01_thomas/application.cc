@@ -18,9 +18,13 @@ void Application::keyDown(ci::app::KeyEvent event)
 {
 	if( event.getCode() == ci::app::KeyEvent::KEY_RIGHT ) {
 		mGame.right();
+	} else if( event.getCode() == ci::app::KeyEvent::KEY_LEFT ) {
+		mGame.left();
+	} else if( event.getCode() == ci::app::KeyEvent::KEY_UP ) {
+		mGame.up();
+	} else if( event.getCode() == ci::app::KeyEvent::KEY_DOWN ) {
+		mGame.down();
 	}
-
-	/* cinder::app::console() << "Key." << std::endl; */
 }
 
 void Application::setup()

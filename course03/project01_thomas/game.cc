@@ -5,86 +5,156 @@
 #include "cinder/Text.h"
 #include "cinder/Color.h"
 #include <random>
-
+#include <iterator>
+#include <algorithm>
 using namespace ci;
 using namespace ci::app;
 
+void Game::check_victory()
+{
+	for (int i = 0; i < mGridSize; i++) {
+		for (int j = 0; j < mGridSize; j++) {
+			if (mGrid[i][j] >= 2048) {
+				mVictory = true;
+				return;
+			}
+
+		}
+	}
+}
+
 void Game::right()
 {
+
 	std::cout << "Right." << std::endl;
 
-	std::array<std::array<int, 4>, 4> newGrid;
-
-	/* for (auto row : mGrid) { */
 	for (int i = 0; i < mGridSize; i++) {
-
-		int prev = 0;
-		/* std::array<int, 4> newrow; */
-		int idx = 3;
-
-		for (int j = mGridSize-1; j >= 0; j--) {
-		{
-			int value = mGrid[i][j];
-			if (value != 0){
-				if (prev == 0) {
-					prev = value;
-				} else {
-					if (prev == value) {
-						mGrid[i][idx] = prev + value;
-						idx = idx - 1;
-						prev = 0;
-					} else {
-						mGrid[i][idx] = prev;
-						idx = idx - 1;
-						prev = value;
-					}
-				}
-			}
-			mGrid[i][j] = 0;
-
-		}
-		if (prev != 0) {
-			mGrid[i][idx] = prev;
-		}
-		
-		}
-
-		 /* newGrid[i] = newrow; */
-		 /* mGrid[i] = newrow; */
-
-		/* int prev = 0; */
-  
-		/* for (i1=row.end();i1!=row.begin();--i1) */ 
-		/* { */ 
-		/* 	if (i1 != row.end()) */ 
-		/* 	{ */ 
-		/* 		std::cout << (*i1) << " "; */ 
-		/* 	} */ 
-		/* } */ 
-		/* std::cout << (*i1); */ 
-
+		std::array<int, 4> row = mGrid[i];
+		std::reverse(std::begin(row), std::end(row));
+		row = aggregate_row(row);
+		std::reverse(std::begin(row), std::end(row));
+		mGrid[i] = row;
 	}
 
-	/* mGrid = newGrid; */
 	mTurn = mTurn + 1;
+	check_victory();
+	spawn();
+}
+
+void Game::left()
+{
+
+	std::cout << "Left." << std::endl;
+
+	for (int i = 0; i < mGridSize; i++) {
+		std::array<int, 4> row = mGrid[i];
+		row = aggregate_row(row);
+		mGrid[i] = row;
+	}
+
+	mTurn = mTurn + 1;
+	check_victory();
+	spawn();
+}
+
+void Game::up()
+{
+
+	std::cout << "Up." << std::endl;
+
+	for (int i = 0; i < mGridSize; i++) {
+		std::array<int, 4> row;
+		for (int j = 0; j < mGridSize; j++) {
+			row[j] = mGrid[j][i];
+		}
+		row = aggregate_row(row);
+		for (int j = 0; j < mGridSize; j++) {
+			mGrid[j][i] = row[j];
+		}
+	}
+
+	mTurn = mTurn + 1;
+	check_victory();
+	spawn();
+}
+
+void Game::down()
+{
+
+	std::cout << "Up." << std::endl;
+
+	for (int i = 0; i < mGridSize; i++) {
+		std::array<int, 4> row;
+		for (int j = 0; j < mGridSize; j++) {
+			row[j] = mGrid[j][i];
+		}
+		std::reverse(std::begin(row), std::end(row));
+		row = aggregate_row(row);
+		std::reverse(std::begin(row), std::end(row));
+		for (int j = 0; j < mGridSize; j++) {
+			mGrid[j][i] = row[j];
+		}
+	}
+
+	mTurn = mTurn + 1;
+	check_victory();
 	spawn();
 }
 
 
+std::array<int, 4> Game::aggregate_row(std::array<int, 4> row)
+{
+
+	int prev = 0;
+	int idx = 0;
+
+	for (int i = 0; i < mGridSize; i++) {
+		int value = row[i];
+		if (value != 0){
+			if (prev == 0) {
+				prev = value;
+			} else {
+				if (prev == value) {
+					row[idx] = prev + value;
+					idx++;
+					prev = 0;
+				} else {
+					row[idx] = prev;
+					idx++;
+					prev = value;
+				}
+			}
+		}
+		row[i] = 0;
+
+	}
+	if (prev != 0) {
+		row[idx] = prev;
+	}
+
+	return row;
+	
+}
+
 Game::Game()
 {
     std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    /* mGen = mGen{rd()}; //Standard mersenne_twister_engine seeded with rd() */
     mGen = std::mt19937{rd()}; //Standard mersenne_twister_engine seeded with rd()
-    /* mDis{0, mGridSize * mGridSize}; */
-    /* mDis = mDis{0, mGridSize * mGridSize}; */
     mDis = std::uniform_int_distribution<>(0, mGridSize - 1);
+
+	for (int i = 0; i < mGridSize; i++) {
+		for (int j = 0; j < mGridSize; j++) {
+			mGrid[i][j] = 0;
+		}
+	}
 }
 
 void Game::spawn()
 {
 	int x = mDis(mGen);
 	int y = mDis(mGen);
+	std::cout << x << std::endl;
+	std::cout << y << std::endl;
 	if(mGrid[x][y] == 0){
 		mGrid[x][y] = 2;
 	};
@@ -99,6 +169,12 @@ void Game::setup()
 void Game::draw()
 {
 
+	if (mVictory) {
+		gl::clear();
+		vec2 center = getWindowCenter();
+		gl::drawStringCentered("Victory", center, ColorA(0,0,1,1), Font("Arial", 50));
+
+	} else {
 
 	float w = 100.0f;
 
@@ -126,5 +202,6 @@ void Game::draw()
 
 		}
 		current = current + vec2(0,w)+ vec2(0, offset) ;
+	}
 	}
 }

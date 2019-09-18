@@ -1,27 +1,29 @@
-#include <memory>
-
-#include <memory>
-
 #include "list.h"
 
+#include <memory>
+
 void List::clear() {
-    std::unique_ptr<Element> newList;
-    mFirst = std::move(newList);
+    mFirst.reset();
     mSize = 0;
 }
 
 void List::insert(std::size_t pos, int data)
 {
-    if(pos == 0)
+    auto newElement = std::make_shared<Node>(data);
+    auto next = pos == size() ? nullptr : at(pos);
+    auto prev = pos == 0 ? nullptr : at(pos-1);
+
+    if(next)
     {
-        push_front(data);
-        return;
+        newElement->mNext = next;
+        next->mPrevious = newElement;
     }
-    if(pos == size())
+    if(prev)
     {
-        push_back(data);
-        return;
+        newElement->mPrevious = prev;
+        prev->mNext = newElement;
     }
+<<<<<<< HEAD
     auto new_element = std::make_shared<Element>(data);
     auto next = at(pos);
     auto prev = next->mPrevious;
@@ -30,10 +32,16 @@ void List::insert(std::size_t pos, int data)
     new_element->mNext = next;
     new_element->mPrevious = prev;
 
+=======
+    if(pos == 0)
+        mFirst = newElement;
+    if(pos == size())
+        mHead = newElement;
+>>>>>>> gavin/master
     mSize++;
 }
 
-std::shared_ptr<Element> List::at(std::size_t pos) const
+std::shared_ptr<Node> List::at(std::size_t pos) const
 {
     if(pos >= size())
         throw std::out_of_range("Index out of range");
@@ -48,45 +56,48 @@ std::shared_ptr<Element> List::at(std::size_t pos) const
 
 void List::erase(std::size_t pos)
 {
-    if(pos == 0)
+    auto item = at(pos);
+    auto prev = item->mPrevious;
+    auto next = item->mNext;
+    if(next)
     {
-        pop_front();
-        return;
+        next->mPrevious = prev;
     }
-    if(pos == size()-1)
+    if(prev)
     {
-        pop_back();
-        return;
+        prev->mNext = next;
     }
+<<<<<<< HEAD
     auto item = at(pos);
     auto prev = item->mPrevious;
     auto next = item->mNext;
     prev.lock()->mNext = next;
     next->mPrevious = prev;
+=======
+    if(pos == 0)
+        mFirst = next;
+    if(pos == size() - 1)
+        mHead = prev;
+>>>>>>> gavin/master
     mSize--;
 }
 
 void List::push_back(int data)
 {
-    auto new_element = std::make_shared<Element>(data);
-    if(!mHead)
-    {
-        mHead = new_element;
-        mSize++;
-    }
-    mHead->mNext = new_element;
-    new_element->mPrevious = mHead;
-    mHead = new_element;
-    mSize++;
+    insert(size(), data);
 }
 
 void List::pop_back()
 {
+<<<<<<< HEAD
     if(!mHead)
         throw std::runtime_error("Cannot pop from empty list");
     auto prev = mHead->mPrevious;
     mHead = prev.lock();
     mSize--;
+=======
+    erase(size()-1);
+>>>>>>> gavin/master
 }
 
 std::size_t List::size() const
@@ -96,28 +107,12 @@ std::size_t List::size() const
 
 void List::push_front(int data)
 {
-    std::shared_ptr<Element> new_element = std::make_shared<Element>(data);
-    if(mFirst)
-    {
-        new_element->mNext = mFirst;
-        mFirst->mPrevious = new_element;
-        mFirst = new_element;
-    }else
-    {
-        mFirst = new_element;
-        mHead = mFirst;
-    }
-    mSize++;
+    insert(0, data);
 }
 
 void List::pop_front()
 {
-    if(size() == 0)
-        throw std::out_of_range("cannot pop from an empty list");
-    auto new_front = mFirst->mNext;
-    new_front->mPrevious.reset();
-    mFirst = new_front;
-    mSize--;
+    erase(0);
 }
 
 int& List::get(std::size_t pos)
@@ -138,6 +133,49 @@ List::List(std::initializer_list<int> elements)
 
 List::List(const List &other)
 {
-    for(std::size_t i = 0; i < other.size(); i++)
+    for( std::size_t i = 0; i < other.size(); i++ )
         push_back(other.get(i));
+}
+
+List &List::operator=(List other) {
+    std::swap(mSize, other.mSize);
+    std::swap(mHead, other.mHead);
+    std::swap(mFirst, other.mFirst);
+    return *this;
+}
+
+iterator List::begin() {
+    return iterator(mFirst.get());
+}
+
+iterator List::end() {
+    return iterator(nullptr);
+}
+
+iterator& iterator::operator++() {
+    mItr = mItr->mNext.get();
+    return *this;
+}
+
+bool iterator::operator!=(const iterator &other) {
+    return mItr != other.mItr;
+}
+
+bool iterator::operator==(const iterator &other) {
+    return mItr == other.mItr;
+}
+
+iterator::iterator(const iterator &other) {
+    mItr = other.mItr;
+}
+
+iterator &iterator::operator=(iterator other) {
+    std::swap(mItr, other.mItr);
+    return *this;
+}
+
+const iterator iterator::operator++(int a) {
+    for(int i=0; i < a; i++)
+        mItr = mItr->mNext.get();
+    return iterator(mItr);
 }

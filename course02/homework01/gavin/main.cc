@@ -4,6 +4,7 @@
 #include "list.h"
 #include <cassert>
 #include <vector>
+#include <algorithm>
 
 
 std::vector<int> get_elements(List& list)
@@ -86,6 +87,38 @@ void test_copy()
     assert(get_elements(list) == get_elements(list2));
 }
 
+void test_foreach()
+{
+    List list{1,2,3,4,5};
+    int i=0;
+    for(const auto n : list)
+        i += n;
+
+    assert(i == 15);
+    list = {1,1,1,1};
+    std::for_each(list.begin(), list.end(), [](int x){
+        assert(x == 1);
+    });
+}
+
+void test_algorithms()
+{
+    List list{2,2,2,2};
+    assert(std::all_of(list.begin(), list.end(), [](int x) -> int{
+        return x == 2;
+    }));
+    list = {1,2,1};
+    assert(std::any_of(list.begin(), list.end(), [](int x) -> int{
+        return x == 2;
+    }));
+    list = {1,1,1};
+    std::transform(list.begin(), list.end(), list.begin(), [](int x) -> int{
+        return x+1;
+    });
+    assert(list.get(0) == 2);
+
+}
+
 int main()
 {
     test_clear();
@@ -95,4 +128,6 @@ int main()
     test_size();
     test_erase();
     test_copy();
+    test_foreach();
+    test_algorithms();
 }

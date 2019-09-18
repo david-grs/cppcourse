@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cassert>
 #include <iterator>
+#include <memory>
 
 template<typename T>
 class List
@@ -14,63 +15,60 @@ private:
 
 		T data;
 
-		Node* next;
+		std::unique_ptr<Node> next;
 		Node* prev;
 	};
 
-public:
-	class ConstIterator
+public:	
+	template<typename iterator_type, typename iterator_value_type>
+	class IteratorBase : public std::iterator<std::bidirectional_iterator_tag, iterator_value_type>
 	{
 	protected:
-		ConstIterator(const List<T>& owner, Node* node);
+		IteratorBase(const List<T>* owner, Node* node);
 
 	public:
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using reference = T & ;
-		using pointer = T * ;
-		using iterator_category = std::bidirectional_iterator_tag;
+		iterator_type operator++(int);
+		iterator_type& operator++();
+		iterator_type operator--(int);
+		iterator_type& operator--();
 
-		ConstIterator operator++(int);
-		ConstIterator& operator++();
-		ConstIterator operator--(int);
-		ConstIterator& operator--();
+		iterator_value_type& operator*() const;
+		iterator_value_type* operator->() const;
 
-		const T& operator*() const;
-		const T* operator->() const;
-
-		bool operator==(const ConstIterator& second) const;
-		bool operator!=(const ConstIterator& second) const;
+		bool operator==(const iterator_type& second) const;
+		bool operator!=(const iterator_type& second) const;
 
 	protected:
 		const List<T>* mOwner;
 		Node* mNode;
+	};
 
+	class Iterator : public IteratorBase<Iterator, T>
+	{
+	protected:
+		Iterator(const List<T>* owner, Node* node);
 		friend List<T>;
 	};
 
-	class MutableIterator : public ConstIterator
+	class ConstIterator : public IteratorBase<ConstIterator, const T>
 	{
 	protected:
-		MutableIterator(const List<T>& owner, Node* node);
+		ConstIterator(const List<T>* owner, Node* node);
+		friend List<T>;
 
 	public:
-		MutableIterator operator++(int);
-		MutableIterator& operator++();
-		MutableIterator operator--(int);
-		MutableIterator& operator--();
-
-		T& operator*();
-		T* operator->();
-
-		using ConstIterator::operator*;
-		using ConstIterator::operator->;
-
-	protected:
-		friend List<T>;
+		ConstIterator(const Iterator& iter);
 	};
 
 	using value_type = T;
+	using allocator_type = std::allocator<T>;
+	using reference = T & ;
+	using const_reference = const T&;
+	using pointer = T * ;
+	using const_pointer = const T*;
+	using iterator = Iterator;
+	using const_iterator = ConstIterator;
+	using size_type = size_t;
 
 	List();
 	List(const List& second);
@@ -78,21 +76,21 @@ public:
 
 	List& operator=(List<T> second);
 
-	void insert(MutableIterator position, const T& value);
+	void insert(Iterator position, const T& value);
 	void push_front(const T& value);
 	void push_back(const T& value);
 
-	void erase(MutableIterator position);
+	void erase(Iterator position);
 	void pop_front();
 	void pop_back();
 
 	void clear();
 
-	MutableIterator begin();
+	Iterator begin();
 	ConstIterator begin() const;
 	ConstIterator cbegin() const;
 
-	MutableIterator end();
+	Iterator end();
 	ConstIterator end() const;
 	ConstIterator cend() const;
 
@@ -115,7 +113,7 @@ private:
 	void erase_end();
 	void erase_at_position(Node* node);
 
-	Node* mBegin;
+	std::unique_ptr<Node> mBegin;
 	Node* mEnd;
 
 	std::size_t mSize;
@@ -129,108 +127,85 @@ List<T>::Node::Node(const T& data) :
 { }
 
 template<typename T>
-List<T>::ConstIterator::ConstIterator(const List<T>& owner, List<T>::Node* node) :
-	mOwner(&owner),
+template<typename iterator_type, typename iterator_value_type>
+List<T>::IteratorBase<iterator_type, iterator_value_type>::IteratorBase(const List<T>* owner, List<T>::Node* node) :
+	mOwner(owner),
 	mNode(node)
 { }
 
 template<typename T>
-List<T>::MutableIterator::MutableIterator(const List<T>& owner, List<T>::Node* node) :
-	List<T>::ConstIterator::ConstIterator(owner, node)
+List<T>::Iterator::Iterator(const List<T>* owner, List<T>::Node* node) :
+	List<T>::IteratorBase<List<T>::Iterator, T>::IteratorBase(owner, node)
 { }
 
 template<typename T>
-typename List<T>::ConstIterator List<T>::ConstIterator::operator++(int)
+List<T>::ConstIterator::ConstIterator(const List<T>* owner, List<T>::Node* node) :
+	List<T>::IteratorBase<List<T>::ConstIterator, const T>::IteratorBase(owner, node)
+{ }
+
+template<typename T>
+List<T>::ConstIterator::ConstIterator(const List<T>::Iterator& iter) :
+	List<T>::IteratorBase<List<T>::ConstIterator, const T>::IteratorBase(iter.mOwner, iter.mNode)
+{ }
+
+template<typename T>
+template<typename iterator_type, typename iterator_value_type>
+typename iterator_type List<T>::IteratorBase<iterator_type, iterator_value_type>::operator++(int)
 {
-	List<T>::ConstIterator copy = *this;
+	iterator_type copy(mOwner, mNode);
 	operator++();
 	return copy;
 }
 
 template<typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator++()
+template<typename iterator_type, typename iterator_value_type>
+typename iterator_type& List<T>::IteratorBase<iterator_type, iterator_value_type>::operator++()
 {
-	mNode = mNode ? mNode->next : mOwner->mBegin;
-	return *this;
+	mNode = mNode ? mNode->next.get() : mOwner->mBegin.get();
+	return static_cast<iterator_type&>(*this);
 }
 
 template<typename T>
-typename List<T>::ConstIterator List<T>::ConstIterator::operator--(int)
+template<typename iterator_type, typename iterator_value_type>
+typename iterator_type List<T>::IteratorBase<iterator_type, iterator_value_type>::operator--(int)
 {
-	List<T>::ConstIterator copy = *this;
+	iterator_type copy(mOwner, mNode);
 	operator--();
 	return copy;
 }
 
 template<typename T>
-typename List<T>::ConstIterator& List<T>::ConstIterator::operator--()
+template<typename iterator_type, typename iterator_value_type>
+typename iterator_type& List<T>::IteratorBase<iterator_type, iterator_value_type>::operator--()
 {
 	mNode = mNode ? mNode->prev : mOwner->mEnd;
-	return *this;
+	return static_cast<iterator_type&>(*this);
 }
 
 template<typename T>
-typename List<T>::MutableIterator List<T>::MutableIterator::operator++(int)
-{
-	List<T>::MutableIterator copy = *this;
-	operator++();
-	return copy;
-}
-
-template<typename T>
-typename List<T>::MutableIterator& List<T>::MutableIterator::operator++()
-{
-	mNode = mNode ? mNode->next : mOwner->mBegin;
-	return *this;
-}
-
-template<typename T>
-typename List<T>::MutableIterator List<T>::MutableIterator::operator--(int)
-{
-	List<T>::MutableIterator copy = *this;
-	operator--();
-	return copy;
-}
-
-template<typename T>
-typename List<T>::MutableIterator& List<T>::MutableIterator::operator--()
-{
-	mNode = mNode ? mNode->prev : mOwner->mEnd;
-	return *this;
-}
-
-template<typename T>
-const T& List<T>::ConstIterator::operator*() const
+template<typename iterator_type, typename iterator_value_type>
+iterator_value_type& List<T>::IteratorBase<iterator_type, iterator_value_type>::operator*() const
 {
 	return mNode->data;
 }
 
 template<typename T>
-const T* List<T>::ConstIterator::operator->() const
+template<typename iterator_type, typename iterator_value_type>
+iterator_value_type* List<T>::IteratorBase<iterator_type, iterator_value_type>::operator->() const
 {
 	return &(mNode->data);
 }
 
 template<typename T>
-T& List<T>::MutableIterator::operator*()
-{
-	return mNode->data;
-}
-
-template<typename T>
-T* List<T>::MutableIterator::operator->()
-{
-	return &(mNode->data);
-}
-
-template<typename T>
-bool List<T>::ConstIterator::operator==(const List<T>::ConstIterator& second) const
+template<typename iterator_type, typename iterator_value_type>
+bool List<T>::IteratorBase<iterator_type, iterator_value_type>::operator==(const iterator_type& second) const
 {
 	return mNode == second.mNode;
 }
 
 template<typename T>
-bool List<T>::ConstIterator::operator!=(const List<T>::ConstIterator& second) const
+template<typename iterator_type, typename iterator_value_type>
+bool List<T>::IteratorBase<iterator_type, iterator_value_type>::operator!=(const iterator_type& second) const
 {
 	return mNode != second.mNode;
 }
@@ -269,13 +244,13 @@ List<T>& List<T>::operator=(List<T> second)
 }
 
 template<typename T>
-void List<T>::insert(List<T>::MutableIterator position, const T& value)
+void List<T>::insert(List<T>::Iterator position, const T& value)
 {
 	assert(position.mOwner == this);
 
 	if (mSize == 0)
 		insert_first(value);
-	else if (position.mNode == mBegin)
+	else if (position.mNode == mBegin.get())
 		insert_begin(value);
 	else if (position.mNode == nullptr)
 		insert_end(value);
@@ -302,13 +277,13 @@ void List<T>::push_back(const T& value)
 }
 
 template<typename T>
-void List<T>::erase(List<T>::MutableIterator position)
+void List<T>::erase(List<T>::Iterator position)
 {
 	assert(position.mOwner == this);
 
 	if (mSize == 1)
 		erase_last();
-	else if (position.mNode == mBegin)
+	else if (position.mNode == mBegin.get())
 		erase_begin();
 	else if (position.mNode == mEnd)
 		erase_end();
@@ -342,39 +317,39 @@ void List<T>::clear()
 }
 
 template<typename T>
-typename List<T>::MutableIterator List<T>::begin()
+typename List<T>::Iterator List<T>::begin()
 {
-	return List<T>::MutableIterator(*this, mBegin);
+	return List<T>::Iterator(this, mBegin.get());
 }
 
 template<typename T>
 typename List<T>::ConstIterator List<T>::begin() const
 {
-	return typename List<T>::ConstIterator(*this, mBegin);
+	return cbegin();
 }
 
 template<typename T>
 typename List<T>::ConstIterator List<T>::cbegin() const
 {
-	return typename List<T>::ConstIterator(*this, mBegin);
+	return List<T>::ConstIterator(this, mBegin.get());
 }
 
 template<typename T>
-typename List<T>::MutableIterator List<T>::end()
+typename List<T>::Iterator List<T>::end()
 {
-	return List<T>::MutableIterator(*this, nullptr);
+	return List<T>::Iterator(this, nullptr);
 }
 
 template<typename T>
 typename List<T>::ConstIterator List<T>::end() const
 {
-	return typename List<T>::ConstIterator(*this, nullptr);
+	return cend();
 }
 
 template<typename T>
 typename List<T>::ConstIterator List<T>::cend() const
 {
-	return typename List<T>::ConstIterator(*this, nullptr);
+	return List<T>::ConstIterator(this, nullptr);
 }
 
 template<typename T>
@@ -426,9 +401,8 @@ void List<T>::insert_first(const T& value)
 {
 	assert(mSize == 0);
 
-	auto node = new List<T>::Node(value);
-
-	mBegin = mEnd = node;
+	mBegin = std::make_unique<List<T>::Node>(value);
+	mEnd = mBegin.get();
 
 	mSize++;
 }
@@ -439,11 +413,11 @@ void List<T>::insert_begin(const T& value)
 	assert(mSize > 0);
 	assert(mBegin != nullptr);
 
-	auto node = new List<T>::Node(value);
+	auto node = std::make_unique<List<T>::Node>(value);
 
-	node->next = mBegin;
-	mBegin->prev = node;
-	mBegin = node;
+	node->next = std::move(mBegin);
+	node->next->prev = node.get();
+	mBegin = std::move(node);
 
 	mSize++;
 }
@@ -454,11 +428,9 @@ void List<T>::insert_end(const T& value)
 	assert(mSize > 0);
 	assert(mEnd != nullptr);
 
-	auto node = new List<T>::Node(value);
-
-	node->prev = mEnd;
-	mEnd->next = node;
-	mEnd = node;
+	mEnd->next = std::make_unique<List<T>::Node>(value);
+	mEnd->next->prev = mEnd;
+	mEnd = mEnd->next.get();
 
 	mSize++;
 }
@@ -470,12 +442,12 @@ void List<T>::insert_before_position(const T& value, List<T>::Node* position)
 	assert(position != nullptr);
 	assert(position->prev != nullptr);
 
-	auto node = new List<T>::Node(value);
+	auto node = std::make_unique<List<T>::Node>(value);
 
-	node->next = position;
+	node->next = std::move(position->prev->next);
 	node->prev = position->prev;
-	node->next->prev = node;
-	node->prev->next = node;
+	node->next->prev = node.get();
+	node->prev->next = std::move(node);
 
 	mSize++;
 }
@@ -483,11 +455,8 @@ void List<T>::insert_before_position(const T& value, List<T>::Node* position)
 template<typename T>
 void List<T>::erase_last()
 {
-	assert(mSize == 1);
-
-	delete mBegin;
-
-	mBegin = mEnd = nullptr;
+	mBegin = nullptr;
+	mEnd = nullptr;
 
 	mSize--;
 }
@@ -498,12 +467,8 @@ void List<T>::erase_begin()
 	assert(mSize > 1);
 	assert(mBegin != nullptr);
 
-	auto node = mBegin;
-
-	mBegin = mBegin->next;
+	mBegin = std::move(mBegin->next);
 	mBegin->prev = nullptr;
-
-	delete node;
 
 	mSize--;
 }
@@ -514,12 +479,8 @@ void List<T>::erase_end()
 	assert(mSize > 0);
 	assert(mEnd != nullptr);
 
-	auto node = mEnd;
-
 	mEnd = mEnd->prev;
 	mEnd->next = nullptr;
-
-	delete node;
 
 	mSize--;
 }
@@ -533,7 +494,7 @@ void List<T>::erase_at_position(List<T>::Node* node)
 	assert(position != mEnd);
 
 	node->next->prev = node->prev;
-	node->pred->next = node->next;
+	node->prev->next = std::move(node->next);
 
 	delete node;
 

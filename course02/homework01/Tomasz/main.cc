@@ -3,6 +3,7 @@
 #include <cassert>
 #include <list>
 #include <iostream>
+#include <algorithm>
 
 struct TestDisposableClass
 {
@@ -272,7 +273,7 @@ void copy_constructor_test()
 	List<int> b = a;
 
 	a.insert(--a.end(), 10);
-	
+
 	auto iterA = a.begin();
 
 	assert(a.size() == 5);
@@ -303,7 +304,7 @@ void assign_operator_test()
 	a.push_back(4);
 
 	List<int> b;
-	
+
 	b = a;
 
 	a.insert(--a.end(), 10);
@@ -385,6 +386,75 @@ void call_test()
 	assert(sum == 10);
 }
 
+void max_test()
+{
+	List<int> a;
+
+	a.push_back(3);
+	a.push_back(1);
+	a.push_back(5);
+	a.push_back(4);
+	a.push_back(2);
+
+	auto max = std::max_element(a.begin(), a.end());
+
+	assert(*max == 5);
+}
+
+void count_test()
+{
+	List<int> a;
+
+	a.push_back(3);
+	a.push_back(1);
+	a.push_back(5);
+	a.push_back(4);
+	a.push_back(2);
+
+	auto count = std::count_if(a.begin(), a.end(), [](int a) {return a >= 3; });
+
+	assert(count == 3);
+}
+
+void remove_test()
+{
+	List<int> a;
+
+	a.push_back(3);
+	a.push_back(1);
+	a.push_back(5);
+	a.push_back(4);
+	a.push_back(2);
+
+	auto end = std::remove_if(a.begin(), a.end(), [](int a) {return a >= 3; });
+
+	for (auto iter = a.begin(); iter != end; iter++)
+		assert(*iter < 3);
+}
+
+void reverse_test()
+{
+	List<int> a;
+
+	a.push_back(1);
+	a.push_back(2);
+	a.push_back(3);
+	a.push_back(4);
+	a.push_back(5);
+	a.push_back(6);
+
+	std::reverse(++a.begin(), --a.end());
+
+	auto iter = a.begin();
+
+	assert(*(iter++) == 1);
+	assert(*(iter++) == 5);
+	assert(*(iter++) == 4);
+	assert(*(iter++) == 3);
+	assert(*(iter++) == 2);
+	assert(*(iter++) == 6);
+}
+
 int main()
 {
 	test_empty();
@@ -405,4 +475,8 @@ int main()
 	const_iterator_test();
 	mutation_test();
 	call_test();
+	max_test();
+	count_test();
+	remove_test();
+	reverse_test();
 }

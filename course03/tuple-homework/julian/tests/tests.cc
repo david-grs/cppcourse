@@ -4,7 +4,7 @@
 
 template <class... Args> using Tuple = CppCourse::TupleHomework::Tuple<Args...>;
 
-TEST(LinkedListTests, Initialization)
+TEST(TupleTests, Initialization)
 {
     Tuple<int, int, int> t = Tuple<int, int, int>(1, 2, 3);
 
@@ -12,6 +12,7 @@ TEST(LinkedListTests, Initialization)
     EXPECT_EQ(t.Get(0), 1);
     EXPECT_EQ(t.Get(1), 2);
     EXPECT_EQ(t.Get(2), 3);
+    EXPECT_ANY_THROW(t.Get(3));
 }
 
 int main(int argc, char **argv)

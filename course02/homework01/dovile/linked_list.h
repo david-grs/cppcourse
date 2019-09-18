@@ -1,70 +1,94 @@
+#pragma once
+
 #include <iostream>
+#include <memory>
 
-using namespace std;
-
-class LinkedList
+template<class T>
+struct Node
 {
+	explicit Node(T data) :
+		mData(data) {}
 
+	std::unique_ptr<Node<T>> mNext;
+	T mData;
+};
+
+template<class T>
+class NodeIterator : std::iterator<std::forward_iterator_tag, T>
+{
 public:
-	LinkedList();
-	~LinkedList();
-
-	struct Node
+	explicit NodeIterator(Node<T>* node) 
+		: mNode(node) {}
+	
+	NodeIterator& operator=(Node<T> node)
 	{
-		Node* next{ nullptr };
-		int data;
-	};
+		this->mNode = node;
+		return *this;
+	}
 
-	void Insert(int key);
-	void Remove(int key);
-	Node* Find(int key);
-	const Node* End() const;
-	std::size_t Size() const;
-	bool Empty() const;
+	NodeIterator& operator++()
+	{
+		if (mNode)
+			mNode = mNode->mNext.get();
 
-	friend ostream &operator<<(ostream&, LinkedList&);
+		return *this;
+	}
+
+	bool operator!=(const NodeIterator& iterator)
+	{
+		return mNode != iterator.mNode;
+	}
+
+	T operator*()
+	{
+		return mNode->mData;
+	}
 
 private:
+	Node<T>* mNode;
+};
 
-	void clear();
-	Node* find_previous(int k);
 
-	Node* mHead{ nullptr };
-	Node* mTail{ nullptr };
+template<class T>
+class LinkedList
+{
+	using NodePointer = typename std::unique_ptr<Node<T>>;
+	typedef NodeIterator<T> iterator;
+
+public:
+	void PushBack(T key);
+	void EraseAt(int position);
+	T& At(int position) const;
+	std::size_t Size() const;
+	bool Empty() const;
+	void Clear();
+	iterator begin() { return iterator(mHead.get()); }
+	iterator end() { return iterator(nullptr); }
+
+	template <class U>
+	friend std::ostream &operator<<(std::ostream&, LinkedList<U>&);
+
+private:
+	NodePointer mHead;
 	std::size_t mSize = 0;
 };
 
-inline ostream &operator<<(ostream &output, LinkedList& linkedList) {
-	
-	LinkedList::Node* node = new LinkedList::Node;
-	
+template<class T>
+inline std::ostream &operator<<(std::ostream &output, LinkedList<T>& linkedList) {
+		
 	if (linkedList.mHead)
 	{
-		output << "LinkedList content:" << endl; 
-		for (node = linkedList.mHead; node != 0; node = node->next)
+		auto* node = linkedList.mHead.get();
+		output << "LinkedList content:\n"; 
+		while (node)
 		{
-			output << node->data << endl;
+			output << node->mData << std::endl;
+			node = node->mNext.get();
 		}
 	}
 	else
 	{
-		output << "LinkedList is empty" << endl;
+		output << "LinkedList is empty.";
 	}
-
 	return output;
 }
-
-struct LinkedListError : public std::exception
-{
-	LinkedListError(const char* description) :
-		mDescription(description)
-	{
-	}
-
-	const char* what() const throw ()
-	{
-		return mDescription;
-	}
-
-	const char* mDescription;
-};

@@ -12,6 +12,9 @@ struct Node
 };
 
 template<typename T>
+class LinkedListIterator;
+
+template<typename T>
 class LinkedList
 {
 public:
@@ -24,22 +27,33 @@ public:
 
 	void Append(const T& data);
 
-	friend std::ostream& operator<<(std::ostream& stream, const LinkedList& list)
-	{
-	    Node<T>* ptrNode = list.mFirst.get();
-	    while(ptrNode != nullptr)
-	    {
-	        stream << ptrNode->mData << ", ";
-	        ptrNode = ptrNode->mNext.get();
-	    }
-	    
-		return stream;
-	}
+	LinkedListIterator<T> begin();
+  	LinkedListIterator<T> end();
+
+	template<typename U>
+	friend std::ostream& operator<<(std::ostream& stream, const LinkedList<U>& list);
 
 private:
+
 	std::unique_ptr<Node<T>> mFirst;
 	Node<T>* mLast;
 	int mSize {};
+};
+
+template<typename T>
+class LinkedListIterator: public std::iterator<std::input_iterator_tag, T, T, const T*, T>
+{
+public:
+  explicit LinkedListIterator(Node<T>* ptrNode);
+
+  LinkedListIterator& operator++();
+
+  bool operator !=(const LinkedListIterator& other);
+
+  T& operator*();
+
+private:
+   Node<T>* mPtrNode;
 };
 
 #include "linked_list.cc"

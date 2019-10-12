@@ -4,3 +4,6 @@
 [submodule "course03/meeting03/gtest"]
 	path = course03/meeting03/gtest
 	url = git@github.com:google/googletest.git
+[submodule "course04/meeting03/gtest"]
+	path = course04/meeting03/gtest
+	url = git@github.com:google/googletest.git

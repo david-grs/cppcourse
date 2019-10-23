@@ -5,13 +5,11 @@
 
 OrderedArray::OrderedArray()=default;
 
-OrderedArray::OrderedArray(const std::vector<int>& v)
+OrderedArray::OrderedArray(const std::vector<int>& v):
+mSize{v.size()}
 {
-    if (v.size() <= MaxSize)
+    if (v.size() > MaxSize)
     {
-        mSize = v.size();
-    }
-    else{
         throw std::out_of_range("...");
     }
 

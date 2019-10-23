@@ -6,7 +6,7 @@
 class OrderedArray
 {
 public:
-    static constexpr const std::size_t MaxSize = 40;
+    static constexpr const std::size_t MaxSize{20};
 
     OrderedArray();
     explicit OrderedArray(const std::vector<int>&);

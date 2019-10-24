@@ -4,7 +4,7 @@
 
 class SortedArrayTest : public ::testing::Test 
 {
-	public:
+	protected:
 		void CheckArraySizeState(size_t expectedSize)
 		{	
 			ASSERT_EQ(sortedArray.size(), expectedSize);
@@ -29,17 +29,16 @@ class SortedArrayTest : public ::testing::Test
 			}
 		}
 
-	protected:
 		SortedArray sortedArray;
 		size_t expectedMaxSize = 32;
 };
 
-TEST(SortedArrayTest, DefaultState)
+TEST_F(SortedArrayTest, DefaultState)
 {
 	CheckArraySizeState(0);
 }
 
-TEST(SortedArrayTest, SortInsertedElements)
+TEST_F(SortedArrayTest, SortInsertedElements)
 {
 	size_t n = 3;
 	std::vector<int> input = {3,2,1};
@@ -50,16 +49,17 @@ TEST(SortedArrayTest, SortInsertedElements)
 	CompareArray(expected);
 }
 
-TEST(SortedArrayTest, InsertAboveMaxSize)
+TEST_F(SortedArrayTest, InsertAboveMaxSize)
 {
 	size_t n = expectedMaxSize;
-	std::vector<int> input{n, 0};
+	std::vector<int> input(n, 0);
 
-	FillArray(input)
+	FillArray(input);
 	CheckArraySizeState(n);
 
 	ASSERT_ANY_THROW(sortedArray.push_back(0));
 }
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

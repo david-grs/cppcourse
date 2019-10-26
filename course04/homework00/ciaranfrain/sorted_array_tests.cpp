@@ -68,7 +68,7 @@ bool SortedArrayTests::ShouldRetrieveCorrectElementValue()
 	Reset();
 
 	mSortedArray.Insert(5);
-	if (mSortedArray.Get(0) == 5)
+	if (mSortedArray[0] == 5)
 		return true;
 	else
 		return false;
@@ -96,7 +96,7 @@ bool SortedArrayTests::ShouldInsertLesserValueAtFront()
 
 	mSortedArray.Insert(0);
 	mSortedArray.Insert(-1);
-	if (mSortedArray.Get(0) == -1)
+	if (mSortedArray[0] == -1)
 		return true;
 	else
 		return false;
@@ -108,7 +108,7 @@ bool SortedArrayTests::ShouldInsertGreaterValueAtBack()
 
 	mSortedArray.Insert(0);
 	mSortedArray.Insert(1);
-	if (mSortedArray.Get(1) == 1)
+	if (mSortedArray[1] == 1)
 		return true;
 	else
 		return false;
@@ -125,7 +125,7 @@ bool SortedArrayTests::ShouldSortElements()
 	std::sort(inputValues.begin(), inputValues.end());
 	for (int i=0; i<inputValues.size(); i++)
 	{
-		if (mSortedArray.Get(i) != inputValues[i])
+		if (mSortedArray[i] != inputValues[i])
 			return false;
 	}
 	return true;

@@ -14,8 +14,3 @@ void SortedArray::Insert(int n)
 	mStorage.push_back(n);
 	std::sort(mStorage.begin(), mStorage.end());
 }
-
-const int& SortedArray::Get(int n) const
-{
-	return mStorage[n];
-}

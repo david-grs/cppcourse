@@ -13,13 +13,13 @@ void SortedArrayTests::RunTests()
 {
 	std::cout << "Running tests..." << std::endl;
 
-	RunTest("ShouldInitialiseEmpty",             std::bind(&SortedArrayTests::ShouldInitialiseEmpty, this));
-	RunTest("ShouldInsertOneElement",            std::bind(&SortedArrayTests::ShouldInsertOneElement, this));
-	RunTest("ShouldRetrieveCorrectElementValue", std::bind(&SortedArrayTests::ShouldRetrieveCorrectElementValue, this));
-	RunTest("ShouldThrowOnExceedingSize",        std::bind(&SortedArrayTests::ShouldThrowOnExceedingSize, this));
-	RunTest("ShouldInsertLesserValueAtFront",    std::bind(&SortedArrayTests::ShouldInsertLesserValueAtFront, this));
-	RunTest("ShouldInsertGreaterValueAtBack",    std::bind(&SortedArrayTests::ShouldInsertGreaterValueAtBack, this));
-	RunTest("ShouldSortElements",                std::bind(&SortedArrayTests::ShouldSortElements, this));
+	RunTest("ShouldInitialiseEmpty",             [this]() { return ShouldInitialiseEmpty(); });
+	RunTest("ShouldInsertOneElement",            [this]() { return ShouldInsertOneElement(); });
+	RunTest("ShouldRetrieveCorrectElementValue", [this]() { return ShouldRetrieveCorrectElementValue(); });
+	RunTest("ShouldThrowOnExceedingSize",        [this]() { return ShouldThrowOnExceedingSize(); });
+	RunTest("ShouldInsertLesserValueAtFront",    [this]() { return ShouldInsertLesserValueAtFront(); });
+	RunTest("ShouldInsertGreaterValueAtBack",    [this]() { return ShouldInsertGreaterValueAtBack(); });
+	RunTest("ShouldSortElements",                [this]() { return ShouldSortElements(); });
 }
 
 void SortedArrayTests::Reset(std::size_t size = mDefaultMaxSize)

@@ -5,10 +5,10 @@
 class SortedArray
 {
 public:
-	SortedArray(std::size_t maximumSize);
+	explicit SortedArray(std::size_t maximumSize);
 	
 	void clear() { mStorage.clear(); }
-	const int operator[](int n) const { return mStorage[n]; }
+	int operator[](int n) const { return mStorage[n]; }
 
 	bool empty() const { return mStorage.empty(); }
 	std::size_t size() const { return mStorage.size(); }

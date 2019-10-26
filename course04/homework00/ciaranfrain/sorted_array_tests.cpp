@@ -83,7 +83,7 @@ bool SortedArrayTests::ShouldThrowOnExceedingSize()
 	{
 		mSortedArray.Insert(1);
 	}
-	catch (std::length_error)
+	catch (std::length_error&)
 	{
 		return true;
 	}
@@ -123,7 +123,7 @@ bool SortedArrayTests::ShouldSortElements()
 		mSortedArray.Insert(n);
 	}
 	std::sort(inputValues.begin(), inputValues.end());
-	for (int i=0; i<inputValues.size(); i++)
+	for (std::size_t i=0; i<inputValues.size(); i++)
 	{
 		if (mSortedArray[i] != inputValues[i])
 			return false;

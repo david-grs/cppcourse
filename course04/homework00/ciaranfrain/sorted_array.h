@@ -1,6 +1,6 @@
 #pragma once
 
-#include <deque>
+#include <vector>
 
 class SortedArray
 {
@@ -18,5 +18,5 @@ public:
 
 private:
 	std::size_t mMaxSize = 0;
-	std::deque<int> mStorage;
+	std::vector<int> mStorage;
 };

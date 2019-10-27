@@ -1,9 +1,10 @@
-#include "sarray.h"
+#include "sorted_array.h"
 #include <iostream>
 
 int main()
 {
-	sarray a;
+	SortedArray a(10);
+
 	a.push_back(3);
 	a.push_back(1);
 	a.push_back(5);

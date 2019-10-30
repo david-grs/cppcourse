@@ -5,4 +5,3 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(homework01-array-test gtest.cc)
 target_link_libraries(homework01-array-test ${GTEST_LIBRARIES} pthread sarray)
-#target_link_libraries(homework01-array-test gtest)

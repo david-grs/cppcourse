@@ -7,3 +7,6 @@
 [submodule "course04/homework00/shankarvasudevan/sortedarray/gtest"]
 	path = course04/homework00/shankarvasudevan/sortedarray/gtest
 	url = https://github.com/google/googletest.git
+[submodule "course04/homework01/shankarvasudevan/singlylinkedlist/gtest"]
+	path = course04/homework01/shankarvasudevan/singlylinkedlist/gtest
+	url = https://github.com/google/googletest.git

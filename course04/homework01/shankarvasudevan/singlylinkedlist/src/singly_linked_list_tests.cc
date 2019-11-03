@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "singly_linked_list.h"
+#include "test_helper.cc"
 
 TEST(SinglyLinkedListTests, ListShouldInitiallyBeEmpty) 
 { 
@@ -18,15 +19,10 @@ TEST(SinglyLinkedListTests, SingleElementShould)
 TEST(SinglyLinkedListTests, MultipleElementListShouldBeInReverseOrder)
 {
     SinglyLinkedList list;
-    list.push_front(10);
-    list.push_front(20);
-    list.push_front(30);
-    SinglyLinkedListNode* first = list.front();
-    SinglyLinkedListNode* second = first->next.get();
-    SinglyLinkedListNode* third = second->next.get();
-    ASSERT_EQ(30, first->get_value());
-    ASSERT_EQ(20, second->get_value());
-    ASSERT_EQ(10, third->get_value());
-    ASSERT_EQ(nullptr, third->next);
+    std::vector<size_t> elements {10, 20, 30};
+    TestHelper::PushElementsToFront(&list, elements);
+    std::vector<size_t> expected {30, 20, 10};
+    std::vector<size_t> actual = TestHelper::ConvertToVector(&list);
+    ASSERT_EQ(expected, actual);
 }
 

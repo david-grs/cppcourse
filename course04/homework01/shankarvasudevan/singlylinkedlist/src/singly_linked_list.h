@@ -1,3 +1,4 @@
+#pragma once
 #include "singly_linked_list_node.h"
 
 class SinglyLinkedList

@@ -12,4 +12,4 @@ add_executable(singly_linked_list_tests src/singly_linked_list_tests.cc src/sing
 target_link_libraries(singly_linked_list_tests gtest gtest_main)
 add_test(singly_linked_list_tests singly_linked_list_tests)
 
-add_executable(main src/main.cc src/singly_linked_list.cc src/singly_linked_list.h src/singly_linked_list_node.h)
+add_executable(main src/main.cc src/singly_linked_list.cc src/singly_linked_list.h src/singly_linked_list_node.h src/test_helper.cc)

@@ -4,8 +4,10 @@
 class SinglyLinkedList
 {
 public:
+    bool empty();
     SinglyLinkedList() : mFirst(nullptr) {};
     void push_front(const std::size_t value);
+    void pop_front();
     SinglyLinkedListNode* front();
 
 private:

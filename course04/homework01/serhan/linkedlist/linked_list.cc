@@ -61,14 +61,10 @@ std::ostream &operator<<(std::ostream &os, const linked_list &list)
 	return os;
 }
 
-int linked_list::at(const size_t& index)
+int linked_list::getHead()
 {
-	if (index + 1 > mSize)
-		throw std::out_of_range("No node at index");
+	if (mSize == 0)
+		throw std::out_of_range("Empty list");
 
-	std::unique_ptr<Node> node = std::move(mHead);
-	for (std::size_t i=0; i < index ; i++)
-		node = std::move(node->mNext);
-
-	return node->mData;
+	return mHead->mData;
 }

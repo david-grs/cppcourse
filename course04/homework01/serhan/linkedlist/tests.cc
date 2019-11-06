@@ -17,9 +17,9 @@ public:
 			mList.push_front(x);
 	}
 
-	void VerifyItemAt(size_t index, int data)
+	void VerifyItemAtHead(int data)
 	{
-		EXPECT_EQ(mList.at(index), data);
+		EXPECT_EQ(mList.getHead(), data);
 	}
 };
 
@@ -34,22 +34,22 @@ TEST_F(LLTests, NewElements)
 {
 	FillList({1, 2, 3, 4, 5});
 	VerifySize(5);
-	VerifyItemAt(0, 5);
+	VerifyItemAtHead(5);
 }
 
 TEST_F(LLTests, PopElement)
 {
 	mList.pop_front();
 	VerifySize(4);
-	VerifyItemAt(0, 4);
+	VerifyItemAtHead(4);
 }
 
 TEST_F(LLTests, ReversedList)
 {
-	VerifyItemAt(0, 4);
+	VerifyItemAtHead(4);
 	mList.reverse();
 	VerifySize(4);
-	VerifyItemAt(0, 1);
+	VerifyItemAtHead(1);
 }
 
 TEST_F(LLTests, ClearList)
@@ -60,7 +60,7 @@ TEST_F(LLTests, ClearList)
 
 TEST_F(LLTests, ErrorCase)
 {
-	EXPECT_THROW(mList.at(10), std::out_of_range);
+	EXPECT_THROW(mList.getHead(), std::out_of_range);
 }
 
 int main(int argc, char **argv)

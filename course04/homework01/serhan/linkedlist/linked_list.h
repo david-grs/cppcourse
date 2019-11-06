@@ -21,8 +21,9 @@ public:
 	void pop_front();
 	void reset();
 	void reverse();
-	int at(const size_t& index);
+	int getHead();
 	int size() { return mSize; };
+	// TODO: implement itemAtIndex, insertAtIndex, deleteAtIndex
 
 	friend std::ostream &operator<<(std::ostream &os, const linked_list &list);
 

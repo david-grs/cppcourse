@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include "ordered_array.h"
+#include "single_linked_list.h"
 
 class OrderedArrayTest : public ::testing::Test {
 protected:
@@ -19,6 +20,33 @@ protected:
             ASSERT_TRUE(oA[i]<=oA[i+1]);
         }
     }
+
+};
+
+class SingleLinkedListTest : public ::testing::Test {
+protected:
+
+    void testVectorConstructor(const std::vector<int>& v, size_t n)
+    {
+        SingleLinkedList oA{v};
+        ASSERT_EQ(oA.size(),n);
+    }
+
+    void testSizeConstructor(size_t size, int defaultValue)
+    {
+        OrderedArray oA{5,0};
+        for(size_t i = 0; i < oA.size()-1; ++i)
+        {
+            ASSERT_TRUE(oA[i]<=oA[i+1]);
+        }
+    }
+
+};
+
+class UniquePtrTest : public ::testing::Test
+{
+protected:
+    void testUniquePtrConstructor(int number);
 
 };
 

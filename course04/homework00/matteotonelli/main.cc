@@ -4,13 +4,12 @@
 #include <algorithm>
 
 #include "ordered_array.h"
+#include "unique_ptr_int.h"
 
 int main()
 {
-    OrderedArray s({1, 2, 9, 4});
-    s.push_back(5);
-    s.push_back(10);
-    std::cout << s << std::endl;
+    UniquePtrInt ptr = UniquePtrInt::make_unique_int(9);
+    std::cout << ptr << std::endl;
     return 0;
 }
 

@@ -9,6 +9,7 @@ public:
     static constexpr const std::size_t MaxSize{20};
 
     OrderedArray();
+    OrderedArray(size_t, int);
     explicit OrderedArray(const std::vector<int>&);
 
     std::size_t size() const { return mSize; }

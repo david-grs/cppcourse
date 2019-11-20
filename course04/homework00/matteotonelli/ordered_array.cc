@@ -17,6 +17,18 @@ mSize{v.size()}
     std::sort(mData.data(), mData.data() + mSize);
 }
 
+OrderedArray::OrderedArray(size_t size, int value):
+    mSize{size}
+{
+    if (size > MaxSize)
+    {
+        throw std::out_of_range("...");
+    }
+
+    for (size_t i = 0; i < mSize; i++)
+        mData[i] = value;
+}
+
 void OrderedArray::push_back(int newElement)
 {
     if (mSize >= MaxSize)

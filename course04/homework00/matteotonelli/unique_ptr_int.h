@@ -1,15 +1,30 @@
 #pragma once
 
+#include <iostream>
+
+struct Integer
+{
+    int mValue;
+
+    Integer(int value) :
+        mValue{value}
+    {}
+};
+
 class UniquePtrInt
 {
 public:
-    ~UniquePtrInt() {delete(mValue);}
-    static UniquePtrInt make_unique_int(int);
-    operator int() const { return mValue*;}
+    UniquePtrInt():
+        mInteger{nullptr}
+    {}
+    ~UniquePtrInt();
+    operator int() const { return mInteger->mValue;}
+    explicit UniquePtrInt(int value){ mInteger = new Integer(value);}
+    int get() const { return mInteger->mValue; }
+    void give_ownership_to(UniquePtrInt& newPtr);
 
 private:
-    int * mValue;
-    explicit UniquePtrInt(int value){ mValue = new int{value};}
+    Integer * mInteger = nullptr;
 
 };
 

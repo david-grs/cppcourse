@@ -8,8 +8,11 @@
 
 int main()
 {
-    UniquePtrInt ptr = UniquePtrInt::make_unique_int(9);
+    UniquePtrInt ptr{9};
     std::cout << ptr << std::endl;
+    UniquePtrInt ptr2;
+    ptr.give_ownership_to(ptr2);
+    std::cout << ptr2 << std::endl;
     return 0;
 }
 

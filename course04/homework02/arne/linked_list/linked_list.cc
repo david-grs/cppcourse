@@ -1,29 +1,21 @@
 #include "linked_list.h"
 
-LinkedList::~LinkedList()
-{
-    Node* nodeptr = this->mFirstNode;
-    while (nodeptr != nullptr)
-    {
-        this->Remove(nodeptr->mData);
-        nodeptr = this->mFirstNode;
-    }
-}
-
 void LinkedList::Append(int data)
 {
-    Node* nodeptr = new Node(data);
+    Node* searchEmptyNodePtr = this->mNode.get();
 
-    if (this->IsEmpty())
+    if (searchEmptyNodePtr == nullptr)
     {
-        this->mFirstNode = nodeptr;
-        this->mLastNode = nodeptr;
+        this->mNode = std::make_unique<Node>(data);
+        return;
     }
-    else
+
+    while (searchEmptyNodePtr->mNextNode != nullptr)
     {
-        this->mLastNode->mNextNode = nodeptr;
-        this->mLastNode = nodeptr;
+        searchEmptyNodePtr = searchEmptyNodePtr->mNextNode.get();
     }
+
+    searchEmptyNodePtr->mNextNode = std::make_unique<Node>(data);
 }
 
 void LinkedList::Remove(int data)
@@ -31,34 +23,24 @@ void LinkedList::Remove(int data)
     if (this->IsEmpty())
         return;
 
-    Node* nodeptr1 = this->mFirstNode;
+    Node* nodeptr1 = this->mNode.get();
 
     if (data == nodeptr1->mData)
     {
-        this->mFirstNode = nodeptr1->mNextNode;
-
-        if (this->mFirstNode == nullptr)
-            this->mLastNode = nullptr;
-
-        delete nodeptr1;
+        this->mNode = move(nodeptr1->mNextNode);
         return;
     }
 
-    Node* nodeptr2 = nodeptr1->mNextNode;
+    Node* nodeptr2 = nodeptr1->mNextNode.get();
     while (nodeptr2 != nullptr)
     {
-        if (nodeptr2->mData == data)
+        if (data == nodeptr2->mData)
         {
-            nodeptr1->mNextNode = nodeptr2->mNextNode;
-
-            if (nodeptr2 == this->mLastNode)
-                this->mLastNode = nodeptr1;
-
-            delete nodeptr2;
-            break;
+            nodeptr1->mNextNode = move(nodeptr2->mNextNode);
+            return;
         }
 
         nodeptr1 = nodeptr2;
-        nodeptr2 = nodeptr2->mNextNode;
+        nodeptr2 = nodeptr2->mNextNode.get();
     }
 }

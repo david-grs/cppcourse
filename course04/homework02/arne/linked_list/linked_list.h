@@ -1,18 +1,18 @@
 #pragma once
+#include <memory>
 
 struct Node
 {
     Node(int data) : mData{data} {}
     int mData;
-    Node* mNextNode = nullptr;
+    std::unique_ptr<Node> mNextNode = nullptr;
 };
 
 struct LinkedList
 {
-    ~LinkedList();
-    bool IsEmpty() { return mFirstNode == nullptr && mLastNode == nullptr; }
+    LinkedList() = default;
+    bool IsEmpty() { return mNode == nullptr; }
     void Append(int data);
     void Remove(int data);
-    Node* mFirstNode = nullptr;
-    Node* mLastNode = nullptr;
+    std::unique_ptr<Node> mNode = nullptr;
 };

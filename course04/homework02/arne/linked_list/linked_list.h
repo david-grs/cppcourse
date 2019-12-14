@@ -57,5 +57,19 @@ struct LinkedList
             nodeptr2 = nodeptr2->mNextNode.get();
         }
     }
+
+    struct Iterator : std::iterator<std::forward_iterator_tag, T>
+    {
+        Iterator(Node<T>* node) : mNode(node) {}
+
+        Iterator operator++() { mNode = mNode->mNextNode.get(); return *this; }
+        T& operator*() { return mNode->mData; }
+        bool operator!=(Iterator other) const { return mNode != other.mNode; }
+
+        Node<T>* mNode;
+    };
+
+    Iterator begin() { return Iterator{mNode.get()}; }
+    Iterator end() { return Iterator{nullptr}; }
     std::unique_ptr<Node<T>> mNode = nullptr;
 };

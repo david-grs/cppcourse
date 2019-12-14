@@ -99,6 +99,28 @@ TEST_F(linked_list_tests, dont_delete_from_list_char)
     EXPECT_EQ('1', linkedListChar.mNode->mData);
 }
 
+TEST_F(linked_list_tests, iterate_int)
+{
+    linkedListInt.Append(1);
+    linkedListInt.Append(7);
+    linkedListInt.Append(9);
+    for (auto&& x : linkedListInt)
+    {
+        EXPECT_TRUE(x);
+    }
+}
+
+TEST_F(linked_list_tests, iterate_char)
+{
+    linkedListChar.Append('1');
+    linkedListChar.Append('7');
+    linkedListChar.Append('9');
+    for (auto x : linkedListChar)
+    {
+        EXPECT_TRUE(x);
+    }
+}
+
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);

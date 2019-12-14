@@ -71,5 +71,6 @@ struct LinkedList
 
     Iterator begin() { return Iterator{mNode.get()}; }
     Iterator end() { return Iterator{nullptr}; }
+
     std::unique_ptr<Node<T>> mNode = nullptr;
 };

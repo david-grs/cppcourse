@@ -18,14 +18,14 @@ public:
 	}
 };
 
-template <class T> struct IsNonInteger { static constexpr bool value = true; };
-template <> struct IsNonInteger<int> { static constexpr bool value = false; };
-template <> struct IsNonInteger<long> { static constexpr bool value = false; };
+template <class T> struct IsNotLong { static constexpr bool value = true; };
+template <> struct IsNotLong<long> { static constexpr bool value = false; };
 
-template <class T>
+template <class T, class... Args>
 struct Node
 {
-	Node(T element) : mElement(element) {};
+	Node(const T& element) : mElement(element) {};
+	Node(Args&&... args) : mElement(std::forward<Args>(args)...) {};
 
 	T mElement;
 	std::unique_ptr<Node> mChild = nullptr;
@@ -35,7 +35,7 @@ template <class T, class Logger>
 class LinkedList
 {
 public:
-	static_assert(!IsNonInteger<T>::value, "T needs to be integer. Only integer master race allowed.");
+	static_assert(IsNotLong<T>::value, "T can not be long. Just because.");
 
 	bool empty() const { return mSize == 0; }
 	size_t size() const { return mSize; }
@@ -53,6 +53,23 @@ public:
 			push_front_rec(element, *mHead);
 		}
 		++mSize;
+	}
+
+	template<class... Args> 
+	T& emplace_front(Args&&... args)
+	{
+
+		if (empty())
+		{
+			mHead = std::make_unique<Node<T>>(std::forward<Args>(args)...);
+			Logger{}(mHead->mElement);
+			++mSize;
+			return mHead->mElement;
+		}
+		else
+		{
+			return emplace_front_rec(*mHead, std::forward<Args>(args)...);
+		}
 	}
 
 	T pop_front()
@@ -85,6 +102,22 @@ private:
 		else
 		{
 			push_front_rec(element, *root.mChild);
+		}
+	}
+
+	template<class... Args>
+	T& emplace_front_rec(Node<T>& root, Args&&... args)
+	{
+		if (!root.mChild)
+		{       
+			root.mChild = std::make_unique<Node<T>>(std::forward<Args>(args)...);
+			Logger{}(root.mChild->mElement);
+			++mSize;
+			return root.mChild->mElement;
+		}
+		else
+		{
+			return emplace_front_rec(*root.mChild, std::forward<Args>(args)...);
 		}
 	}
 

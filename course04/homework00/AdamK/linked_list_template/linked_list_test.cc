@@ -2,6 +2,33 @@
 
 #include "gtest/gtest.h"
 
+struct TestStruct
+{
+public:
+	TestStruct(int element) : mValue(element) {mCtor = 1;}
+	TestStruct(const TestStruct& other)
+	{
+		mValue = other.mValue;
+		mCtor = other.mCtor;
+		++mCopy;
+	}
+	TestStruct& operator=(TestStruct other) {
+		mValue = other.mValue;	
+		++mCopy;
+		return *this;
+	}
+	friend std::ostream& operator<<(std::ostream& target, const TestStruct& source)
+	{
+		target << source.mValue;
+		return target;
+	}
+
+public:
+	int mValue;
+	int mCtor;
+	int mCopy = 0;
+};
+
 class LinkedListTest : public ::testing::Test 
 {
 	protected:
@@ -22,15 +49,35 @@ class LinkedListTest : public ::testing::Test
                         }
                 }
 
+                void FillLinkedListWithEmplace(const std::vector<int>& input)
+                {
+                        for (size_t i = 0; i < input.size(); ++i)
+                        {
+                                linkedList.emplace_front(input[i]);
+                        }
+                }
+
                 void CompareWith(const std::vector<int>& expected)
                 {
                         for (size_t i = 0; i < expected.size(); ++i)
                         {
-                                ASSERT_EQ(linkedList.pop_front(), expected[i]);
+				TestStruct testStruct = linkedList.pop_front();
+                                ASSERT_EQ(testStruct.mValue, expected[i]);
+                        }
+                }
+                
+		void CompareEmplacedElementsWith(const std::vector<int>& expected)
+                {
+                        for (size_t i = 0; i < expected.size(); ++i)
+                        {
+				TestStruct testStruct = linkedList.pop_front();
+ 				ASSERT_EQ(testStruct.mValue, expected[i]);
+ 				ASSERT_EQ(testStruct.mCtor, 1);
+ 				ASSERT_EQ(testStruct.mCopy, 1);
                         }
                 }
 
-		LinkedList<int, Cout<int>> linkedList;
+		LinkedList<TestStruct, Cout<TestStruct>> linkedList;
 };
 
 TEST_F(LinkedListTest, DefaultState)
@@ -51,6 +98,23 @@ TEST_F(LinkedListTest, InsertAndRead)
 	CheckLinkedListSizeState(n);
 
 	CompareWith(expected);
+	CheckLinkedListSizeState(0);
+
+	ASSERT_ANY_THROW(linkedList.pop_front());
+}
+
+TEST_F(LinkedListTest, ProperEmplace)
+{
+	int n = 3;
+	std::vector<int> input = {3,2,1};
+	std::vector<int> expected = {1,2,3};
+
+	CheckLinkedListSizeState(0);
+
+	FillLinkedListWithEmplace(input);
+	CheckLinkedListSizeState(n);
+
+	CompareEmplacedElementsWith(expected);
 	CheckLinkedListSizeState(0);
 
 	ASSERT_ANY_THROW(linkedList.pop_front());

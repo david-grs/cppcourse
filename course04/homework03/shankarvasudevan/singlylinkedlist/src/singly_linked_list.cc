@@ -1,13 +1,13 @@
 #include "singly_linked_list.h"
 #include <string>
 
-template<class T>
+template<typename T>
 bool SinglyLinkedList<T>::empty()
 {
     return mFirst == nullptr;
 }
 
-template<class T>
+template<typename T>
 void SinglyLinkedList<T>::push_front(const T value)
 {
     auto node{std::make_unique<SinglyLinkedListNode<T>>(value)};
@@ -22,7 +22,7 @@ void SinglyLinkedList<T>::push_front(const T value)
     }
 }
 
-template<class T>
+template<typename T>
 void SinglyLinkedList<T>::pop_front()
 {
     if (empty())
@@ -33,10 +33,27 @@ void SinglyLinkedList<T>::pop_front()
     mFirst = std::move(mFirst->next);
 }
 
-template<class T>
+template<typename T>
 SinglyLinkedListNode<T>* SinglyLinkedList<T>::front()
 {
     return mFirst.get();
+}
+
+template<typename T>
+template<typename ...Args>
+void SinglyLinkedList<T>::emplace_back(Args&&... args)
+{
+    // handle the case if curr is nullptr
+
+    // go to the last element
+    SinglyLinkedListNode<T>* curr = mFirst.get();
+    while (curr->next != nullptr)
+    {
+        curr = curr->next.get();
+    }
+
+    T value(std::forward<Args>(args)...);
+    curr->next = std::move(std::make_unique<SinglyLinkedListNode<T>>(value));
 }
 
 template bool SinglyLinkedList<std::size_t>::empty();

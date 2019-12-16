@@ -65,12 +65,36 @@ struct LinkedList
         Iterator operator++() { mNode = mNode->mNextNode.get(); return *this; }
         T& operator*() { return mNode->mData; }
         bool operator!=(Iterator other) const { return mNode != other.mNode; }
+        bool operator==(Iterator other) const { return mNode == other.mNode; }
 
         Node<T>* mNode;
     };
 
     Iterator begin() { return Iterator{mNode.get()}; }
     Iterator end() { return Iterator{nullptr}; }
+
+    template <class... Args>
+    Iterator Emplace(Iterator targetIt, Args&&... args)
+    {
+        Node<T>* searchTargetNodePtr = this->mNode.get();
+        std::unique_ptr<Node<T>> newNode = std::make_unique<Node<T>>(std::forward<Args...>(args...));
+
+        if (Iterator(searchTargetNodePtr) == targetIt)
+        {
+            newNode->mNextNode = move(this->mNode);
+            this->mNode = move(newNode);
+            return Iterator(this->mNode.get());
+        }
+
+        while (Iterator(searchTargetNodePtr->mNextNode.get()) != targetIt)
+        {
+            searchTargetNodePtr = searchTargetNodePtr->mNextNode.get();
+        }
+
+        newNode->mNextNode = move(searchTargetNodePtr->mNextNode);
+        searchTargetNodePtr->mNextNode = move(newNode);
+        return Iterator(searchTargetNodePtr->mNextNode.get());
+    }
 
     std::unique_ptr<Node<T>> mNode = nullptr;
 };

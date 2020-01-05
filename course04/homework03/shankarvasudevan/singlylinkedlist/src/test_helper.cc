@@ -1,6 +1,7 @@
 #include "singly_linked_list.h"
 #include <vector>
 #include <iostream>
+#include "foo.h"
 
 namespace TestHelper
 {

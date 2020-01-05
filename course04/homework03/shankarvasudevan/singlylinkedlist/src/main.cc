@@ -1,40 +1,41 @@
 #include<iostream>
 #include "singly_linked_list.cc"
-#include "test_helper.cc" 
 #include <vector> 
 
 struct A
 {
     public:
+        static std::size_t num_times_constructed;
+
+        A(const A&)
+        {
+            std::cout << "Copy constructor" << std::endl;
+            ++num_times_constructed;
+        }
+
         A(std::size_t fooValue, std::size_t barValue) : mFoo(fooValue), mBar(barValue) 
         {
+            std::cout << "Regular constructor" << std::endl;
             ++num_times_constructed;
         };
 
-        std::size_t num_times_constructed = 0;
         std::size_t mFoo;
         std::size_t mBar;
 };
 
+std::size_t A::num_times_constructed = 0;
+
 int main()
 {
     SinglyLinkedList<A> list;
-    std::vector<A> elements 
-    {
-        A(1, 2), 
-        A(3, 4), 
-        A(5, 6)
-    };
+    std::cout << "*** USING PUSH FRONT ***" << std::endl;
+    A node{1, 2};
+    list.push_front(node);
 
-    TestHelper::PushElementsToFront(&list, elements);
-    list.emplace_back(7, 8);
+    std::cout << "*** USING EMPLACE FRONT ***" << std::endl;
+    list.emplace_front(3, 4);
 
-    std::vector<A> actual = TestHelper::ConvertToVector(&list);
-
-    for (auto a : actual)
-    {
-        std::cout << "[foo: " << a.mFoo << ", bar: " << a.mBar << "]" << std::endl;
-    }
+    std::cout << "Num times A constructed = " << A::num_times_constructed << std::endl;
 
     return 0;
 }

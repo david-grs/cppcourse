@@ -10,7 +10,7 @@ public:
     void push_front(const T value);
 
     template<typename ...Args>
-    void emplace_back(Args&&... args);
+    void emplace_front(Args&&... args);
 
     void pop_front();
     SinglyLinkedListNode<T>* front();

@@ -5,7 +5,7 @@ template<class T>
 class SinglyLinkedListNode
 {
 public:
-    SinglyLinkedListNode(const T value) : mValue{value} {}
+    SinglyLinkedListNode(const T& value) : mValue{value} {}
     const T get_value() { return mValue; }
 
     std::unique_ptr<SinglyLinkedListNode> next;

@@ -1,5 +1,5 @@
 #include<iostream>
-#include "singly_linked_list.cc"
+#include "singly_linked_list.h"
 #include <vector> 
 
 struct A

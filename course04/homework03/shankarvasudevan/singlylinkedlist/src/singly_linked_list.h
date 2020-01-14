@@ -5,15 +5,57 @@ template<typename T>
 class SinglyLinkedList
 {
 public:
-    bool empty();
     SinglyLinkedList() : mFirst{nullptr} {}
-    void push_front(const T value);
+
+    bool empty()
+    {
+        return mFirst == nullptr;
+    }
+
+    void push_front(const T value)
+    {
+        auto node{std::make_unique<SinglyLinkedListNode<T>>(value)};
+        if (mFirst == nullptr)
+        {
+            mFirst = std::move(node);
+        }
+        else
+        {
+            node->next = std::move(mFirst);
+            mFirst = std::move(node);
+        }
+    }
 
     template<typename ...Args>
-    void emplace_front(Args&&... args);
+    void emplace_front(Args&&... args)
+    {
+        T value(std::forward<Args>(args)...);
+        auto node{std::make_unique<SinglyLinkedListNode<T>>(value)};
+        if (mFirst == nullptr)
+        {
+            mFirst = std::move(node);
+        }
+        else
+        {
+            node->next = std::move(mFirst);
+            mFirst = std::move(node);
+        }
+    }
 
-    void pop_front();
-    SinglyLinkedListNode<T>* front();
+    void pop_front()
+    {
+        if (empty())
+        {
+            throw std::out_of_range("Cannot pop on empty list");
+        }
+
+        mFirst = std::move(mFirst->next);
+    }
+
+    SinglyLinkedListNode<T>* front()
+    {
+        return mFirst.get();
+    }
 
 private:
     std::unique_ptr<SinglyLinkedListNode<T>> mFirst;

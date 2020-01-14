@@ -3,13 +3,22 @@
 #include "test_helper.cc"
 #include "foo.h"
 
-TEST(SinglyLinkedListTests_Front, ListShouldInitiallyBeEmpty) 
+class SinglyLinkedListTests : public ::testing::Test 
+{
+    protected:
+        SinglyLinkedListTests() 
+        {
+            Foo::reset_constructor_count();
+        }
+};
+
+TEST_F(SinglyLinkedListTests, ListShouldInitiallyBeEmpty) 
 { 
     SinglyLinkedList<std::size_t> list;
     ASSERT_TRUE(list.empty());
 }
 
-TEST(SinglyLinkedListTests_PushFront, SingleElementShouldBeAtFront)
+TEST_F(SinglyLinkedListTests, SingleElementShouldBeAtFront)
 {
     SinglyLinkedList<std::string> list;
     list.push_front("hello");
@@ -17,7 +26,7 @@ TEST(SinglyLinkedListTests_PushFront, SingleElementShouldBeAtFront)
     ASSERT_EQ("hello", list.front()->get_value());
 }
 
-TEST(SinglyLinkedListTests_PushFront, MultipleElementListShouldBeInReverseOrder)
+TEST_F(SinglyLinkedListTests, MultipleElementListShouldBeInReverseOrder)
 {
     SinglyLinkedList<std::size_t> list;
     std::vector<std::size_t> elements {10, 20, 30};
@@ -27,13 +36,13 @@ TEST(SinglyLinkedListTests_PushFront, MultipleElementListShouldBeInReverseOrder)
     ASSERT_EQ(expected, actual);
 }
 
-TEST(SinglyLinkedListTests_PopFront, ShouldThrowExceptionOnPoppingEmptyList)
+TEST_F(SinglyLinkedListTests, ShouldThrowExceptionOnPoppingEmptyList)
 {
     SinglyLinkedList<std::size_t> list;
     ASSERT_THROW(list.pop_front(), std::out_of_range);
 }
 
-TEST(SinglyLinkedListTests_PopFront, PushingAndPoppingSingleElementShouldResultInEmptyList)
+TEST_F(SinglyLinkedListTests, PushingAndPoppingSingleElementShouldResultInEmptyList)
 {
     SinglyLinkedList<std::size_t> list;
     list.push_front(42);
@@ -41,7 +50,7 @@ TEST(SinglyLinkedListTests_PopFront, PushingAndPoppingSingleElementShouldResultI
     ASSERT_TRUE(list.empty());
 }
 
-TEST(SinglyLinkedListTests_PopFront, PushAndPopElementsShouldResultInCorrectFinalList)
+TEST_F(SinglyLinkedListTests, PushAndPopElementsShouldResultInCorrectFinalList)
 {
     SinglyLinkedList<std::size_t> list;
     std::vector<std::size_t> elements {10, 20, 10, 30};
@@ -53,18 +62,17 @@ TEST(SinglyLinkedListTests_PopFront, PushAndPopElementsShouldResultInCorrectFina
     ASSERT_EQ(expected, actual);
 }
 
-TEST(SinglyLinkedListTests_PushFront, CallsCopyConstructorWhenPassingParameters)
+TEST_F(SinglyLinkedListTests, PushFrontCallsCopyConstructor)
 {
     SinglyLinkedList<Foo> list; 
     Foo node{42};
-    Foo::reset_copy_constructor_count();
     list.push_front(node);
-    ASSERT_EQ(3, Foo::copy_constructor_count);
+    ASSERT_EQ(1, Foo::copy_constructor_count);
 }
 
-/*TEST(SinglyLinkedListTests_EmplaceFront, DoesNotCallCopyConstructorWhenPassingParameters)
+TEST_F(SinglyLinkedListTests, EmplaceFrontCallsCopyConstructor)
 {
-    SinglyLinkedList<Foo> list; 
+    SinglyLinkedList<Foo> list;
     list.emplace_front(42);
-    ASSERT_EQ(3, Foo::num_times_constructed);
-}*/
+    ASSERT_EQ(0, Foo::copy_constructor_count);
+}

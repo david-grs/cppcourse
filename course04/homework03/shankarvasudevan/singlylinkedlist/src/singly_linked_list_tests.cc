@@ -1,14 +1,14 @@
 #include "gtest/gtest.h"
 #include "singly_linked_list.h"
 #include "test_helper.cc"
-#include "foo.h"
+#include "counter.h"
 
 class SinglyLinkedListTests : public ::testing::Test 
 {
     protected:
         SinglyLinkedListTests() 
         {
-            Foo::reset_constructor_count();
+            Counter::reset_constructor_count();
         }
 };
 
@@ -62,19 +62,21 @@ TEST_F(SinglyLinkedListTests, PushAndPopElementsShouldResultInCorrectFinalList)
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(SinglyLinkedListTests, PushFrontCallsCopyConstructor)
+TEST_F(SinglyLinkedListTests, PushFrontCallsCorrectConstructors)
 {
-    Foo::reset_constructor_count();
-    SinglyLinkedList<Foo> list; 
-    Foo node{42};
+    SinglyLinkedList<Counter> list; 
+    Counter node{42};
     list.push_front(node);
-    ASSERT_EQ(1, Foo::copy_constructor_count);
+    ASSERT_EQ(1, Counter::sCtors);
+    ASSERT_EQ(2, Counter::sCopyCtors);
+    ASSERT_EQ(0, Counter::sMoveCtors);
 }
 
-TEST_F(SinglyLinkedListTests, EmplaceFrontCallsCopyConstructor)
+TEST_F(SinglyLinkedListTests, EmplaceFrontCallsCorrectConstructors)
 {
-    Foo::reset_constructor_count();
-    SinglyLinkedList<Foo> list;
+    SinglyLinkedList<Counter> list;
     list.emplace_front(42);
-    ASSERT_EQ(0, Foo::copy_constructor_count);
+    ASSERT_EQ(1, Counter::sCtors);
+    ASSERT_EQ(1, Counter::sCopyCtors);
+    ASSERT_EQ(0, Counter::sMoveCtors);
 }

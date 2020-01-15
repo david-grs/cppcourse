@@ -1,5 +1,6 @@
 #pragma once
 #include "singly_linked_list_node.h"
+#include <iostream>
 
 template<typename T>
 class SinglyLinkedList

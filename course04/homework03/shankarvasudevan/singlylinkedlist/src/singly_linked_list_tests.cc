@@ -64,6 +64,7 @@ TEST_F(SinglyLinkedListTests, PushAndPopElementsShouldResultInCorrectFinalList)
 
 TEST_F(SinglyLinkedListTests, PushFrontCallsCopyConstructor)
 {
+    Foo::reset_constructor_count();
     SinglyLinkedList<Foo> list; 
     Foo node{42};
     list.push_front(node);
@@ -72,6 +73,7 @@ TEST_F(SinglyLinkedListTests, PushFrontCallsCopyConstructor)
 
 TEST_F(SinglyLinkedListTests, EmplaceFrontCallsCopyConstructor)
 {
+    Foo::reset_constructor_count();
     SinglyLinkedList<Foo> list;
     list.emplace_front(42);
     ASSERT_EQ(0, Foo::copy_constructor_count);

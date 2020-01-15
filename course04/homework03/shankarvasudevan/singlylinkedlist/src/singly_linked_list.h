@@ -29,8 +29,7 @@ public:
     template<typename ...Args>
     void emplace_front(Args&&... args)
     {
-        T value(std::forward<Args>(args)...);
-        auto node{std::make_unique<SinglyLinkedListNode<T>>(value)};
+        auto node{std::make_unique<SinglyLinkedListNode<T>>(std::forward<Args>(args)...)};
         if (mFirst == nullptr)
         {
             mFirst = std::move(node);

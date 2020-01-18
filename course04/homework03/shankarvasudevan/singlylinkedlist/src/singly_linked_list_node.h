@@ -1,13 +1,14 @@
 #pragma once
 #include <memory>
 
-template<typename T, typename... Args>
+template<typename T>
 struct SinglyLinkedListNode
 {
 public:
-    SinglyLinkedListNode(const T& value) : mValue(value) {};
+    SinglyLinkedListNode(const T& value) : mValue(value) {}
 
-    SinglyLinkedListNode(Args&&... args) : mValue(std::forward<Args>(args)...) {};
+    template<typename ...Args>
+    SinglyLinkedListNode(Args&&... args) : mValue(std::forward<Args>(args)...) {}
 
     const T get_value() { return mValue; }
 

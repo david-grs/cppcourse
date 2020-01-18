@@ -68,15 +68,15 @@ TEST_F(SinglyLinkedListTests, PushFrontCallsCorrectConstructors)
     Counter node{42};
     list.push_front(node);
     ASSERT_EQ(1, Counter::sCtors);
-    ASSERT_EQ(2, Counter::sCopyCtors);
+    ASSERT_EQ(1, Counter::sCopyCtors);
     ASSERT_EQ(0, Counter::sMoveCtors);
 }
 
-TEST_F(SinglyLinkedListTests, EmplaceFrontCallsCorrectConstructors)
+TEST_F(SinglyLinkedListTests, EmplaceFrontDoesNotCallCopyConstructor)
 {
     SinglyLinkedList<Counter> list;
     list.emplace_front(42);
     ASSERT_EQ(1, Counter::sCtors);
-    ASSERT_EQ(1, Counter::sCopyCtors);
+    ASSERT_EQ(0, Counter::sCopyCtors);
     ASSERT_EQ(0, Counter::sMoveCtors);
 }

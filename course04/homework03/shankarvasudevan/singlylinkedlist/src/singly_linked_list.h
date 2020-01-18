@@ -13,7 +13,7 @@ public:
         return mFirst == nullptr;
     }
 
-    void push_front(const T value)
+    void push_front(const T& value)
     {
         auto node{std::make_unique<SinglyLinkedListNode<T>>(value)};
         if (mFirst == nullptr)

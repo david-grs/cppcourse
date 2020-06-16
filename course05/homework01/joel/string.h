@@ -17,17 +17,17 @@ public:
 	String(const std::string s) : String(s.c_str()) {}
 	String(const String &s) : String(s.c_str()) {}
 
-	bool Empty() const { return mSize == 0; };
-	std::size_t Size() const { return mSize; };
+	const bool Empty() const { return mSize == 0; };
+	const std::size_t Size() const { return mSize; };
 	const char *c_str() const { return mContents.get(); };
 
 	// mainly added these two to help with testing operator+
-	bool StartsWith(String substr) const
+	const bool StartsWith(const String substr) const
 	{
 		return (std::strncmp(c_str(), substr.c_str(), substr.Size()) == 0);
 	}
 
-	bool EndsWith(String substr) const
+	const bool EndsWith(const String substr) const
 	{
 		// First, find the substring
 		const char *found_sub = std::strstr(c_str(), substr.c_str());
@@ -43,21 +43,21 @@ public:
 	}
 
 private:
-	std::size_t mSize;
-	std::unique_ptr<char[]> mContents;
+	const std::size_t mSize;
+	const std::unique_ptr<char[]> mContents;
 };
 
-std::ostream &operator<<(std::ostream &stream, String &str)
+std::ostream &operator<<(std::ostream &stream, const String &str)
 {
 	stream << str.c_str();
 	return stream;
 }
 
-bool operator==(String &str1, String &str2) { return std::strcmp(str1.c_str(), str2.c_str()) == 0; }
+const bool operator==(const String &str1, const String &str2) { return std::strcmp(str1.c_str(), str2.c_str()) == 0; }
 
-bool operator!=(String &str1, String &str2) { return !(str1 == str2); }
+const bool operator!=(const String &str1, const String &str2) { return !(str1 == str2); }
 
-String operator+(String &str1, String &str2)
+const String operator+(const String &str1, const String &str2)
 {
 	char tmpstr[str1.Size() + str2.Size()];
 	std::strcpy(tmpstr, str1.c_str());

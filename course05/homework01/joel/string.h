@@ -14,7 +14,7 @@ public:
 		std::strcpy(mContents.get(), s);
 	}
 	String() : String("") {}
-	String(std::string s) : String(s.c_str()) {}
+	String(const std::string s) : String(s.c_str()) {}
 	String(const String &s) : String(s.c_str()) {}
 
 	bool Empty() const { return mSize == 0; };

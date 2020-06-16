@@ -1,21 +1,28 @@
 #include "string.h"
 
+#include <algorithm>
+#include <stdexcept>
+
 String::String()
-	: String{""}
 {
 }
 
 String::String(std::string s)
-	: mString{s}
 {
+	if(s.size() > MaxChars)
+	{
+		throw std::runtime_error{"String too long: " + s};
+	}
+
+	mSize = s.size();
+	copy(s.begin(), s.end(), mChars);
 }
 
-String::String(std::istream& is)
+String::String(const char* b, const char* e)
+	: mSize{static_cast<size_t>(e - b)}
 {
-	// I want to keep String immutable, that doesn't seem compatible with the notion semantics of istream >> str. So now
-	// I create it using a constructor, but I think it would be better to use a function for this, but where to put it?
-	// Make it a static of String? Or in the global namespace? Neither seem ideal.
-	is >> mString;
+	// Note that this is a private constructor; maintaining the invariant is the responsibility of the methods.
+	std::copy(b, e, mChars);
 }
 
 bool String::Empty() const
@@ -25,19 +32,24 @@ bool String::Empty() const
 
 std::size_t String::Size() const
 {
-	return mString.size();
+	return mSize;
 }
 
 std::ostream& operator<<(std::ostream& stream, const String str)
 {
-	stream << str.str();
+	copy(str.begin(), str.end(), std::ostreambuf_iterator<char>{stream});
 
 	return stream;
 }
 
 bool String::operator==(const String b) const
 {
-	return mString == b.mString;
+	if(mSize != b.mSize)
+	{
+		return false;
+	}
+
+	return std::equal(begin(), end(), b.begin());
 }
 
 bool String::operator!=(const String b) const
@@ -53,5 +65,12 @@ String String::Substring(int start) const
 String String::Substring(int start, int len) const
 {
 	// TODO: handle start/len bounds
-	return String{mString.substr(start, len)};
+	return String{mChars+start, mChars+start+len};
+}
+
+String StringFromIstream(std::istream& istream)
+{
+	std::string s;
+	istream >> s;
+	return String{s};
 }

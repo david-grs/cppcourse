@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -Wall")
-add_executable(string_tests string_tests.cc)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -g -Wall -pedantic")
+add_executable(string_tests string_tests.cc string.cc)
 

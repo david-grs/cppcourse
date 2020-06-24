@@ -21,6 +21,13 @@ void Test_Equals_DifferentStringsGiven_ShouldNotEqualEachOther(){
 	assert(actual != expected);
 }
 
+void Test_Constructor_DefaultUsed_SizeIsZero(){
+	// Arrange / Act
+	String str;
+
+	// Assert
+	assert(str.Size() == 0);
+}
 void Test_Constructor_SameStringsGiven_ShouldEqualEachOther(){
 	// Arrange
 	std::string helloWord("Hello!"); 
@@ -49,8 +56,25 @@ void Test_NotEquals_TwoDifferentStrings_ShouldNotBeEqual()
 
 void Test_Concatenate_TooLongStringsGiven_ShouldGiveException(){
 	// Arrange
-	assert(false);
+	int individual_lengths = 600;
+	String first;
+	bool caught = false;
+	String second;
+	String toAdd{"a"};
+	for(int i =0; i < individual_lengths; ++i) {
+		first += toAdd;
+		second += toAdd;
+	}
+	
 	// Act / Assert
+	try{
+		first + second;
+	}
+	catch(const std::length_error& le)
+	{
+		caught = true;
+	}
+	assert(caught);
 }
 
 void Test_Concatenate_ValidStringsGiven_ShouldBeConcatenatedCorrectly(){
@@ -75,9 +99,13 @@ int main()
 
 
 	Test_Equals_DifferentStringsGiven_ShouldNotEqualEachOther();
+
+	Test_Constructor_DefaultUsed_SizeIsZero();
 	Test_Constructor_SameStringsGiven_ShouldEqualEachOther();
+	Test_NotEquals_TwoDifferentStrings_ShouldNotBeEqual();
+	Test_Concatenate_TooLongStringsGiven_ShouldGiveException();
 	Test_Concatenate_ValidStringsGiven_ShouldBeConcatenatedCorrectly();
-	// TODO: other tests
+
 
 	return 0;
 }

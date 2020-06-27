@@ -7,22 +7,17 @@ class String
 {
 public:
     String();
-    String(std::string);
-
-    bool Empty() const {return mSize==0;};
-    std::size_t Size() const;
-
-    // TODO
-private:
-    size_t mSize;
-    int mCapacity;
+    String(std::string&);
+    bool Empty();
+    std::size_t Size();
     
+
+private:
+    std::size_t mSize = 0;
+    static const int mCapacity = 10;
+    char mStream[mCapacity + 1];
 };
 
-std::ostream& operator<<(std::ostream& stream, String str)
-{
-    // TODO
-    return stream;
-}
+
 
 

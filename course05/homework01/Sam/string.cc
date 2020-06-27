@@ -4,17 +4,19 @@
 
 String::String(){};
 
-String::String(std::string str)
+String::String(const std::string& str)
 {
-    if (str.size() > mSize)
+    if (str.size() > mCapacity)
     {
-        throw "str is larger than String size!";
+        throw std::runtime_error("str is larger than String capacity!");
     }
     
-    for (int i = 0; i < str.size(); i++)
+    for (std::size_t i = 0; i < str.size(); i++)
     {
         mStream[i] = str[i];
     }
+    
+    mSize = str.size();
 };
 
 bool String::Empty()
@@ -27,7 +29,7 @@ std::size_t String::Size()
     return mSize;
 };
 
-std::ostream& operator<<(std::ostream& stream, String str)
-{
-    return stream;
-}
+//std::ostream& operator<<(std::ostream& stream, String str)
+//{
+//    return stream;
+//}

@@ -1,5 +1,4 @@
 #include "linkedlist.hpp"
-#include <iostream>
 
 template <typename T>
 Node<T>& Node<T>::Append(T val)

@@ -1,9 +1,10 @@
 #include "linkedlist.hpp"
+#include <iostream>
 
 template <typename T>
 Node<T>& Node<T>::Append(T val)
 {
-    auto &cur_node = this->At(mSize).get();
+    auto &cur_node = At(mSize).get();
     Node<T>* new_node = new Node<T>{val};
     cur_node.mNxt = new_node;
     mSize++;
@@ -11,10 +12,10 @@ Node<T>& Node<T>::Append(T val)
 }
 
 template <typename T>
-Node<T>& Node<T>::Append(T val, const int index)
+Node<T>& Node<T>::Append(T val, const std::size_t index)
 {
     // Appends AFTER index
-    auto &cur_node = this->At(index).get();
+    auto &cur_node = At(index).get();
 
     Node<T>* new_node = new Node<T>{val};
     Node<T> *old_next = cur_node.mNxt;
@@ -26,9 +27,9 @@ Node<T>& Node<T>::Append(T val, const int index)
 }
 
 template <typename T>
-boost::optional<Node<T>&> Node<T>::At(int index){
+boost::optional<Node<T>&> Node<T>::At(const std::size_t index){
     boost::optional<Node<T>&> cur_node = *this;
-    int count = 0;
+    std::size_t count = 0;
     while (cur_node.get().Next() && count < index)
     {
         // Find the last node in the chain, or index, whichever is first
@@ -44,8 +45,15 @@ boost::optional<Node<T>&> Node<T>::At(int index){
 
 template <typename T>
 Node<T>& Node<T>::Pop() {
-    auto &cur_node = this->At(mSize - 1).get();
-    auto &node = cur_node.get().Next();
+    if (!Next())
+        // chain len 1, return self
+        return *this;
+
+    auto &cur_node = At(mSize - 1).get();
+    // we know that next is not none, so this is fine.
+    auto &node = cur_node.Next().get();
     cur_node.mNxt = nullptr;
+    mSize--;
     return node;
 }
+

@@ -13,14 +13,15 @@ struct Node
 
     const T& GetData() const { return *mData; };
     const std::size_t GetSize() const { return mSize; };
+    const bool Empty() const {return mSize == 0; }
 
 	Node<T>& Append(T);
-	Node<T>& Append(T, const int);
+	Node<T>& Append(T, const std::size_t);
 
     Node<T>& Pop();
-    Node<T>& Pop(int);
+    boost::optional<Node<T>&> Pop(const std::size_t);
 
-    boost::optional<Node<T>&> At(int);
+    boost::optional<Node<T>&> At(const std::size_t);
 
 private:
     Node* mNxt = nullptr;

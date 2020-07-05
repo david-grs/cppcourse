@@ -7,3 +7,6 @@
 [submodule "course04/meeting03/gtest"]
 	path = course04/meeting03/gtest
 	url = git@github.com:google/googletest.git
+[submodule "course05/homework03/joel/googletest"]
+	path = course05/homework03/joel/googletest
+	url = https://github.com/google/googletest.git

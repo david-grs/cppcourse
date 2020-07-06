@@ -1,6 +1,6 @@
 #include "string.h"
 #include<string>
-#include <cassert>
+#include<cassert>
 
 void TestEmpty()
 {

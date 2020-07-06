@@ -1,16 +1,27 @@
 #include <string>
+#include <numeric>
 
 #include "linked_list.h"
 
+static void push_at(LinkedList::LinkPtr& link, const std::string& str)
+{
+	LinkedList::LinkPtr newLink{new LinkedList::Link { str, {} }};
+
+	newLink->mNext = std::move(link);
+	link = std::move(newLink);
+}
+
 LinkedList::LinkedList(const LinkedList& from)
 {
-	std::unique_ptr<Link>* outputLink = &mFront;
+	std::accumulate(
+		from.begin(), from.end(),
+		std::ref(mFront),
+		[](LinkPtr& output, const std::string& item) -> LinkPtr&
+		{
+			push_at(output, item);
 
-	for(const auto& item : from)
-	{
-		outputLink->reset(new Link { item, {} });
-		outputLink = &(outputLink->get()->mNext);
-	}
+			return output->mNext;
+		});
 }
 
 LinkedList& LinkedList::operator=(const LinkedList& from)
@@ -27,10 +38,7 @@ LinkedList::size_type LinkedList::size() const
 
 void LinkedList::push_front(const std::string& str)
 {
-	std::unique_ptr<Link> newLink{new Link { str, {} }};
-
-	newLink->mNext = std::move(mFront);
-	mFront = std::move(newLink);
+	push_at(mFront, str);
 }
 
 void LinkedList::pop_front()
@@ -48,20 +56,19 @@ const std::string& LinkedList::at(size_type index) const
 	return *std::next(begin(), index);
 }
 
-std::unique_ptr<LinkedList::Link>* LinkedList::find_link(LinkedList::size_type index)
+static LinkedList::LinkPtr& find_link(LinkedList::LinkPtr& from, LinkedList::size_type index)
 {
-	std::unique_ptr<Link>* link = &mFront;
+	LinkedList::LinkPtr* link = &from;
 
-	for(; index>0; index--)
+	while(index-- > 0)
 	{
-		link = &(*link)->mNext;
+		link = &link->get()->mNext;
 	}
 
-	return link;
+	return *link;
 }
 
 void LinkedList::insert_at(LinkedList::size_type index, const std::string& str)
 {
-	auto link = find_link(index);
-	(*link).reset(new Link { str, std::move(*link) });
+	push_at(find_link(mFront, index), str);
 }

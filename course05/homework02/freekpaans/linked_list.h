@@ -13,6 +13,8 @@ public:
 		std::unique_ptr<Link> mNext;
 	};
 
+	using LinkPtr = std::unique_ptr<Link>;
+
 	LinkedList() =default;
 	LinkedList(const LinkedList& from);
 
@@ -72,7 +74,5 @@ public:
 	}
 
 private:
-	std::unique_ptr<Link>* find_link(size_type index);
-
-	std::unique_ptr<Link> mFront{};
+	LinkPtr mFront{};
 };

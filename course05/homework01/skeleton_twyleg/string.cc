@@ -2,6 +2,9 @@
 
 #include "string.h"
 
+#include <iostream>
+#include <cstring>
+
 namespace cppcourse {
 
 String::String()
@@ -23,16 +26,23 @@ String::String(std::string inputString)
 String& String::append(const String& inputString)
 {
     if ((mSize + inputString.Size() + 1) > STRING_MAX_LENGTH)
-        throw std::runtime_error("Error: Resulting string would exceed internal memory limit");
+        throw std::runtime_error("Error: Resulting string would: exceed internal memory limit");
 
-    for (size_t i=0; i<inputString.Size(); ++i)
-    {
-        mData[mSize++] = inputString.mData[i];
-    }
-
+    std::memcpy(mData.data()+mSize, inputString.mData.data(), inputString.Size());
+    mSize += inputString.Size();
     mData[mSize] = '\0';
 
     return *this;
+}
+
+bool String::operator==(const String& rhs)
+{
+    return !std::strcmp(mData.data(), rhs.c_str());
+}
+
+bool String::operator!=(const String& rhs)
+{
+    return !(*this == rhs);
 }
 
 std::ostream& operator<<(std::ostream& stream, String str)
@@ -40,26 +50,5 @@ std::ostream& operator<<(std::ostream& stream, String str)
     return stream << str.mData.data();
 }
 
-bool operator==(const String& lhs, const String& rhs)
-{
-    if (lhs.Size() != rhs.Size())
-        return false;
-
-    const char* lhsCStr = lhs.c_str();
-    const char* rhsCStr = rhs.c_str();
-
-    for (size_t i=0; i<lhs.Size(); ++i)
-    {
-        if (lhsCStr[i] != rhsCStr[i])
-            return false;
-    }
-
-    return true;
-}
-
-bool operator!=(const String& lhs, const String& rhs)
-{
-    return !(lhs == rhs);
-}
 
 }

@@ -2,17 +2,18 @@
 
 #pragma once
 
+#include <iosfwd>
 #include <string>
-#include <ostream>
 #include <array>
 #include <cstring>
 
 namespace cppcourse {
 
+
 class String
 {
 public:
-	String();
+    String();
     String(std::string);
 
     bool Empty() const { return (mSize == 0); };
@@ -20,11 +21,10 @@ public:
     const char* c_str() const { return mData.data(); };
     String& append(const String&);
 
+    bool operator==(const String& rhs);
+    bool operator!=(const String& rhs);
 
     friend std::ostream& operator<<(std::ostream& stream, String str);
-    friend bool operator==(const String& lhs, const String& rhs);
-    friend bool operator!=(const String& lhs, const String& rhs);
-
     constexpr static size_t STRING_MAX_LENGTH = 512;
 
 private:
@@ -33,9 +33,5 @@ private:
     std::array<char, STRING_MAX_LENGTH> mData;
 
 };
-
-std::ostream& operator<<(std::ostream& stream, String str);
-bool operator==(const String& lhs, const String& rhs);
-bool operator!=(const String& lhs, const String& rhs);
 
 }

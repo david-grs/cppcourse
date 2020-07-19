@@ -9,52 +9,72 @@
 
 namespace cppcourse::testing {
 
-TEST(CreateString, EmptyString_StringCreated)
+constexpr std::size_t STRING_TEST_LENGTH = 512;
+
+TEST(CreationTest, NoStringProvided_CreateString_StringCreated)
 {
 	std::string inputString;
 	cppcourse::String str(inputString);
 }
 
-TEST(CreateString, ValidString_StringCreated)
+TEST(CreationTest, NonEmptyStdString_CreateString_StringCreated)
 {
 	std::string inputString("foobar");
 	cppcourse::String str(inputString);
 }
 
-TEST(CreateString, OversizedString_ExceptionThrown)
+TEST(CreationTest, EmptyString_CopyConstruct_StringCopyCreated)
 {
-	std::string inputString;
-	for (size_t i=0; i<cppcourse::String::STRING_MAX_LENGTH+1; ++i)
-		inputString.push_back('+');
+	cppcourse::String srcString;
+	cppcourse::String dstString(srcString);
 
-	EXPECT_THROW(cppcourse::String(inputString), std::length_error);
+	EXPECT_TRUE(srcString.Empty());
+	EXPECT_TRUE(dstString.Empty());
+	EXPECT_EQ(srcString, dstString);
 }
 
-TEST(EmptyCheck, EmptyString_Empty)
+TEST(CreationTest, NonEmptyString_CopyConstruct_StringCopyCreated)
+{
+	cppcourse::String srcString("foobar");
+	cppcourse::String dstString(srcString);
+
+	EXPECT_EQ(srcString, dstString);
+}
+
+TEST(CreationTest, NonEmptyString_MoveConstruct_StringMoved)
+{
+	cppcourse::String srcString("foobar");
+	cppcourse::String dstString(std::move(srcString));
+
+	EXPECT_TRUE(srcString.Empty());
+	EXPECT_EQ(dstString, cppcourse::String("foobar"));
+}
+
+TEST(EmptynessTest, EmptyString_CheckEmptyness_True)
 {
 	cppcourse::String str;
 	EXPECT_TRUE(str.Empty());
 }
 
-TEST(EmptyCheck, NonEmptyString_NotEmpty)
+TEST(EmptynessTest, NonEmptyString_CheckEmptyness_False)
 {
 	cppcourse::String str("foobar");
 	EXPECT_FALSE(str.Empty());
 }
 
-TEST(SizeCheck, EmptyString_CorrectSize)
+TEST(SizeTest, EmptyString_CheckEmptyness_True)
 {
 	cppcourse::String str;
 	EXPECT_TRUE(str.Empty());
 }
 
-TEST(SizeCheck, NonEmptyString_CorrectSize)
+TEST(SizeTest, NonEmptyString_CheckSize_SizeCorrect)
 {
 	cppcourse::String str("foobar");
 	EXPECT_EQ(str.Size(), 6);
 }
 
-TEST(StreamOperator, NonEmptyString_CorrectOutputStream)
+TEST(OperatorTest, NonEmptyString_StreamToStringstream_OutputCorrect)
 {
 	std::string inputString = "foobar";
 	cppcourse::String str(inputString);
@@ -65,7 +85,7 @@ TEST(StreamOperator, NonEmptyString_CorrectOutputStream)
 	EXPECT_EQ(ss.str(), inputString);
 }
 
-TEST(EqualOperator, EqualStrings_ReturnTrue)
+TEST(OperatorTest, EqualStrings_CheckEquality_True)
 {
 	cppcourse::String stringA("foobar");
 	cppcourse::String stringB("foobar");
@@ -73,7 +93,7 @@ TEST(EqualOperator, EqualStrings_ReturnTrue)
 	EXPECT_TRUE(stringA == stringB);
 }
 
-TEST(EqualOperator, UnequalStrings_ReturnFalse)
+TEST(OperatorTest, UnequalStrings_CheckEquality_False)
 {
 	cppcourse::String stringA("foobarfoo");
 	cppcourse::String stringB("foobar");
@@ -81,7 +101,7 @@ TEST(EqualOperator, UnequalStrings_ReturnFalse)
 	EXPECT_FALSE(stringA == stringB);
 }
 
-TEST(UnequalOperator, EqualStrings_ReturnFalse)
+TEST(OperatorTest, EqualStrings_CheckUnequality_False)
 {
 	cppcourse::String stringA("foobar");
 	cppcourse::String stringB("foobar");
@@ -89,7 +109,7 @@ TEST(UnequalOperator, EqualStrings_ReturnFalse)
 	EXPECT_FALSE(stringA != stringB);
 }
 
-TEST(UnequalOperator, UnequalStrings_ReturnTrue)
+TEST(OperatorTest, UnequalStrings_CheckUnequality_True)
 {
 	cppcourse::String stringA("foobarfoo");
 	cppcourse::String stringB("foobar");
@@ -97,34 +117,72 @@ TEST(UnequalOperator, UnequalStrings_ReturnTrue)
 	EXPECT_TRUE(stringA != stringB);
 }
 
-TEST(Append, EmptyString_StringAppended)
+TEST(AppendTest, EmptyString_AppendString_StringAppended)
 {
 	cppcourse::String stringA("foobar");
 	cppcourse::String stringB;
 
-	stringB.append(stringA);
+	stringB.Append(stringA);
 
 	EXPECT_EQ(stringB, cppcourse::String("foobar"));
 }
 
-TEST(Append, NonEmptyString_StringAppended)
+TEST(AppendTest, NonEmptyString_AppendString_StringAppended)
 {
 	cppcourse::String stringA("foobar");
 	cppcourse::String stringB("foobar");
 
-	stringB.append(stringA);
+	stringB.Append(stringA);
 
 	EXPECT_EQ(stringB, cppcourse::String("foobarfoobar"));
 }
 
-TEST(Append, OversizedString_ExceptionThrown)
+TEST(EraseTest, NonEmptyString_EraseFirstChar_CharErased)
 {
-	cppcourse::String stringA;
-	cppcourse::String stringB("a");
-	for (size_t i=0; i<cppcourse::String::STRING_MAX_LENGTH-1; ++i)
-		stringA.append(stringB);
+	cppcourse::String stringA("abc");
+	cppcourse::String stringB("bc");
 
-	EXPECT_THROW(stringA.append(stringB), std::length_error);
+	stringA.Erase(stringA.begin());
+
+	EXPECT_EQ(stringA, stringB);
+}
+
+TEST(EraseTest, NonEmptyString_EraseMiddleChar_CharErased)
+{
+	cppcourse::String stringA("abc");
+	cppcourse::String stringB("ac");
+
+	stringA.Erase(++stringA.begin());
+
+	EXPECT_EQ(stringA, stringB);
+}
+
+TEST(EraseTest, NonEmptyString_EraseLastChar_CharErased)
+{
+	cppcourse::String stringA("abc");
+	cppcourse::String stringB("ab");
+
+	stringA.Erase(++(++stringA.begin()));
+
+	EXPECT_EQ(stringA, stringB);
+}
+
+TEST(AtTest, NonEmptyString_SetFirstChar_CharSet)
+{
+	cppcourse::String stringA("abc");
+	cppcourse::String stringB("xbc");
+
+	stringA.at(0) = 'x';
+
+	EXPECT_EQ(stringA, stringB);
+}
+
+TEST(AtTest, NonEmptyString_EraseLastChar_CharErased)
+{
+	cppcourse::String stringA("abc");
+
+	EXPECT_THROW(stringA.at(4) = 'x', std::length_error);
+
 }
 
 }

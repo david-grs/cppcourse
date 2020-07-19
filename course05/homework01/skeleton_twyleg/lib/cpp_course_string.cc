@@ -1,5 +1,4 @@
 // Some copyright 2020
-
 #include "cpp_course_string.h"
 
 #include <iostream>
@@ -7,37 +6,76 @@
 
 namespace cppcourse {
 
-String::String()
-{
-	mData[0] = '\0';
-	mSize = 0;
-}
+String::String(const String& inputString) :
+	mData(inputString.mData)
+{}
+
+String::String(String&& inputString) :
+	mData(std::move(inputString.mData))
+{}
 
 String::String(const std::string& inputString)
 {
-	if ((inputString.length() + 1) > STRING_MAX_LENGTH)
-		throw std::length_error("Error: input string exceeds internal memory limit");
-
-	std::memcpy(mData.data(), inputString.data(), inputString.length());
-	mData[inputString.length()] = '\0';
-	mSize = inputString.length();
+	for (char c: inputString)
+	{
+		Append(c);
+	}
 }
 
-String& String::append(const String& inputString)
+String& String::Append(const String& inputString)
 {
-	if ((mSize + inputString.Size() + 1) > STRING_MAX_LENGTH)
-		throw std::length_error("Error: Resulting string would: exceed internal memory limit");
-
-	std::memcpy(mData.data()+mSize, inputString.mData.data(), inputString.Size());
-	mSize += inputString.Size();
-	mData[mSize] = '\0';
+	for (auto c: inputString.mData)
+	{
+		Append(c);
+	}
 
 	return *this;
 }
 
+String& String::Append(char c)
+{
+	mData.push_back(c);
+	return *this;
+}
+
+String::iter String::Erase(const iter& pos)
+{
+	return mData.erase(pos);	
+}
+
+char& String::at(size_t pos)
+{
+	if (pos > mData.size())
+		throw std::length_error("Requested position exeeds string length");
+
+	std::size_t i = 0;
+	for (auto& c: mData)
+	{
+		if (i++ == pos)
+			return c;
+	}
+
+	// Here be dragons
+	return *mData.begin();
+}
+
 bool String::operator==(const String& rhs) const
 {
-	return !std::strcmp(mData.data(), rhs.c_str());
+	if (Size() != rhs.Size())
+		return false;
+
+	auto lhsIt = mData.begin();
+	auto rhsIt = rhs.mData.begin();
+
+	while (lhsIt != mData.end())
+	{
+		if (*lhsIt != *rhsIt)
+			return false;
+		++lhsIt;
+		++rhsIt;
+	}
+
+	return true;
 }
 
 bool String::operator!=(const String& rhs) const
@@ -45,9 +83,14 @@ bool String::operator!=(const String& rhs) const
 	return !(*this == rhs);
 }
 
-std::ostream& operator<<(std::ostream& stream, String str)
+std::ostream& operator<<(std::ostream& stream, const String& str)
 {
-	return stream << str.mData.data();
+	for (char c: str.mData)
+	{
+		stream << c;
+	}
+
+	return stream;
 }
 
 

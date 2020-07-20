@@ -5,16 +5,18 @@
 
 #include "linked_list.h"
 
+using StrLinkedList = LinkedList<std::string>;
+
 TEST(EmptyListTests, IsEmpty)
 {
-	LinkedList lst;
+	StrLinkedList lst;
 
 	ASSERT_TRUE(lst.empty());
 }
 
 TEST(EmptyListTests, HasSize0)
 {
-	LinkedList lst;
+	StrLinkedList lst;
 
 	ASSERT_EQ(0, lst.size());
 }
@@ -22,7 +24,7 @@ TEST(EmptyListTests, HasSize0)
 class SingleItemTests : public ::testing::Test 
 {
 protected:
-	LinkedList test_list;
+	StrLinkedList test_list;
 };
 
 TEST_F(SingleItemTests, IsNotEmpty)
@@ -64,8 +66,8 @@ protected:
 		filled_list.push_front("world");
 	}
 
-	LinkedList empty_list;
-	LinkedList filled_list;
+	StrLinkedList empty_list;
+	StrLinkedList filled_list;
 };
 
 TEST_F(MultipleItemTests, FrontRetrievesFirstItem)
@@ -108,8 +110,8 @@ TEST_F(MultipleItemTests, Size)
 
 TEST(CopyTests, WhenAddingToAnEmptyTheOtherDoesNotGetAffected)
 {
-	LinkedList list1;
-	LinkedList list2 { list1 };
+	StrLinkedList list1;
+	StrLinkedList list2 { list1 };
 
 	list1.push_front("hello");
 
@@ -119,11 +121,11 @@ TEST(CopyTests, WhenAddingToAnEmptyTheOtherDoesNotGetAffected)
 
 TEST(CopyTests, CopyCopiesTheElements)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 	list1.push_front("hello");
 	list1.push_front("world");
 
-	LinkedList list2 { list1 };
+	StrLinkedList list2 { list1 };
 
 	ASSERT_EQ("world", list2.at(0));
 	ASSERT_EQ("hello", list2.at(1));
@@ -131,10 +133,10 @@ TEST(CopyTests, CopyCopiesTheElements)
 
 TEST(CopyTests, WhenAddingToANonEmptyTheOtherDoesNotGetAffected)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 	list1.push_front("world");
 
-	LinkedList list2 { list1 };
+	StrLinkedList list2 { list1 };
 
 	list1.push_front("hello");
 
@@ -143,8 +145,8 @@ TEST(CopyTests, WhenAddingToANonEmptyTheOtherDoesNotGetAffected)
 
 TEST(AssignmentTests, WhenAddingToAnEmptyTheOtherDoesNotGetAffected)
 {
-	LinkedList list1;
-	LinkedList list2;
+	StrLinkedList list1;
+	StrLinkedList list2;
 
 	list2 = list1;
 
@@ -155,11 +157,11 @@ TEST(AssignmentTests, WhenAddingToAnEmptyTheOtherDoesNotGetAffected)
 
 TEST(AssignmentTests, AssignmentCopies)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 	list1.push_front("hello");
 	list1.push_front("world");
 
-	LinkedList list2;
+	StrLinkedList list2;
 
 	list2 = list1;
 
@@ -170,10 +172,10 @@ TEST(AssignmentTests, AssignmentCopies)
 
 TEST(AssignmentTests, WhenAddingToANonEmptyTheOtherDoesNotGetAffected)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 	list1.push_front("world");
 
-	LinkedList list2;
+	StrLinkedList list2;
 
 	list2 = list1;
 
@@ -185,7 +187,7 @@ TEST(AssignmentTests, WhenAddingToANonEmptyTheOtherDoesNotGetAffected)
 
 TEST(IteratorTests, CannotModifyIteratorValue)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 
 	list1.push_front("world");
 	list1.push_front("hello");
@@ -199,7 +201,7 @@ TEST(IteratorTests, CannotModifyIteratorValue)
 
 TEST(RemoveTests, APopRemovesTheFirstElement)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 
 	list1.push_front("hello");
 	list1.push_front("wereld");
@@ -209,21 +211,46 @@ TEST(RemoveTests, APopRemovesTheFirstElement)
 	ASSERT_EQ("hello", list1.front());
 }
 
+template <typename T>
+std::string Format(LinkedList<T> list)
+{
+	std::ostringstream str;
+
+	std::copy(list.begin(), list.end(), std::ostream_iterator<T>{str});
+
+	return str.str();
+}
+
 TEST(RandomAccessTests, InsertAtSecond)
 {
-	LinkedList list1;
+	StrLinkedList list1;
 
 	list1.insert_at(0, "hello, ");
 	list1.insert_at(1, "good ");
 	list1.insert_at(2, "world");
 
-	std::ostringstream str;
-
-	std::copy(list1.begin(), list1.end(), std::ostream_iterator<std::string>{str});
-
-	ASSERT_EQ("hello, good world", str.str());
+	ASSERT_EQ("hello, good world", Format(list1));
 }
 
+TEST(TemplateTests, PushAndFront)
+{
+	LinkedList<int> list;
+
+	list.push_front(42);
+
+	ASSERT_EQ(list.front(), 42);
+}
+
+TEST(TemplateTests, MultipleItemsIntegerList)
+{
+	LinkedList<int> list;
+
+	list.push_front(1);
+	list.push_front(2);
+	list.push_front(3);
+
+	ASSERT_EQ("321", Format(list));
+}
 
 //TODOS
 // TEST(RandomAccessTests, DeleteAtSecond)

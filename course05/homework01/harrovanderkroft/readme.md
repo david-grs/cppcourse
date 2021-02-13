@@ -1,0 +1,1 @@
+Basic string implementation, uses CMake.

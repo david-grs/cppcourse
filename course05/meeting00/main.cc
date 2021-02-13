@@ -13,6 +13,8 @@ void foo(int i)
 }
 
 int main(int argc, char* argv[])
+// Some fun reading material about consts here: https://stackoverflow.com/questions/20558418/why-is-argc-not-a-constant
+// I gave up rather quickly
 {
 	if (argc != 2)
 	{
@@ -27,3 +29,4 @@ int main(int argc, char* argv[])
 	foo(3);
 	return 0;
 }
+ 
